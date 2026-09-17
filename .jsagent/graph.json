@@ -88,31 +88,31 @@
       "file": "public/app.js",
       "name": "stopAudio",
       "type": "Function",
-      "startLine": 137
+      "startLine": 150
     },
     "public/app.js:scheduleAudioUpdate": {
       "file": "public/app.js",
       "name": "scheduleAudioUpdate",
       "type": "Function",
-      "startLine": 144
+      "startLine": 157
     },
     "public/app.js:canvas": {
       "file": "public/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 165
+      "startLine": 182
     },
     "public/app.js:ctx": {
       "file": "public/app.js",
       "name": "ctx",
       "type": "Variable",
-      "startLine": 166
+      "startLine": 183
     },
     "public/app.js:drawDaydream": {
       "file": "public/app.js",
       "name": "drawDaydream",
       "type": "Function",
-      "startLine": 177
+      "startLine": 194
     },
     "server.js:express": {
       "file": "server.js",

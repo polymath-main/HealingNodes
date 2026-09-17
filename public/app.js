@@ -91,47 +91,60 @@ function initNetwork() {
 
 // --- 3. Pure Math Engine ---
 async function initAudio() {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Load Worklet Blob
-    const blob = new Blob([workletCode], { type: "application/javascript" });
-    const url = URL.createObjectURL(blob);
-    await audioCtx.audioWorklet.addModule(url);
+    try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) throw new Error("Web Audio API not supported on this browser.");
+        
+        audioCtx = new AudioContextClass();
+        
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.316;
+        masterGain.connect(audioCtx.destination);
+        
+        panner3D = audioCtx.createPanner();
+        panner3D.panningModel = "HRTF";
+        panner3D.distanceModel = "inverse";
+        panner3D.connect(masterGain);
+        
+        // Oscillators
+        baseOsc = audioCtx.createOscillator();
+        binauralOsc = audioCtx.createOscillator();
+        
+        baseOsc.connect(panner3D);
+        binauralOsc.connect(panner3D);
 
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.316;
-    masterGain.connect(audioCtx.destination);
-    
-    panner3D = audioCtx.createPanner();
-    panner3D.panningModel = "HRTF";
-    panner3D.distanceModel = "inverse";
-    panner3D.connect(masterGain);
-    
-    // Oscillators
-    baseOsc = audioCtx.createOscillator();
-    binauralOsc = audioCtx.createOscillator();
-    
-    baseOsc.connect(panner3D);
-    binauralOsc.connect(panner3D); // In real Hemi-Sync, this would be hard-panned. We use 3D Panner for now.
+        breathingFilter = audioCtx.createBiquadFilter();
+        breathingFilter.type = "lowpass";
+        breathingFilter.frequency.value = 400; 
+        breathingFilter.connect(panner3D);
 
-    // Spectral Noise Worklet
-    noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
-    
-    breathingFilter = audioCtx.createBiquadFilter();
-    breathingFilter.type = "lowpass";
-    breathingFilter.frequency.value = 400; 
-    
-    noiseNode.connect(breathingFilter);
-    breathingFilter.connect(panner3D);
+        // Feature detect AudioWorklet (Smart TVs often lack this)
+        if (audioCtx.audioWorklet) {
+            const blob = new Blob([workletCode], { type: "application/javascript" });
+            const url = URL.createObjectURL(blob);
+            await audioCtx.audioWorklet.addModule(url);
+            noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+            noiseNode.connect(breathingFilter);
+        } else {
+            console.warn('AudioWorklet not supported on this device. Noise layer disabled for fallback compatibility.');
+            document.getElementById('status-text').innerText += " (Lite Mode: No Noise)";
+        }
 
-    const startTime = audioCtx.currentTime;
-    baseOsc.start(startTime);
-    binauralOsc.start(startTime);
-    
-    isAudioActive = true;
-    document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
-    document.getElementById('start-btn').innerText = "Stop Engine";
-    requestWakeLock();
+        const startTime = audioCtx.currentTime;
+        baseOsc.start(startTime);
+        binauralOsc.start(startTime);
+        
+        isAudioActive = true;
+        document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
+        document.getElementById('start-btn').innerText = "Stop Engine";
+        requestWakeLock();
+    } catch (err) {
+        console.error("Audio Initialization Error:", err);
+        document.getElementById('status-text').innerText = `Error: ${err.message}`;
+        document.getElementById('ui-container').classList.remove('fade-out');
+        isAudioActive = false;
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    }
 }
 
 function stopAudio() {
@@ -150,13 +163,17 @@ function scheduleAudioUpdate(state) {
         const t = audioCtx.currentTime + (timeUntilChangeMs / 1000);
         const targetFreq = currentV.f_base * currentV.harmonic_ratio;
 
-        // Exponential Glides
-        baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
-        binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
-        
-        // Dynamic Alpha Noise
-        if(noiseNode) {
-            noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+        try {
+            // Exponential Glides
+            baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+            binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+            
+            // Dynamic Alpha Noise (if supported)
+            if(noiseNode) {
+                noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+            }
+        } catch (err) {
+            console.warn("Glide scheduling skipped:", err.message);
         }
     }
 }

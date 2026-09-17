@@ -1,0 +1,56 @@
+async function initAudio() {
+    try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) throw new Error("Web Audio API not supported on this browser.");
+        
+        audioCtx = new AudioContextClass();
+        
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.316;
+        masterGain.connect(audioCtx.destination);
+        
+        panner3D = audioCtx.createPanner();
+        panner3D.panningModel = "HRTF";
+        panner3D.distanceModel = "inverse";
+        panner3D.connect(masterGain);
+        
+        // Oscillators
+        baseOsc = audioCtx.createOscillator();
+        binauralOsc = audioCtx.createOscillator();
+        
+        baseOsc.connect(panner3D);
+        binauralOsc.connect(panner3D);
+
+        breathingFilter = audioCtx.createBiquadFilter();
+        breathingFilter.type = "lowpass";
+        breathingFilter.frequency.value = 400; 
+        breathingFilter.connect(panner3D);
+
+        // Feature detect AudioWorklet (Smart TVs often lack this)
+        if (audioCtx.audioWorklet) {
+            const blob = new Blob([workletCode], { type: "application/javascript" });
+            const url = URL.createObjectURL(blob);
+            await audioCtx.audioWorklet.addModule(url);
+            noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+            noiseNode.connect(breathingFilter);
+        } else {
+            console.warn('AudioWorklet not supported on this device. Noise layer disabled for fallback compatibility.');
+            document.getElementById('status-text').innerText += " (Lite Mode: No Noise)";
+        }
+
+        const startTime = audioCtx.currentTime;
+        baseOsc.start(startTime);
+        binauralOsc.start(startTime);
+        
+        isAudioActive = true;
+        document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
+        document.getElementById('start-btn').innerText = "Stop Engine";
+        requestWakeLock();
+    } catch (err) {
+        console.error("Audio Initialization Error:", err);
+        document.getElementById('status-text').innerText = `Error: ${err.message}`;
+        document.getElementById('ui-container').classList.remove('fade-out');
+        isAudioActive = false;
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    }
+}
