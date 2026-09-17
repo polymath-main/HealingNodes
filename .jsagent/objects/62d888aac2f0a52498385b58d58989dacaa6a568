@@ -1,0 +1,28 @@
+### 2.3 Directory and Source File Map
+```
+/data/data/com.termux/files/home/Projects/HealingNodes/
+├── ARCHITECTURE_BLUEPRINT.md       # Architectural specifications & signal flow
+├── ORIGINAL_REQUEST.md             # Project requirements (R1 Web Audio DSP, R2 Net Sync)
+├── PHASE2_IMPLEMENTATION_PLAN.md   # Mathematical equations, lerp proof, presets, API
+├── PHASE3_THEATER_ARCHITECTURE.md  # Decentralized spatial theater, M/S, limiters, NTP
+├── README.md                       # Overview & Quickstart instructions
+├── THEORY.md                       # Biophysical resonance & Quadtree spatial theory
+├── package.json                    # Dependencies & scripts
+├── package-lock.json               # Locked dependency tree
+├── server.js                       # Express + Socket.io Orchestrator server
+├── src/
+│   ├── core/
+│   │   ├── MediaEngine.js          # Core 2: Spatial Media Theater controller
+│   │   └── ModeEngine.js           # Core 1: Emotional Trajectory & vector interpolation
+│   └── services/
+│       └── YouTubeProxy.js         # ytdl-core streaming audio proxy service
+└── public/
+    ├── admin.html                  # Conductor / Admin dashboard UI
+    ├── app.js                      # Client-side Web Audio synthesis, M/S matrix, visuals
+    ├── index.html                  # Client node viewer UI & Autoplay unlock overlay
+    ├── js/                         # Empty directory (reserved for scripts)
+    └── media/                      # Uploaded theater tracks (created on demand)
+```
+
+---
+

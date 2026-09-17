@@ -1,0 +1,63 @@
+### 3.1 Media Theater Core Late-Join Breakdown (Fatal Flaw)
+Trace the server execution when a new client connects during Theater playback:
+In `server.js` (lines 92–97):
+```javascript
+socket.on('register', (role) => {
+    if (role === 'client') {
+        nodes.push(socket.id);
+        socket.emit('core_switch', { activeCore }); 
+        if (activeCore === 'mode') modeEngine.broadcastState();
+        else mediaEngine.broadcastState('sync');
+    } ...
+```
+In `src/core/MediaEngine.js`:
+```javascript
+broadcastState(action, targetTimeMs = null) {
+    const nodes = this.getNodes();
+    const N = nodes.length;
+    this.io.emit('admin_state_update', { nodeCount: N, activeCore: this.getActiveCore(), mediaState: this.currentMediaState });
+    
+    if (N === 0) return;
+    
+    nodes.forEach((id, index) => {
+        const baseAngleRads = (2 * Math.PI * index) / N;
+        this.io.to(id).emit('media_action', {
+            action: action,
+            baseAngleRads: baseAngleRads,
+            targetSyncTime: targetTimeMs,
+            url: this.currentMediaState.url
+        });
+    });
+}
+```
+In `public/app.js`:
+```javascript
+socket.on('media_action', async (state) => {
+    if (activeCore !== 'media') return;
+    baseNodeAngle = state.baseAngleRads;
+    
+    if (state.action === 'play') {
+        if (!mediaBuffer && state.url) await loadMediaBuffer(state.url);
+        scheduleMediaPlayback(state.targetSyncTime);
+    } else if (state.action === 'pause') {
+        if (mediaSource) { mediaSource.stop(); mediaSource = null; }
+    } else if (state.action === 'sync') {
+        if (state.url) await loadMediaBuffer(state.url);
+    }
+});
+```
+
+#### What Actually Happens When a Client Late-Joins During Playback:
+1. The server executes `mediaEngine.broadcastState('sync')`.
+2. The late client receives `action: 'sync'`. It runs `loadMediaBuffer()`. Once downloaded, **it does nothing**. The late client remains completely silent.
+3. The server maintains **no record** of playback timing:
+   - `this.currentMediaState` only tracks `{ isPlaying: boolean, url: string }`.
+   - The server does not record `playbackStartTime` or the current playback position.
+   - It is physically impossible for the server to instruct the late-joiner where to seek.
+4. **Disruption to Existing Clients**:
+   Notice line 36 of `MediaEngine.js`: `nodes.forEach(...)`.
+   The `sync` action is broadcast to **every node in the mesh**, not just the newly joined socket!
+   All currently playing devices in the room receive `action: 'sync'`. Line 93 of `app.js` executes:
+   `if (state.url) await loadMediaBuffer(state.url);`
+   Every device already playing music triggers `fetch()` and `audioCtx.decodeAudioData()` for the entire track in the middle of playback. The heavy CPU decoding and memory allocation causes severe audio stuttering, dropouts, and temporary browser freezing across the entire room.
+

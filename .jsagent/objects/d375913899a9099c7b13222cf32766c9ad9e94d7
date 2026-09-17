@@ -1,0 +1,33 @@
+## 2. Logic Chain
+
+1. **Mid/Side Logic**:
+   - Observation 1 demonstrates `finalMix` is a mono sum.
+   - W3C spec states connecting a mono node to a 2-channel destination duplicates the signal to both channels.
+   - Therefore, devices play dual-mono, completely destroying stereo width.
+   - Observation 1 shows `mixRatio = Math.abs(Math.cos(baseNodeAngle))`.
+   - At $\theta = \frac{3\pi}{2}$ (Right), `mixRatio = 0`, producing $+S = (L - R)/2$.
+   - In dipole physics, Right radiation must be $-S = (R - L)/2$.
+   - Therefore, right-side nodes emit inverted polarity for the right channel and positive polarity for the left channel, inverting soundstage localization across the room.
+
+2. **Crossover Logic**:
+   - Observation 2 demonstrates phone runs a 2nd-order highpass at 150 Hz ($Q=0.707$) while PC runs an allpass at 350 Hz.
+   - Summing independent signals with mismatched phase transfer functions in an acoustic room induces frequency-dependent constructive and destructive wave interference.
+   - Standard 2nd-order Butterworth filters sum to a null ($-\infty\text{ dB}$) when in-phase, or $+3.01\text{ dB}$ peak when inverted at crossover.
+   - Therefore, flat acoustic magnitude response requires Linkwitz-Riley alignment (cascaded 2nd-order Butterworth $Q=0.7071$ or critically damped $Q=0.5$).
+
+3. **Limiter Logic**:
+   - Observation 3 shows `limiter` is a `DynamicsCompressorNode` with ratio 20:1 and 2ms attack.
+   - Web Audio compressors lack lookahead buffers; transients faster than 2ms pass without attenuation.
+   - Signals exceeding threshold by $>20\text{ dB}$ will exceed $0\text{ dBFS}$ even after compression.
+   - Observation 3 shows Core 1 lacks any limiter.
+   - Therefore, transients and hot signals produce digital clipping. A true limiter requires lookahead plus soft-clipping waveshaping.
+
+4. **Signal Graph & Worklet Logic**:
+   - Observation 4 shows `baseOsc` hard-panned into Left channel of `merger` instead of `panner3D`.
+   - Blueprint Section 2 defines `baseOsc` as the room grounding tone and a separate gated binaural pair.
+   - Therefore, the grounding tone is missing from the spatial soundfield and corrupts the binaural beat.
+   - Observation 5 shows Worklet filter state variables are reused across output channels and $\alpha$ blending is clamped to $[1, 2]$.
+   - Therefore, multi-channel state corrupts audio and White/Red noise states are unachievable.
+
+---
+

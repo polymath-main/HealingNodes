@@ -1,0 +1,18 @@
+### 5.2 Failure Analysis: Why DynamicsCompressorNode Cannot Be a Brickwall Limiter
+
+#### Defect 3.1: Ratio Clamping at 20:1 (Not Infinite $\infty:1$)
+In the W3C Web Audio API specification, `DynamicsCompressorNode.ratio` is clamped to a maximum value of **20.0**.
+A 20:1 ratio is a standard mastering compressor, **not a brickwall limiter**.
+If an incoming transient or unnormalized media signal exceeds the $-1.0\text{ dBFS}$ threshold by $+10\text{ dB}$ (e.g. $+9\text{ dBFS}$ input level):
+$$\text{Output Level} = \text{Threshold} + \frac{\text{Input} - \text{Threshold}}{\text{Ratio}} = -1.0 + \frac{10.0}{20.0} = -0.5\text{ dBFS}$$
+If input level spikes by $+22\text{ dB}$:
+$$\text{Output Level} = -1.0 + \frac{22.0}{20.0} = +0.1\text{ dBFS} > 0\text{ dBFS} \implies \mathbf{HARD\ DIGITAL\ CLIPPING}$$
+The compressor fails to prevent digital ceiling breaches.
+
+#### Defect 3.2: 2ms Attack Without Lookahead Causes Transient Slicing
+- `limiter.attack.value = 0.002` (2 milliseconds).
+- Web Audio `DynamicsCompressorNode` has **no internal lookahead delay buffer**.
+- Any transient with a rise time faster than 2 ms (percussion strikes, drum transients, synthesized clicks) passes through the node unattenuated before the envelope detector can ramp down gain.
+- These overshoot peaks directly slam into `audioCtx.destination`, causing audible digital harshness and inter-sample clipping on mobile DACs.
+
+#### Defect 3.3: 

@@ -1,0 +1,6 @@
+### Defect 9: NTP Reconnect Stale State
+- **Location**: `public/app.js:7, 58-67`
+- **Impact**: `timeOffsets` is never reset on socket reconnect. The 11th sample is pushed to the pre-existing 10 samples, corrupting median offset calculation with stale network data.
+
+---
+

@@ -166,25 +166,25 @@
       "file": "public/app.js",
       "name": "scheduleMediaPlayback",
       "type": "Function",
-      "startLine": 208
+      "startLine": 210
     },
     "public/app.js:canvas": {
       "file": "public/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 250
+      "startLine": 257
     },
     "public/app.js:ctx": {
       "file": "public/app.js",
       "name": "ctx",
       "type": "Variable",
-      "startLine": 251
+      "startLine": 258
     },
     "public/app.js:drawDaydream": {
       "file": "public/app.js",
       "name": "drawDaydream",
       "type": "Function",
-      "startLine": 260
+      "startLine": 267
     },
     "server.js:express": {
       "file": "server.js",

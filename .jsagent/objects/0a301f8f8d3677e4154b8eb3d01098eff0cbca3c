@@ -1,0 +1,10 @@
+### 6.2 Flaw 4.2: Missing 2kHz Lowpass Anti-Aliasing Filter on Noise Generator
+- Both `ARCHITECTURE_BLUEPRINT.md` (line 16) and `PHASE2_IMPLEMENTATION_PLAN.md` (line 120) mandate:
+  `noiseWorklet ──► noiseFilter (LP 2kHz, Q=0.707) ──► noiseGain (0.55) ──► panner3D`
+- In `public/app.js` line 162:
+  `noiseNode.connect(breathingFilter);`
+  `breathingFilter.connect(panner3D);`
+- **No lowpass filter exists in the signal path**. High-frequency noise up to $24\text{ kHz}$ (Nyquist) is piped directly into the HRTF panner, producing harsh digital sibilance that defeats the relaxation objective of the engine.
+
+---
+

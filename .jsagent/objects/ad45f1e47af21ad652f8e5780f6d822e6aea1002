@@ -1,0 +1,6 @@
+## Active Timers
+- Heartbeat cron: 634d7488-2df3-4eef-b42d-f35a66fcd938/task-18
+- Safety timer: none
+- On succession: kill all timers before spawning successor
+- On context truncation: run `manage_task(Action="list")` — re-create if missing
+

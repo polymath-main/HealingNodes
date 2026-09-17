@@ -1,0 +1,20 @@
+/* __JAGE_REF_md_section_handoff_report__network_synchronization___trajectory_interpolation_audit__ */
+/* __JAGE_REF_md_section_1__observation__ */
+/* __JAGE_REF_md_section_2__logic_chain__ */
+/* __JAGE_REF_md_section_3__caveats__ */
+/* __JAGE_REF_md_section_4__conclusion__ */
+## 5. Verification Method
+
+1. **Static Analysis & Syntax Verification**:
+   ```bash
+   python ~/.gemini/config/skills/qa-analyzer/scripts/analyzer.py /data/data/com.termux/files/home/Projects/HealingNodes
+   ```
+2. **Module Execution Check**:
+   ```bash
+   node -e "require('./src/core/ModeEngine'); require('./src/core/MediaEngine'); console.log('OK');"
+   ```
+3. **Inspect Detailed Report**:
+   Inspect `/data/data/com.termux/files/home/Projects/HealingNodes/.agents/teamwork_preview_explorer_net/network_sync_report.md` for complete mathematical proofs, formulas, and proposed code replacements.
+4. **Invalidation Conditions**:
+   - If tests show that calling `mediaSource.start(executionTime)` with $tDelta < 0$ can seek to the middle of an audio buffer without passing an explicit `offset` parameter (this is impossible per the W3C Web Audio API specification).
+   - If Wi-Fi asymmetric delays do not skew an unweighted median offset filter.

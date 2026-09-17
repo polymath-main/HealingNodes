@@ -1,0 +1,22 @@
+### 1.4 Socket Reconnection Corruption
+Look at lines 50–67 in `public/app.js`:
+- `timeOffsets` is defined in global scope (`let timeOffsets = [];`).
+- Inside `socket.on('connect')`:
+  ```javascript
+  socket.on('connect', () => {
+      document.getElementById('status-text').innerText = "Connected. Synchronizing...";
+      socket.emit('register', 'client');
+      socket.emit('sync_ping', Date.now());
+  });
+  ```
+- `timeOffsets` is **never cleared** when `connect` fires.
+- If a mobile client experiences a momentary Wi-Fi disconnect and reconnects:
+  1. `timeOffsets` already contains 10 values from the previous connection.
+  2. `socket.emit('sync_ping')` is sent.
+  3. `sync_pong` arrives; `timeOffsets.push(...)` makes `timeOffsets.length === 11`.
+  4. `if (timeOffsets.length < 10)` evaluates to `false`!
+  5. The client stops pinging immediately (only 1 ping sent instead of 10).
+  6. `serverTimeOffset = timeOffsets[Math.floor(10/2)]` reads index 5 of the array. Because the array is sorted, it reads an arbitrary stale value from the previous connection session.
+
+---
+

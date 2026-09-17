@@ -1,0 +1,29 @@
+{
+  "file": "dsp_audit_report.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_comprehensive_web_audio_dsp_architectural___acoustic_audit_report": "4ac675a24ec7a28431f43c899f80a4d5d5cccfd9",
+    "md_section_1__executive_summary": "247a59cd88c93c809df424f138405a26a7ad04e5",
+    "md_section_key_findings_matrix": "8a74c76f5981c799d81b56317987d47a671bde9e",
+    "md_section_2__investigation_scope___methodology": "8fbce34b2a5fb01909332b31f85ddd378600143f",
+    "md_section_3_1_mathematical_theory_of_mid_side_processing": "b2d5f49e69d81695cab6400d0dc6067e65a267f3",
+    "md_section_3_2_code_observation__extraction___public_app_js___lines_219_230_": "81ada7f4c95e9a733e4eaed1df203f29f4a0a372",
+    "md_section_3_3_code_observation__distribution___absence_of_decoding___public_app_js___lines_231_241_": "a93bfaf18a20d5e9cb3c502c529ef0edbe9b05aa",
+    "md_section_3_4_corrected_distributed_decoding_architecture": "75721d269c881ada214ca80dbc350f9ecf1b6ac5",
+    "md_section_4_1_web_audio_biquadfilternode_specifications": "28839f329e49813ef864289683b4ae2d3ba4baf7",
+    "md_section_4_2_mathematical_proof__the_2nd_order_butterworth_crossover_failure": "278a88d1862c1286d060da00a53edb37403822d3",
+    "md_section_4_3_the_linkwitz_riley_standard__lr4___lr2_": "8b595086c8ceae268b562a6cfdd30e8082f6e3ae",
+    "md_section_4_4_code_observation__crossover_in__public_app_js___lines_185_194_": "cb60510bd9699fe432df49433acf6a08954a27c0",
+    "md_section_5_1_code_observation__limiter_in__public_app_js___lines_196_201_": "45bb696e60dd16b101d009d6d83449b9271d8f0a",
+    "md_section_5_2_failure_analysis__why_dynamicscompressornode_cannot_be_a_brickwall_limiter": "edb640249d7f77c49cf3b87f49ea57f119d926a4",
+    "md_section_5_3_correct_limiter_architecture_for_web_audio": "3c02d805047eb892c894a9551ab9da6976ea4a23",
+    "md_section_6_1_flaw_4_1__binaural___base_oscillator_graph_corruption___app_js___lines_139_153_": "6e336ccf7df47e23308a7401d357244cd34f84ec",
+    "md_section_6_2_flaw_4_2__missing_2khz_lowpass_anti_aliasing_filter_on_noise_generator": "0a301f8f8d3677e4154b8eb3d01098eff0cbca3c",
+    "md_section_6_3_flaw_4_3__hrtf_spatial_geometry___chirality_inversion___app_js___lines_270_273_": "683039057c6c0410c590e7d5680469635f35f342",
+    "md_section_6_4_flaw_4_4__audioworklet_multi_channel_state_collision___alpha_parameter_truncation___app_js___lines_21_48_": "052368e53b52640a66d4bad74eaa74dd4fcf50c7",
+    "md_section_6_5_flaw_4_5__omission_of_harmonic_stacking_multiplier___i__bmod_4___on_distributed_nodes": "64a93ce65a4075a4c41ebd6120c4306fd574ff28",
+    "md_section_6_6_flaw_4_6__audiocontext_suspension_and_lifecycle_crash": "7f353728c77b2b87b112e88b5954ca9402c94945",
+    "md_section_6_7_flaw_4_7__audioparam_parameter_scheduling_lag_and_accumulation": "baeac5fedff185ca4b624012803483750e5333ca",
+    "__skeleton__": "2f6dc89f75b347fb46f8a7c2ba557289bf080570"
+  }
+}

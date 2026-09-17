@@ -1,0 +1,8 @@
+## 🔒 Key Constraints
+- Write test code only: own `tests/`, `TEST_INFRA.md`, `TEST_READY.md`, `package.json` test script.
+- Do NOT modify application source code in `public/` or `src/` or `server.js`.
+- Use Node.js native `node:test` and `node:assert` (zero extra test dependencies).
+- Strictly adhere to 4-Tier Test Architecture (DSP math, boundary/corner, cross-feature, E2E/scenarios).
+- Escalate implementation bugs rather than fixing application code.
+- Comply with Android Termux environment constraints ($PREFIX/bin/node, single-process, targeted execution).
+

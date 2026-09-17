@@ -1,0 +1,72 @@
+### 6.1 Robust NTP Synchronization Architecture
+
+#### `server.js` (Two-Way NTP Timestamps):
+```javascript
+socket.on('sync_ping', (clientSendTime) => {
+    const serverReceiveTime = Date.now();
+    // Return t0 (client send), t1 (server receive), and t2 (server transmit)
+    socket.emit('sync_pong', {
+        t0: clientSendTime,
+        t1: serverReceiveTime,
+        t2: Date.now()
+    });
+});
+```
+
+#### `public/app.js` (Minimum-Filter NTP with Periodic Resync):
+```javascript
+let ntpSamples = [];
+let serverTimeOffset = 0;
+let ntpSyncInterval = null;
+
+function performNtpSync() {
+    ntpSamples = [];
+    sendNtpPing();
+}
+
+function sendNtpPing() {
+    if (socket && socket.connected) {
+        socket.emit('sync_ping', Date.now());
+    }
+}
+
+// Inside initNetwork():
+socket.on('connect', () => {
+    document.getElementById('status-text').innerText = "Connected. Synchronizing...";
+    socket.emit('register', 'client');
+    performNtpSync();
+    
+    // Continuous drift correction: re-sync every 20 seconds
+    if (ntpSyncInterval) clearInterval(ntpSyncInterval);
+    ntpSyncInterval = setInterval(performNtpSync, 20000);
+});
+
+socket.on('disconnect', () => {
+    if (ntpSyncInterval) { clearInterval(ntpSyncInterval); ntpSyncInterval = null; }
+});
+
+socket.on('sync_pong', (data) => {
+    const t0 = data.t0;
+    const t1 = data.t1;
+    const t2 = data.t2;
+    const t3 = Date.now();
+    
+    // RFC 5905 formulas
+    const rtt = (t3 - t0) - (t2 - t1);
+    const offset = ((t1 - t0) + (t2 - t3)) / 2;
+    
+    ntpSamples.push({ rtt, offset });
+    
+    if (ntpSamples.length < 8) {
+        setTimeout(sendNtpPing, 60);
+    } else {
+        // Minimum RTT filter: select the sample with least asymmetric queuing delay
+        ntpSamples.sort((a, b) => a.rtt - b.rtt);
+        // Average the lowest 3 jitter samples for maximum stability
+        const bestSamples = ntpSamples.slice(0, 3);
+        serverTimeOffset = bestSamples.reduce((sum, s) => sum + s.offset, 0) / bestSamples.length;
+        document.getElementById('status-text').innerText = "Synchronized. Ready.";
+    }
+});
+```
+

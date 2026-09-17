@@ -1,0 +1,20 @@
+### 4.3 Redundant Upstream Streams in `YouTubeProxy.js`
+In `src/services/YouTubeProxy.js`:
+```javascript
+app.get('/api/media/youtube', (req, res) => {
+    const videoUrl = req.query.url;
+    ...
+    try {
+        ytdl(videoUrl, { filter: 'audioonly', quality: 'highestaudio' })
+            .pipe(res)
+            .on('error', (err) => console.error('[YouTube Stream Error]', err));
+    } catch (err) { ... }
+});
+```
+- When Theater mode triggers across $N$ client devices, each client issues an independent HTTP GET request to `/api/media/youtube?url=...`.
+- If 6 devices are connected in a room, the server initiates **6 concurrent upstream downloads** to YouTube for the identical audio stream.
+- YouTube's CDN rapidly detects multiple identical chunk requests from the same IP and triggers HTTP 429 (Too Many Requests) or IP throttling.
+- Furthermore, if a client disconnects or aborts the download, `res.on('close')` is not hooked. The underlying `ytdl` readable stream continues downloading in the background, wasting bandwidth and memory.
+
+---
+

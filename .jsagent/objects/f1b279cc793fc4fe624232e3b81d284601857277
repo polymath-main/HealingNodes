@@ -1,0 +1,20 @@
+## 🔒 My Workflow
+- **Pattern**: Project
+- **Scope document**: /data/data/com.termux/files/home/Projects/HealingNodes/PROJECT.md
+1. **Decompose**: Survey codebase with 3 explorers, define Feature Inventory & Milestones in PROJECT.md [DONE]
+2. **Dispatch & Execute**:
+   - M-E2E: E2E Test Writer (`c726fa36-261c-45c1-97a0-920fa1d9920c`) [IN_PROGRESS]
+   - M1: DSP Worker (`bce78b9e-5826-48f0-8b80-f87a5fbe409d`) [IN_PROGRESS]
+   - M2: Network Sync Worker [PENDING - awaiting M1 to avoid public/app.js collision]
+   - M3: Final Verification, Adversarial Hardening (Tier 5), Reviewer/Challenger/Auditor Gate
+3. **On failure**: Retry -> Replace -> Skip -> Redistribute -> Redesign -> Escalate
+4. **Succession**: Self-succeed at 16 spawns
+- **Work items**:
+  1. Survey & Map Scope [DONE]
+  2. E2E Testing Track [in-progress]
+  3. Milestone 1: Web Audio DSP Architecture Audit & Fix [in-progress]
+  4. Milestone 2: Network Synchronization Orchestration Audit & Fix [pending]
+  5. Milestone 3: Final Verification & Universal QA & Adversarial Hardening [pending]
+- **Current phase**: 2B (Iteration Loop Execution)
+- **Current focus**: Monitoring E2E Test Writer and M1 DSP Worker
+

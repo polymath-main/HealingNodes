@@ -1,0 +1,10 @@
+### 4.2 Un-cleared Interval Leak in `ModeEngine`
+In `src/core/ModeEngine.js` line 12:
+```javascript
+this.intervalId = setInterval(() => this.tick(), 1000);
+```
+- `ModeEngine` sets a 1-second interval that runs indefinitely.
+- There is no `destroy()` or `stop()` method to clear `this.intervalId`.
+- Even when `activeCore === 'media'`, `tick()` wakes up every 1000ms, evaluates line 30 (`if (this.getActiveCore() !== 'mode') return;`), and consumes CPU cycles.
+- If unit tests or hot-reloading instantiates `ModeEngine`, background intervals leak into the Node.js process.
+

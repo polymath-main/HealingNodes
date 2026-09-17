@@ -1,0 +1,7 @@
+### MediaEngine ↔ Client Playhead Synchronization
+- Server emits `sync_state`: `{ trackId, isPlaying, serverStartTime, currentOffset, duration }`
+- Late-joining client calculates:
+  - $now_{synced} = \text{Date.now()} + \theta_{offset}$
+  - $\text{elapsed} = (now_{synced} - serverStartTime) / 1000 + currentOffset$
+  - Client schedules source: if $\text{elapsed} > 0$, call `source.start(audioCtx.currentTime, elapsed)`.
+

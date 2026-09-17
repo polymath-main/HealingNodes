@@ -1,0 +1,17 @@
+### 2.1 Package Manifest (`package.json`)
+- **Name**: `healingnodes`
+- **Version**: `1.0.0`
+- **Module Type**: `commonjs`
+- **Main**: `index.js` (Note: `server.js` is the actual entrypoint; `index.js` does not exist)
+- **Current Scripts**:
+  - `"start": "node server.js"`
+  - `"test": "echo \"Error: no test specified\" && exit 1"` *(No test suite is currently configured)*
+- **Runtime Dependencies**:
+  - `express`: `^5.2.1`
+  - `multer`: `^2.4.0`
+  - `node-cron`: `^4.6.0`
+  - `socket.io`: `^4.8.3`
+  - `ws`: `^8.21.3`
+  - `ytdl-core`: `^4.11.5`
+- **Node Runtime**: `v24.18.0` on Linux (`aarch64` Android Termux / Bionic libc). Built-in `node:test` and `node:assert` are fully supported without additional external packages.
+

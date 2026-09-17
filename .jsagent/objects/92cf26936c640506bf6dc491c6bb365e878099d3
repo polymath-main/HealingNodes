@@ -1,0 +1,6 @@
+## Architecture
+HealingNodes is a distributed spatial audio and circadian entrainment platform composed of:
+1. **Theater Core**: Distributed surround audio system using Web Audio API in client browsers (`public/app.js`). Nodes act as spatial speakers arranged in a circle, receiving audio streams or synthetic cues, applying Mid/Side matrix decoding, Butterworth/Linkwitz-Riley crossovers based on hardware capability, and 3D HRTF spatialization.
+2. **Mode Engine (Circadian / Healing Core)**: Algorithmic frequency generator producing binaural beats, isochronic pulses, and solfeggio/sacred frequency chords stacked harmonically across distributed nodes.
+3. **Network Synchronization Engine**: Socket.io + NTP clock synchronization layer (`server.js`, `src/core/MediaEngine.js`, `public/app.js`) maintaining sub-millisecond phase alignment and synchronized spatial trajectory interpolation across all connected devices.
+

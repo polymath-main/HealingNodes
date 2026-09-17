@@ -1,0 +1,6 @@
+### 1.3 Absence of Continuous Clock Skew / Drift Tracking
+- Clock drift between two distinct mobile hardware oscillators is typically 10–100 PPM (parts per million). Over a 20-minute listening session ($1200\text{ s}$), 50 PPM of drift produces:
+  $$\Delta t = 1200 \times 50 \times 10^{-6} = 0.060\text{ s} = 60\text{ ms}$$
+- Acoustic phase coherence at 150 Hz requires timing accuracy under $3.3\text{ ms}$ ($180^\circ$ inversion occurs at half-period $T/2 \approx 3.33\text{ ms}$). A 60ms drift represents nearly 10 full phase wavelengths, causing total destructive acoustic cancellation and comb filtering.
+- `app.js` runs synchronization **only once** when the socket initially connects. It has no recurring synchronization interval (e.g., a background sync every 15–30 seconds) to detect and compensate for crystal drift.
+

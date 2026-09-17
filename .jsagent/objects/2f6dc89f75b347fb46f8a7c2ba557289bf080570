@@ -1,0 +1,96 @@
+/* __JAGE_REF_md_section_comprehensive_web_audio_dsp_architectural___acoustic_audit_report__ */
+/* __JAGE_REF_md_section_1__executive_summary__ */
+/* __JAGE_REF_md_section_key_findings_matrix__ */
+/* __JAGE_REF_md_section_2__investigation_scope___methodology__ */
+## 3. Deep-Dive Audit Item 1: Mid/Side Phase Extraction & Decoding Matrix
+
+/* __JAGE_REF_md_section_3_1_mathematical_theory_of_mid_side_processing__ */
+/* __JAGE_REF_md_section_3_2_code_observation__extraction___public_app_js___lines_219_230___ */
+/* __JAGE_REF_md_section_3_3_code_observation__distribution___absence_of_decoding___public_app_js___lines_231_241___ */
+/* __JAGE_REF_md_section_3_4_corrected_distributed_decoding_architecture__ */
+## 4. Deep-Dive Audit Item 2: Butterworth Hardware Crossovers & Phase Alignment
+
+/* __JAGE_REF_md_section_4_1_web_audio_biquadfilternode_specifications__ */
+/* __JAGE_REF_md_section_4_2_mathematical_proof__the_2nd_order_butterworth_crossover_failure__ */
+/* __JAGE_REF_md_section_4_3_the_linkwitz_riley_standard__lr4___lr2___ */
+/* __JAGE_REF_md_section_4_4_code_observation__crossover_in__public_app_js___lines_185_194___ */
+## 5. Deep-Dive Audit Item 3: Brickwall Limiters & Dynamics Control
+
+/* __JAGE_REF_md_section_5_1_code_observation__limiter_in__public_app_js___lines_196_201___ */
+/* __JAGE_REF_md_section_5_2_failure_analysis__why_dynamicscompressornode_cannot_be_a_brickwall_limiter__ */
+Zero Knee & 100ms Release Induces Pumping
+- `knee.value = 0.0` imposes a hard piecewise knee. The transition from linear amplification to 20:1 compression is instantaneous, generating harmonic distortion at the threshold boundary.
+- `release.value = 0.100` (100 ms). Low-frequency signals (e.g. 50 Hz sub-bass has a period of 20 ms) complete 5 full cycles within one release window. The envelope follower tracks individual waveform crests rather than the signal RMS envelope, resulting in severe **gain modulation, waveform flat-topping, and audible pumping**.
+
+#### Defect 3.4: Complete Absence of Limiter in Core 1 (Mode Engine)
+In `initModeEngine()` (lines 136–167), `masterGain` connects directly to `audioCtx.destination`:
+```javascript
+137: const masterGain = audioCtx.createGain(); masterGain.gain.value = 0.316; masterGain.connect(audioCtx.destination);
+```
+There is **NO limiter, compressor, or saturation clipper in the entire Mode Engine graph**.
+In `SpectralNoiseProcessor`:
+`outChannel[i] = pink * (1 - blend) + (this.brown * 3.5) * blend;`
+Peak output of the brown noise stage regularly exceeds $\pm 3.5$. Summed with `baseOsc` ($0.8$) and `binauralOsc` ($0.8$) plus HRTF panner boosts, peak levels easily exceed $+12\text{ dBFS}$. Even after master attenuation ($0.316 \approx -10\text{ dB}$), signals exceed 0 dBFS and produce digital clipping during high-energy states.
+
+/* __JAGE_REF_md_section_5_3_correct_limiter_architecture_for_web_audio__ */
+## 6. Deep-Dive Audit Item 4: Additional DSP & Acoustic Flaws in `public/app.js`
+
+/* __JAGE_REF_md_section_6_1_flaw_4_1__binaural___base_oscillator_graph_corruption___app_js___lines_139_153___ */
+/* __JAGE_REF_md_section_6_2_flaw_4_2__missing_2khz_lowpass_anti_aliasing_filter_on_noise_generator__ */
+/* __JAGE_REF_md_section_6_3_flaw_4_3__hrtf_spatial_geometry___chirality_inversion___app_js___lines_270_273___ */
+Z.setValueAtTime(2 * Math.sin(currentAngleRads), time);
+273:             }
+```
+- In the W3C Web Audio API coordinate standard:
+  - Origin: $(0, 0, 0)$.
+  - Default Listener Orientation: Forward is $(0, 0, -1)$ (negative Z), Up is $(0, 1, 0)$ (positive Y), Right is $(1, 0, 0)$ (positive X).
+- In `app.js`:
+  - At $\theta = 0$: $x = 2 \cos(0) = 2$, $z = 2 \sin(0) = 0 \implies (2, 0, 0)$.
+    **Position $(2, 0, 0)$ is directly to the listener's RIGHT ear**, not Front Center!
+  - At $\theta = \frac{\pi}{2}$: $x = 0, z = 2 \implies (0, 0, 2)$.
+    **Position $(0, 0, 2)$ is directly BEHIND the listener** (positive Z is back, negative Z is forward)!
+- **Impact**: The entire spatial acoustic orbit is rotated by $90^\circ$ and inverted relative to the user's room coordinate system. When the user faces the visual screen, audio intended to be in front orbits to the far right.
+- **Correct Mapping**:
+  $$x(t) = r \sin(\theta(t)), \quad z(t) = -r \cos(\theta(t))$$
+  At $\theta = 0$: $x = 0, z = -r$ (directly in front).
+  At $\theta = \frac{\pi}{2}$: $x = r, z = 0$ (directly to the right).
+
+---
+
+/* __JAGE_REF_md_section_6_4_flaw_4_4__audioworklet_multi_channel_state_collision___alpha_parameter_truncation___app_js___lines_21_48___ */
+/* __JAGE_REF_md_section_6_5_flaw_4_5__omission_of_harmonic_stacking_multiplier___i__bmod_4___on_distributed_nodes__ */
+/* __JAGE_REF_md_section_6_6_flaw_4_6__audiocontext_suspension_and_lifecycle_crash__ */
+/* __JAGE_REF_md_section_6_7_flaw_4_7__audioparam_parameter_scheduling_lag_and_accumulation__ */
+## 7. Synthesis & Prioritized Remediation Roadmap
+
+The following prioritized fixes must be applied to `public/app.js` by the engineering implementation agent:
+
+```
+Priority 1 (Critical): Mid/Side Decoding & Multi-Node Phase Correction
+- Replace mono finalMix with dual-channel stereo decoding (L = M + S, R = M - S) using ChannelMergerNode.
+- Correct spatial dipole radiation: S_node = S * sin(baseNodeAngle).
+- Fix rear node center bleed by removing Math.abs(Math.cos) and using proper directional weighting.
+
+Priority 2 (Critical): Signal Graph & Grounding Oscillator Topology
+- Restore independent baseOsc connected to panner3D (HRTF).
+- Reconnect binauralOscL / binauralOscR pair exclusively to ChannelMergerNode bypassing panner.
+- Add 2kHz lowpass BiquadFilterNode between noiseNode and breathingFilter.
+
+Priority 3 (High): Linkwitz-Riley Crossover Implementation
+- Replace single 2nd-order highpass with 4th-order Linkwitz-Riley (cascaded dual BiquadFilters, Q=0.7071) or 2nd-order LR (Q=0.5).
+- Remove 350Hz allpass from PC nodes. Implement paired lowpass for sub/desktop nodes.
+
+Priority 4 (High): True Brickwall Limiting & Master Dynamics
+- Insert lookahead DelayNode (3ms) and WaveShaperNode tanh soft-clipper ceiling before audioCtx.destination in both Core 1 and Core 2.
+- Soften compressor knee to 3.0dB and adjust release to 50ms to prevent low-frequency harmonic distortion.
+
+Priority 5 (Medium): AudioWorklet & Spatial Corrections
+- Allocate per-channel filter states in SpectralNoiseProcessor.
+- Correct alpha blending math to support White (alpha < 1) and Red (alpha > 2).
+- Fix HRTF panner coordinate chirality: x = r * sin(theta), z = -r * cos(theta).
+- Restore per-node harmonic frequency stacking: f_base * (harmonic_ratio ** (myIndex % 4)).
+- Add defensive lifecycle guards around window.theaterDest and audioCtx.resume().
+```
+
+---
+*End of Audit Report.*

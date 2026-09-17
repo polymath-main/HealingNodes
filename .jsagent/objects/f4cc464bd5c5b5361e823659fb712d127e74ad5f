@@ -1,0 +1,6 @@
+## Task Summary
+- **What to build**: Comprehensive unit, mathematical, boundary, cross-feature, and real-world scenario tests for HealingNodes.
+- **Success criteria**: All tests pass under `node --test`, robust edge cases handled, zero external test dependencies, complete documentation in `TEST_INFRA.md` and `TEST_READY.md`.
+- **Interface contracts**: `/data/data/com.termux/files/home/Projects/HealingNodes/PROJECT.md` & `ORIGINAL_REQUEST.md`.
+- **Code layout**: Tests in `/data/data/com.termux/files/home/Projects/HealingNodes/tests/`.
+

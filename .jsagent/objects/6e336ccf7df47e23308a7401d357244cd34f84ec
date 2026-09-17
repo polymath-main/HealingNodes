@@ -1,0 +1,31 @@
+### 6.1 Flaw 4.1: Binaural / Base Oscillator Graph Corruption (`app.js`, lines 139–153)
+```javascript
+139:     // Hard-pan Binaural via ChannelMerger (Fix for Binaural blending bug)
+140:     const merger = audioCtx.createChannelMerger(2);
+141:     merger.connect(masterGain);
+142: 
+143:     const baseOscGain = audioCtx.createGain(); baseOscGain.gain.value = 0.8;
+144:     const binOscGain = audioCtx.createGain(); binOscGain.gain.value = 0.8;
+145:     
+146:     baseOscGain.connect(merger, 0, 0); // L
+147:     binOscGain.connect(merger, 0, 1);  // R
+148: 
+149:     baseOsc = audioCtx.createOscillator(); binauralOsc = audioCtx.createOscillator();
+150:     const initialFreq = currentV.f_base * currentV.harmonic_ratio;
+151:     baseOsc.frequency.value = initialFreq; binauralOsc.frequency.value = initialFreq + currentV.binaural_offset;
+152:     baseOsc.connect(baseOscGain); binauralOsc.connect(binOscGain);
+```
+
+#### Blueprint Specification (`ARCHITECTURE_BLUEPRINT.md`, Section 2):
+The blueprint specifies:
+1. `baseOsc` (sine, $f_{local}$) $\to$ `oscGain` ($0.35$) $\to$ `panner3D` (HRTF) $\to$ spatial room soundfield.
+2. A separate `binauralOscL` / `binauralOscR` pair routed through `ChannelMergerNode` to `masterGain`, gated to gain $0.0$ when $\Delta f = 0$, and active ($0.15$) only when $\Delta f > 0$.
+
+#### Violation in `app.js`:
+- `baseOsc` has been hijacked as the Left ear of the binaural merger!
+- The fundamental 33 Hz grounding tone is **completely removed from the 3D spatial field** (`panner3D`) and hard-panned into the listener's left ear at full gain ($0.8$).
+- When $\Delta f = 0$ (default in Homeostasis, Flow State, Catharsis, Energetic), both oscillators run at identical frequencies at high amplitude, firing into Left and Right ears in dual-mono.
+- When $\Delta f > 0$, the acoustic mesh's grounding frequency itself is detuned, destroying the spatial anchor.
+
+---
+

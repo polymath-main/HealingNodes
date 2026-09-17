@@ -1,0 +1,3 @@
+### R1. Audit and Fix the Web Audio DSP Architecture
+Review the `public/app.js` Dual-Core logic. Specifically audit the mathematical correctness of the Mid/Side phase extraction matrix, the Butterworth hardware crossovers, and the brickwall limiters. Implement fixes for any acoustic physics or routing flaws found.
+

@@ -1,0 +1,21 @@
+## 5. Comprehensive Summary Matrix of Issues
+
+| ID | Component | Severity | Description | Acoustic / System Impact |
+|---|---|---|---|---|
+| **NET-01** | `server.js` / `app.js` | **HIGH** | Single-sided NTP offset ($t_1 \equiv t_2$); no RTT weighting | Skewed time offset under server load and asymmetric Wi-Fi jitter. |
+| **NET-02** | `public/app.js` | **HIGH** | `timeOffsets` array not reset on reconnect | Breaks clock sync on Wi-Fi drop; locks to stale median. |
+| **NET-03** | `public/app.js` | **HIGH** | No recurring periodic sync | Hardware clock drift (10–100 PPM) destroys acoustic phase over time. |
+| **NET-04** | `MediaEngine.js` / `server.js` | **CRITICAL** | Late joiners receive `sync` without playhead position | Late-joining devices remain silent; existing devices re-buffer mid-playback. |
+| **NET-05** | `public/app.js` | **CRITICAL** | `tDelta < 0` clamped to 0 without track offset | Late devices play from track start (0:00), creating permanent echo desync. |
+| **MATH-01** | `ModeEngine.js` | **MEDIUM** | `durationMs || 1000` prevents instant jumps | Cannot trigger instantaneous state updates ($duration = 0$). |
+| **MATH-02** | `ModeEngine.js` | **HIGH** | Unclamped negative `progress` in smoothstep | Clock backward slip causes $500\%$ polynomial overshoot in audio parameters. |
+| **MATH-03** | `ModeEngine.js` | **MEDIUM** | Linear lerp on circular `phi_color` ($0–360^\circ$) | Color sweeps through entire spectrum instead of shortest circular arc. |
+| **MATH-04** | `public/app.js` | **HIGH** | Orbital angle uses local `audioCtx.currentTime` | Devices orbit out-of-phase; destroys coherent spatial rotation. |
+| **MATH-05** | `public/app.js` | **HIGH** | `myIndex` ignored in client audio synthesis | All nodes play unison frequency; harmonic chord matrix non-functional. |
+| **MATH-06** | `public/app.js` | **MEDIUM** | M/S gain values not updated on node join/leave | Spatial Mid/Side distribution locked to initial connection state. |
+| **LIF-01** | `server.js` | **MEDIUM** | Duplicate socket IDs in `nodes` array | Reconnects corrupt mesh count $N$ and angular coordinates. |
+| **LIF-02** | `ModeEngine.js` | **LOW** | Leaked `setInterval` in ModeEngine | Background interval runs forever; no teardown method. |
+| **LIF-03** | `YouTubeProxy.js` | **MEDIUM** | $N$ duplicate YouTube streams; unhandled aborts | Bandwidth waste; YouTube 429 IP rate-limiting; memory leaks on abort. |
+
+---
+

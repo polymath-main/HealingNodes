@@ -1,0 +1,34 @@
+### 2.4 Missing Harmonic Index Implementation (`myIndex`)
+In `src/core/ModeEngine.js` line 59:
+```javascript
+this.io.to(id).emit('audio_state_update', {
+    nodeCount: N,
+    myIndex: index,
+    baseAngleRads: baseAngleRads,
+    targetSyncTime: targetSyncTime,
+    v: this.currentState
+});
+```
+In `public/app.js` line 76:
+```javascript
+socket.on('audio_state_update', (state) => {
+    if (activeCore !== 'mode') return;
+    baseNodeAngle = state.baseAngleRads;
+    if(state.v) currentV = state.v;
+    if (isAudioActive && audioCtx) scheduleModeUpdate(state);
+});
+...
+function scheduleModeUpdate(state) {
+    ...
+    const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+    baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+}
+```
+- The server computes and transmits `myIndex: index`.
+- The client **completely ignores** `myIndex`.
+- According to `ARCHITECTURE_BLUEPRINT.md` (Section 2, line 28):
+  $$f_{local}(i) = f_{base} \times harmonic\_ratio^{\,i \bmod 4}$$
+- Because `myIndex` is omitted in `app.js`, every node in the room plays the exact same unison frequency $f_{base} \times harmonic\_ratio^1$. The distributed chord synthesis described in the project blueprint is non-functional.
+
+---
+

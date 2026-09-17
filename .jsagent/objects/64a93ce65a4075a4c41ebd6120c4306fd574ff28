@@ -1,0 +1,12 @@
+### 6.5 Flaw 4.5: Omission of Harmonic Stacking Multiplier ($i \bmod 4$) on Distributed Nodes
+- `ARCHITECTURE_BLUEPRINT.md` Section 2 and `PHASE2_IMPLEMENTATION_PLAN.md` Section 6 require:
+  $$f_{local}(i) = f_{base} \times (harmonic\_ratio)^{i \bmod 4}$$
+- In `server.js` and `ModeEngine.js` line 59, the server correctly transmits `myIndex: index`.
+- In `public/app.js` lines 150 & 173:
+  `const initialFreq = currentV.f_base * currentV.harmonic_ratio;`
+  `const targetFreq = currentV.f_base * currentV.harmonic_ratio;`
+- **`myIndex` is completely ignored**. Every node in the room plays the exact same harmonic multiple ($f_{base} \times r_h$).
+- **Impact**: The distributed chordal harmony that forms the core aesthetic of HealingNodes does not exist in the client implementation; the room collapses into a single unison frequency.
+
+---
+

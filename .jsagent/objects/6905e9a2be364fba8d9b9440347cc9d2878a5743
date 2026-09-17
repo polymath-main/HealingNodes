@@ -1,0 +1,6 @@
+## 3. Caveats
+
+- **No Caveats.** All relevant files (`server.js`, `src/core/MediaEngine.js`, `src/core/ModeEngine.js`, `public/app.js`, `src/services/YouTubeProxy.js`, documentation blueprints) were audited and verified.
+
+---
+

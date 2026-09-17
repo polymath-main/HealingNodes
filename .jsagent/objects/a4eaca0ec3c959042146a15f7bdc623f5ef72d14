@@ -1,0 +1,5 @@
+## User Context
+- **Last user request**: Rigorous structural, DSP, and architectural audit of HealingNodes Dual-Core project codebase with active bug fixes in public/app.js, server.js, and src/core/MediaEngine.js, verifying via QA Analyzer and agent-as-judge.
+- **Pending clarifications**: none
+- **Delivered results**: none
+

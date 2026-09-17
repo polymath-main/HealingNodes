@@ -1,0 +1,9 @@
+### Defect 4: Signal Graph Discrepancies in `initModeEngine()`
+- **Location**: `public/app.js:143-156`
+- **Discrepancies**:
+  1. `baseOscGain` is connected exclusively to `merger, 0, 0` (hard-panned left). It does NOT connect to `panner3D`.
+  2. `panner3D` only receives `noiseNode`.
+  3. `breathingFilter` (a GainNode) sits between `noiseNode` and `panner3D`. Per `ARCHITECTURE_BLUEPRINT.md:14-19`, `breathGain` should sit after `panner3D` to modulate the entire spatialized field.
+  4. Missing `noiseFilter` (lowpass 2kHz) and `noiseGain` (0.55).
+  5. Per-node frequency multiplier ($f_{local}(i) = f_{base} \cdot r_h^{i \bmod 4}$) is omitted in `scheduleModeUpdate()`; all nodes play identical frequencies.
+

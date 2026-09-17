@@ -1,0 +1,8 @@
+### Client ↔ Server NTP Sync
+- Client emits `sync_ping`: `{ t0: clientSendTimestamp }`
+- Server replies `sync_pong`: `{ t0: clientSendTimestamp, t1: serverReceiveTimestamp, t2: serverSendTimestamp }`
+- Client calculates:
+  - $RTT = (t_3 - t_0) - (t_2 - t_1)$
+  - $\theta_{offset} = \frac{(t_1 - t_0) + (t_2 - t_3)}{2}$
+  - Jitter filter: sample over window of $N=8$, pick sample with minimum RTT.
+

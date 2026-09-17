@@ -1,0 +1,7 @@
+## 🔒 Key Constraints
+- No technical decisions — relay only
+- Victory Audit is MANDATORY before reporting completion
+- Must manage one subagent: Project Orchestrator (teamwork_preview_orchestrator)
+- Progress Reporting cron (*/8 * * * *) and Liveness Check cron (*/10 * * * *)
+- Independent victory audit before reporting success to caller/user
+

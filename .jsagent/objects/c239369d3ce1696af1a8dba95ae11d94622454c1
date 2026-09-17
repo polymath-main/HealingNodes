@@ -1,0 +1,7 @@
+## 3. Caveats
+
+- YouTube live streaming via `YouTubeProxy.js` relies on external YouTube HTTP endpoints which may throttle or alter video formats; offline/mock testing is recommended for YouTube proxy tests.
+- Hardware audio synthesis in browsers requires user gesture ("Enter Daydream" / "Enter Theater") per Autoplay policy; server and test runners must verify Web Audio behavior via headless/mock interfaces.
+
+---
+

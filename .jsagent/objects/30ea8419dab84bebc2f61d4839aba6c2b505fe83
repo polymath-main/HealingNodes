@@ -1,0 +1,7 @@
+## 3. Caveats
+
+- **No Caveats**: All relevant files (`public/app.js`, `ARCHITECTURE_BLUEPRINT.md`, `THEORY.md`, `PHASE2_IMPLEMENTATION_PLAN.md`, `PHASE3_THEATER_ARCHITECTURE.md`, `server.js`, `src/core/MediaEngine.js`, `src/core/ModeEngine.js`) were fully inspected.
+- The investigation is strictly read-only per constraints; no source code files outside of `.agents/` were modified.
+
+---
+

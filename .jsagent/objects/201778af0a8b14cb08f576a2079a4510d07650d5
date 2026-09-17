@@ -1,0 +1,3 @@
+### Verification: Automated QA
+- [ ] The Universal QA Analyzer (`python ~/.gemini/config/skills/qa-analyzer/scripts/analyzer.py .`) runs and passes with 0 structural or syntax errors after all fixes are committed.
+

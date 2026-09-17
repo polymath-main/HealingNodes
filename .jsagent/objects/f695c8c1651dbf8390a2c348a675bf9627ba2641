@@ -1,0 +1,26 @@
+async function initMediaEngine() {
+    // 1. Hardware Profiling Crossover (Linkwitz-Riley 4th Order)
+    const isPhone = window.innerWidth < 768;
+    const crossover1 = audioCtx.createBiquadFilter();
+    const crossover2 = audioCtx.createBiquadFilter(); // Cascaded for LR4
+    
+    if (isPhone) {
+        crossover1.type = "highpass"; crossover1.frequency.value = 150; crossover1.Q.value = 0.707;
+        crossover2.type = "highpass"; crossover2.frequency.value = 150; crossover2.Q.value = 0.707;
+    } else {
+        crossover1.type = "allpass"; crossover2.type = "allpass"; 
+    }
+
+    // 2. Brickwall Limiter
+    const limiter = audioCtx.createDynamicsCompressor();
+    limiter.threshold.value = -1.0; limiter.knee.value = 0.0; limiter.ratio.value = 20.0;
+    limiter.attack.value = 0.001; limiter.release.value = 0.050;
+    
+    crossover1.connect(crossover2);
+    crossover2.connect(limiter);
+    limiter.connect(audioCtx.destination);
+
+    // 3. Setup M/S Node Graph (waiting for source)
+    window.theaterDest = crossover1;
+    document.getElementById('status-text').innerText = "Theater Active. Waiting for Admin Play.";
+}

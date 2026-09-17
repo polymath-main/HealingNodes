@@ -1,0 +1,20 @@
+### 4.1 Duplicate Socket Registrations & Mesh Angle Corruption
+In `server.js` (lines 92–97):
+```javascript
+socket.on('register', (role) => {
+    if (role === 'client') {
+        nodes.push(socket.id);
+        socket.emit('core_switch', { activeCore }); 
+        ...
+```
+- `nodes` is a plain JavaScript array (`let nodes = [];`).
+- There is **no uniqueness check** (`if (!nodes.includes(socket.id))`).
+- If a client script triggers `register` more than once (common during socket.io reconnects or page state changes):
+  `nodes` becomes `['socket_A', 'socket_A']`.
+- The node count $N$ increments to 2.
+- The server calculates:
+  Node A (index 0): $\theta = 0$
+  Node A (index 1): $\theta = \pi$
+- Node A receives two conflicting socket events instructing it to adopt two different geometric angles simultaneously.
+- *Remedy*: Use a JavaScript `Set` or verify uniqueness: `if (!nodes.includes(socket.id)) nodes.push(socket.id);`.
+

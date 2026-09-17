@@ -1,0 +1,10 @@
+### 5.3 Correct Limiter Architecture for Web Audio
+To implement an authentic brickwall limiter in Web Audio:
+1. **Pre-limiter Gain Staging**: Maintain headroom at $-3\text{ dBFS}$.
+2. **Lookahead Delay Buffer**: Introduce a `DelayNode` ($3\text{ ms}$) on the audio path so envelope detection precedes the audio transient.
+3. **Cubic / Tanh Soft-Clipping WaveShaper**: Place a `WaveShaperNode` downstream of the dynamics compressor to establish a mathematical ceiling at $1.0$:
+   $$f(x) = \tanh(x) \quad \text{or} \quad f(x) = \begin{cases} x & |x| \le \frac{2}{3} \\ \text{sign}(x)\left(\frac{3 - (2 - 3|x|)^2}{3}\right) & \frac{2}{3} < |x| \le 1 \\ \text{sign}(x) \cdot 1.0 & |x| > 1 \end{cases}$$
+   This guarantees that no sample can ever exceed $0.0\text{ dBFS}$.
+
+---
+

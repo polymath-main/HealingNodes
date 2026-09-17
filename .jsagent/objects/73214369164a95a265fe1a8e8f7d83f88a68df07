@@ -1,0 +1,8 @@
+## Milestones
+| # | Name | Scope | Dependencies | Status |
+|---|------|-------|-------------|--------|
+| M-E2E | E2E Test Suite Track | Features #10 (Tiers 1-4 automated tests, TEST_INFRA.md, TEST_READY.md) | none | IN_PROGRESS |
+| M1 | Web Audio DSP Architecture Fixes | Features #1, #2, #3, #4, #5 (`public/app.js`) | none | PLANNED |
+| M2 | Network Synchronization Orchestration Fixes | Features #6, #7, #8, #9 (`server.js`, `src/core/MediaEngine.js`, `public/app.js`) | none | PLANNED |
+| M3 | Final Verification, Adversarial Hardening & Git Commit | Features #11, #12 (100% E2E test pass, Tier 5 hardening, QA Analyzer 0 errors, Agent-as-Judge DSP review, Forensic Audit, Git commit) | M-E2E, M1, M2 | PLANNED |
+

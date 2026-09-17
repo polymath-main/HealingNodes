@@ -1,0 +1,15 @@
+## 2. Investigation Scope & Methodology
+
+The audit examined:
+1. `public/app.js` (314 lines) — The active client-side DSP and visual rendering engine.
+2. `ARCHITECTURE_BLUEPRINT.md` — The canonical signal graph specification and clock synchronization protocol.
+3. `THEORY.md` — Quadtree spatial geometry, 33 Hz low-gamma binding theory, and $\pi$-based phase distribution.
+4. `PHASE2_IMPLEMENTATION_PLAN.md` — Vector $V$ state space, Voss-McCartney IIR pink noise worklet, and breathing LFO.
+5. `PHASE3_THEATER_ARCHITECTURE.md` — Mid/Side spatial expansion and excursion limiting specifications.
+
+The analysis evaluates compliance against:
+- **W3C Web Audio API Recommendation (2021/2024)** (Channel mixing rules, AudioNode connection semantics, AudioParam automation quantum behavior).
+- **Acoustic Physics & Stereophony** (Blumlein coincident pair theory, Ambisonic horizontal decoding, Linkwitz-Riley crossover transfer functions, inter-aural level/time differences).
+
+---
+

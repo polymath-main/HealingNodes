@@ -1,0 +1,43 @@
+function scheduleMediaPlayback(targetSyncTimeMs) {
+    if (!mediaBuffer || !audioCtx) return;
+    
+    let tDelta = targetSyncTimeMs - serverTimeOffset - Date.now();
+    let playOffset = 0;
+    if (tDelta < 0) {
+        playOffset = Math.abs(tDelta) / 1000; // Calculate exact late-join offset in seconds
+        tDelta = 0; // Play immediately
+    }
+    const executionTime = audioCtx.currentTime + (tDelta / 1000);
+
+    if (mediaSource) mediaSource.stop();
+    mediaSource = audioCtx.createBufferSource();
+    mediaSource.buffer = mediaBuffer;
+
+    // --- M/S Phase Extraction Matrix ---
+    const splitter = audioCtx.createChannelSplitter(2);
+    mediaSource.connect(splitter);
+
+    const midMix = audioCtx.createGain(); midMix.gain.value = 0.5; // (L+R)/2
+    splitter.connect(midMix, 0); splitter.connect(midMix, 1);
+
+    const sideMix = audioCtx.createGain(); sideMix.gain.value = 0.5; // (L-R)/2
+    const invertGain = audioCtx.createGain(); invertGain.gain.value = -1.0;
+    splitter.connect(sideMix, 0); 
+    splitter.connect(invertGain, 1); invertGain.connect(sideMix);
+
+    // Dynamic mix based on physical geometry
+    const mixRatio = Math.abs(Math.cos(baseNodeAngle)); // 0 rad = 1 (Mid). PI/2 rad = 0 (Side)
+    const finalMix = audioCtx.createGain();
+    
+    const applyMid = audioCtx.createGain(); applyMid.gain.value = mixRatio;
+    const applySide = audioCtx.createGain(); applySide.gain.value = 1.0 - mixRatio;
+    
+    midMix.connect(applyMid); applyMid.connect(finalMix);
+    sideMix.connect(applySide); applySide.connect(finalMix);
+    
+    finalMix.connect(window.theaterDest); // Route to crossover & limiter
+    
+    // Play with precise offset if late
+    mediaSource.start(executionTime, playOffset);
+    console.log(`[Media] Scheduled at ${executionTime} with play offset ${playOffset}s`);
+}

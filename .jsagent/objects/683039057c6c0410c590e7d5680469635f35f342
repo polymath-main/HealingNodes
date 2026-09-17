@@ -1,0 +1,5 @@
+### 6.3 Flaw 4.3: HRTF Spatial Geometry & Chirality Inversion (`app.js`, lines 270–273)
+```javascript
+270:             if (panner3D) {
+271:                 panner3D.positionX.setValueAtTime(2 * Math.cos(currentAngleRads), time);
+272:                 panner3D.position

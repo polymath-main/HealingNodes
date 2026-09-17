@@ -1,0 +1,25 @@
+## 4. Features Discovered
+
+| # | Category | Feature | Description | Inputs | Outputs | Error Behavior | Discovered Via |
+|---|----------|---------|-------------|--------|---------|----------------|----------------|
+| 1 | Mode Engine | State Broadcast | Emits real-time state deltas to admin and audio nodes | Connected socket IDs, `currentState` | `admin_state_update`, `audio_state_update` | If `nodes.length === 0`, skips audio emit | `src/core/ModeEngine.js` |
+| 2 | Mode Engine | Trajectory Morph | Smoothly transitions 7D vector over duration $D$ | `targetState`, `durationMs` | Interpolated vector $V$ per second | If `durationMs <= 0`, defaults to 1000ms | `src/core/ModeEngine.js` |
+| 3 | Mode Engine | Trajectory Halt | Freezes interpolation at current position | None (API call) | Target becomes current state, duration=0 | Silent success | `src/core/ModeEngine.js` |
+| 4 | Media Engine | Media URL Setup | Sets active track and triggers mesh sync | URL string (`/media/...` or proxy) | `media_action` (`sync`) | If no nodes, stores URL only | `src/core/MediaEngine.js` |
+| 5 | Media Engine | Global Play Sync | Broadcasts playback command with future timestamp | None (API call) | `media_action` (`play`, `Date.now() + 5000`) | Silently proceeds even if buffer not ready | `src/core/MediaEngine.js` |
+| 6 | Media Engine | Global Pause | Broadcasts immediate stop command | None (API call) | `media_action` (`pause`) | Sets `isPlaying = false` | `src/core/MediaEngine.js` |
+| 7 | Core Orchestration | Core Switch | Toggles between Mode Engine and Media Theater | `core: 'mode' \| 'media'` | `core_switch` event, immediate state broadcast | Does not validate core string value | `server.js` |
+| 8 | Network Sync | NTP Clock Offset | 10-ping median filter to compute server clock offset | `Date.now()` client ping | `sync_pong`, calculates median offset | Outliers rejected by median; reconnect leaks | `public/app.js` |
+| 9 | Network Sync | Scheduled Lookahead | Applies parameter changes at calculated future audio time | `targetSyncTime`, `serverTimeOffset` | Local `AudioContext.currentTime` parameter targets | Negative delta clamps to 0 (immediate) | `public/app.js` |
+| 10 | DSP (Mode) | Voss-McCartney Noise | Generates pink/brown noise via AudioWorklet | `alpha_noise` parameter (0–3) | Continuous audio buffer output | Falls back to `null` if worklet fails | `public/app.js` |
+| 11 | DSP (Mode) | Binaural Beats | Generates interaural frequency difference | `f_base`, `harmonic_ratio`, `binaural_offset` | Discrete L/R audio streams via `ChannelMerger` | Hard-panned even if `offset === 0` | `public/app.js` |
+| 12 | DSP (Media) | M/S Extraction Matrix | Computes $(L+R)/2$ and $(L-R)/2$ for spatial division | Stereo audio buffer | Mono output routed to crossover | Re-connects new nodes without clearing old | `public/app.js` |
+| 13 | DSP (Media) | Hardware Crossover | Filters frequencies based on device profile | `isPhone = innerWidth < 768` | BiquadFilter (150Hz HP or allpass) | Non-phones get allpass instead of 40Hz HP | `public/app.js` |
+| 14 | DSP (Media) | Brickwall Limiter | Clamps dynamic peaks to prevent clipping/damage | Audio signal post-crossover | AudioContext destination | Only applied in Media Core, not Mode Core | `public/app.js` |
+| 15 | Media Service | YouTube Audio Proxy | Streams raw audio stream from YouTube URL | `?url=<youtube_url>` | `audio/webm` HTTP stream | Logs error to stderr, returns 500 if unhandled | `src/services/YouTubeProxy.js` |
+| 16 | Admin UI | Preset Selection | Triggers 1 of 5 predefined emotional trajectories | Preset click (e.g. `focused`, `hybrid`) | POST `/api/trajectory/start` | Presets defined in HTML, not synced from server | `public/admin.html` |
+| 17 | Admin UI | Local File Upload | Uploads MP3 to `/public/media/theater_track.mp3` | `multipart/form-data` MP3 | POST `/api/media/upload` | Overwrites existing `theater_track.mp3` | `server.js`, `admin.html` |
+| 18 | Client Visual | Liquid Visual Canvas | Renders audio-synchronized visual waveforms | Audio clock, `phi_color`, breath LFO | 60fps canvas animation | Double click toggles fullscreen | `public/app.js` |
+
+---
+

@@ -1,0 +1,13 @@
+### 3.3 Media Theater Architecture (Core 2)
+- **Hardware Profiling Crossover**:
+  - Mobile phones ($< 768\text{px}$): Highpass Butterworth filter at 150 Hz ($Q = 0.707$) to protect micro-transducers.
+  - TV / Desktop / Subwoofer: Highpass Butterworth filter at 40 Hz ($Q = 0.707$) to eliminate infrasonic DC rumble and protect desktop speaker voice coils.
+- **Brickwall Limiter**:
+  - `DynamicsCompressorNode` with `threshold = -1.0 dBFS`, `knee = 0.0 dB`, `ratio = 20.0`, `attack = 0.002s`, `release = 0.100s`.
+- **Mid/Side Acoustic Field Matrix**:
+  - $Mid = \frac{L + R}{2}$ (dialogue, lead vocals, kick drums).
+  - $Side = \frac{L - R}{2}$ (wide spatial reverb, stereo ambient field).
+  - Spatial routing: Front center ($\theta = 0$) outputs Mid; lateral positions ($\theta = \pi/2$ and $3\pi/2$) cancel Mid dialogue and deliver Side stereo expansion.
+
+---
+

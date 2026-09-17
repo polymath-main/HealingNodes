@@ -1,0 +1,11 @@
+### 7.2 Tier 2: Component & Mock Web Audio Integration Tests
+- **Execution**: Node.js with a lightweight headless Web Audio Mock (mocking `AudioContext`, `GainNode`, `BiquadFilterNode`, `PannerNode`, `ChannelSplitterNode`, `ChannelMergerNode`, `DynamicsCompressorNode`).
+- **Test Scenarios**:
+  1. `test_audio_graph_mock.js`:
+     - Verify all signal paths in `initModeEngine()` terminate at `audioCtx.destination` through the crossover and limiter.
+     - Verify `baseOsc` and `noiseNode` properly connect through `panner3D` and `breathGain`.
+     - Verify `binauralOsc` gain is 0 when `binaural_offset === 0`.
+     - Verify no orphaned AudioNodes or cumulative connections on repeated playback triggers.
+  2. `test_mode_engine.js` & `test_media_engine.js`:
+     - Verify method calls (`startTrajectory`, `stopTrajectory`, `tick`, `setMediaUrl`, `play`, `pause`) produce expected internal state transitions and emit formats.
+

@@ -1,0 +1,9 @@
+## Investigation State
+- **Explored paths**: `public/app.js`, `ARCHITECTURE_BLUEPRINT.md`, `THEORY.md`, `PHASE2_IMPLEMENTATION_PLAN.md`, `PHASE3_THEATER_ARCHITECTURE.md`, `server.js`, `src/core/MediaEngine.js`, `src/core/ModeEngine.js`
+- **Key findings**:
+  - Mid/Side lacks decoding matrix; downmixes to mono; inverts right-channel polarity; bleeds dialogue into rear.
+  - Crossover is asymmetric HPF/allpass rather than flat Linkwitz-Riley; causes acoustic comb filtering in shared space.
+  - Limiter lacks lookahead and max ratio is clamped to 20:1, allowing transient clipping; Core 1 completely lacks limiter.
+  - Base grounding tone hijacked into binaural merger; noise missing 2kHz lowpass; HRTF coordinates rotated 90°; Worklet state shared across channels; harmonic multiplier `i mod 4` omitted.
+- **Unexplored areas**: None — full scope investigated.
+

@@ -1,0 +1,4 @@
+### Defect 8: AudioNode Accumulation Leak in `scheduleMediaPlayback`
+- **Location**: `public/app.js:220-243`
+- **Impact**: Each playback invocation creates new Splitter, Gain, and Mix nodes connected to `window.theaterDest` without disconnecting or tearing down prior instances. Additionally, if `initMediaEngine()` has not yet executed, `window.theaterDest` is undefined and `connect()` throws a fatal TypeError.
+

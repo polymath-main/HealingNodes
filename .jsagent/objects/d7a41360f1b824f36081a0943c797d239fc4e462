@@ -1,0 +1,9 @@
+### 1.2 Sensitivity to Network Jitter and Packet Delay Variation (PDV)
+In real-world 802.11 Wi-Fi environments, packet transmission times are asymmetric: downlink buffers at the router/AP typically queue packets longer than uplink packets sent from mobile devices.
+- In `app.js`, the client samples 10 pings and calculates the median of raw `timeOffsets`:
+  `serverTimeOffset = timeOffsets[Math.floor(10/2)]`.
+- **Flaw**: The offset calculation does not record or filter by RTT. In NTP and Marzullo's algorithm, the bound on clock error is strictly proportional to RTT:
+  $$|\text{Error}| \le \frac{\text{RTT}}{2}$$
+- If 5 pings experience a Wi-Fi queuing delay on the downlink (e.g., 50ms downlink vs 5ms uplink), their calculated offset will be shifted by $-22.5\text{ ms}$. If these spiked samples constitute half the array, taking a simple median will select an offset with tens of milliseconds of systematic error.
+- **Proper NTP Best Practice**: The client should employ a **Minimum Filter Algorithm** over a sliding window: select the sample with the lowest RTT, as the minimum RTT packet experienced the least asymmetric queuing delay, providing the highest mathematical accuracy for clock offset.
+

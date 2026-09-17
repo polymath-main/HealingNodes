@@ -1,0 +1,154 @@
+/* __JAGE_REF_md_section_comprehensive_audit_report__network_synchronization_orchestration__ */
+/* __JAGE_REF_md_section_executive_summary__ */
+Zero-duration trajectories cannot be triggered due to `durationMs || 1000` coercion; negative time progress from backward clock adjustments causes unbounded polynomial overshoot in smoothstep; and circular hue interpolation (`phi_color`) linearly sweeps across the entire color wheel instead of taking the shortest angular path.
+6. **Concurrency & Memory Leaks**: Client reconnection pushes duplicate socket IDs into the `nodes` array, corrupting the mesh geometry calculation ($N$); `ModeEngine` leaks an un-cleared 1Hz interval across engine lifecycles; and `YouTubeProxy` opens redundant upstream streams per client without disconnect abort handlers.
+
+Below is the detailed breakdown of findings, mathematical analyses, and concrete remediation specifications.
+
+---
+
+## 1. NTP Socket.io Clock Synchronization Audit
+
+/* __JAGE_REF_md_section_1_1_mathematical_formulation_of_clock_offset_and_rtt__ */
+/* __JAGE_REF_md_section_1_2_sensitivity_to_network_jitter_and_packet_delay_variation__pdv___ */
+/* __JAGE_REF_md_section_1_3_absence_of_continuous_clock_skew___drift_tracking__ */
+/* __JAGE_REF_md_section_1_4_socket_reconnection_corruption__ */
+## 2. Trajectory Interpolation and Positioning Mathematics Audit
+
+/* __JAGE_REF_md_section_2_1_server_side_vector_interpolation___src_core_modeengine_js____ */
+Zero-Duration Coercion Bug**:
+     Line 18: `this.duration = durationMs || 1000;`
+     If a caller or automation script requests an instantaneous state jump by passing `durationMs = 0`, JavaScript truthiness coerces `0 || 1000` to `1000`. An instant jump cannot be triggered.
+  2. **Negative Progress / Clock Slip Overshoot**:
+     Line 32–33:
+     ```javascript
+     let progress = this.duration === 0 ? 1 : (now - this.startTime) / this.duration;
+     if (progress >= 1) progress = 1;
+     ```
+     Notice: Only upper-bound clamping exists (`progress >= 1`). There is **zero lower-bound clamping** (`progress < 0`).
+     If the host system clock is stepped backward by `systemd-timesyncd` / NTP, or if `tick()` executes within the same millisecond timestamp before `startTime` due to sub-millisecond precision, `progress` becomes negative.
+     In smoothstep $S(t) = 3t^2 - 2t^3$:
+     If $progress = -0.5$:
+     $$S(-0.5) = 3(-0.5)^2 - 2(-0.5)^3 = 3(0.25) - 2(-0.125) = 0.75 + 0.25 = 1.0$$
+     The curve abruptly evaluates to $1.0$ (instant target jump)!
+     If $progress = -1.0$:
+     $$S(-1.0) = 3(1) - 2(-1) = 5.0$$
+     Then `lerp(10, 20, 5.0) = (1 - 5.0)*10 + 5.0*20 = -40 + 100 = 60`!
+     This causes catastrophic 500% overshoots into acoustic frequencies that could damage hardware or generate extreme aliasing.
+     *Remedy*: `progress = Math.max(0, Math.min(1, progress));`
+
+/* __JAGE_REF_md_section_2_2_circular_angular_interpolation_flaw___phi_color____ */
+/* __JAGE_REF_md_section_2_3_spatial_orbit_rotation_desynchronization___public_app_js____ */
+Z.setValueAtTime(2 * Math.sin(currentAngleRads), time);
+273:             }
+```
+- **Severe Flaw**: `time` is derived from `audioCtx.currentTime`.
+- In the Web Audio API, `audioCtx.currentTime` starts at $0.000\text{ s}$ when the `AudioContext` is instantiated on that local device.
+- If Node A started at 12:00:00 (`currentTime = 120s`), and Node B started at 12:02:00 (`currentTime = 0s`), with $\omega_{orbit} = 0.05\text{ rad/s}$:
+  - Node A calculates: $\theta_A = \text{baseAngle}_A + (0.05 \times 120) = \text{baseAngle}_A + 6.0\text{ rad}$
+  - Node B calculates: $\theta_B = \text{baseAngle}_B + (0.05 \times 0) = \text{baseAngle}_B + 0.0\text{ rad}$
+- **Consequence**: The spatial constellation is completely destroyed. Instead of orbiting together in a locked geometric polygon around the listener, each node rotates at an arbitrary phase angle determined purely by when the user pressed the button.
+- *Remedy*: The orbital angle must be calculated from the synchronized network epoch time:
+  $$t_{\text{global}} = \frac{\text{Date.now()} + \text{serverTimeOffset}}{1000}$$
+  $$\theta(t) = \text{baseNodeAngle} + (\omega_{orbit} \cdot t_{\text{global}})$$
+
+/* __JAGE_REF_md_section_2_4_missing_harmonic_index_implementation___myindex____ */
+## 3. Late-Joining Clients & State Synchronization Audit
+
+/* __JAGE_REF_md_section_3_1_media_theater_core_late_join_breakdown__fatal_flaw___ */
+/* __JAGE_REF_md_section_3_2_playback_head_desynchronization_on_negative_delta___tdelta___0____ */
+/* __JAGE_REF_md_section_3_3_mid_side_gain_locking_on_dynamic_mesh_resizing__ */
+## 4. Concurrency, State Cleanup, and Server Lifecycle Audit
+
+/* __JAGE_REF_md_section_4_1_duplicate_socket_registrations___mesh_angle_corruption__ */
+/* __JAGE_REF_md_section_4_2_un_cleared_interval_leak_in__modeengine___ */
+/* __JAGE_REF_md_section_4_3_redundant_upstream_streams_in__youtubeproxy_js___ */
+/* __JAGE_REF_md_section_5__comprehensive_summary_matrix_of_issues__ */
+/* __JAGE_REF_md_section_6__implementation_architecture___code_remediation_specifications__ */
+/* __JAGE_REF_md_section_6_1_robust_ntp_synchronization_architecture__ */
+/* __JAGE_REF_md_section_6_2_correct_trajectory_math___epoch_based_orbit__ */
+Zero-Duration & Angular Lerp):
+```javascript
+startTrajectory(target, durationMs) {
+    this.startState = { ...this.currentState }; 
+    this.targetState = { ...this.currentState, ...target };
+    this.duration = typeof durationMs === 'number' ? Math.max(0, durationMs) : 1000;
+    this.startTime = Date.now();
+    console.log(`[Mode Engine] Trajectory started over ${this.duration}ms`);
+}
+
+tick() {
+    if (this.getActiveCore() !== 'mode') return; 
+    const now = Date.now();
+    
+    let progress = 1;
+    if (this.duration > 0) {
+        progress = (now - this.startTime) / this.duration;
+        progress = Math.max(0, Math.min(1, progress)); // Strict [0, 1] clamp
+    }
+
+    const eased = progress * progress * (3 - 2 * progress); // Smoothstep
+    
+    for (const key in this.currentState) {
+        if (key === 'phi_color') {
+            // Shortest-arc circular interpolation for hue angle
+            const startAngle = this.startState[key];
+            const targetAngle = this.targetState[key];
+            const delta = ((targetAngle - startAngle + 540) % 360) - 180;
+            this.currentState[key] = (startAngle + delta * eased + 360) % 360;
+        } else {
+            this.currentState[key] = (1 - eased) * this.startState[key] + eased * this.targetState[key];
+        }
+    }
+    this.broadcastState();
+}
+
+destroy() {
+    if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+    }
+}
+```
+
+#### Synchronized Global Orbit & Chord Stacking (`public/app.js`):
+```javascript
+let myNodeIndex = 0;
+
+socket.on('audio_state_update', (state) => {
+    if (activeCore !== 'mode') return;
+    baseNodeAngle = state.baseAngleRads;
+    if (typeof state.myIndex === 'number') myNodeIndex = state.myIndex;
+    if (state.v) currentV = state.v;
+    if (isAudioActive && audioCtx) scheduleModeUpdate(state);
+});
+
+function scheduleModeUpdate(state) {
+    let tDelta = state.targetSyncTime - serverTimeOffset - Date.now();
+    if (tDelta < 0) tDelta = 0;
+    const t = audioCtx.currentTime + (tDelta / 1000);
+    
+    // Correct multi-node harmonic chord stacking: f_base * (ratio)^(index % 4)
+    const harmonicExponent = myNodeIndex % 4;
+    const targetFreq = currentV.f_base * Math.pow(currentV.harmonic_ratio, harmonicExponent);
+    
+    baseOsc.frequency.cancelScheduledValues(t);
+    baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+    binauralOsc.frequency.cancelScheduledValues(t);
+    binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+    if (noiseNode) noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+}
+
+// In drawDaydream() - synchronized orbital rotation:
+const globalTimeSec = (Date.now() + serverTimeOffset) / 1000;
+currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * globalTimeSec);
+```
+
+/* __JAGE_REF_md_section_6_3_media_theater_state_machine___late_join_playback_seeking__ */
+/* __JAGE_REF_md_section_6_4_concurrency_and_registration_hardening___server_js____ */
+## 7. Conclusion
+
+The audit has uncovered the precise root causes behind network jitter fragility, late-joining client silence, playback desynchronization, and spatial distortion. The proposed remediations directly address each issue:
+- Implementing RFC 5905 NTP with a minimum-RTT filter and periodic resync provides sub-millisecond clock tracking immune to Wi-Fi jitter and crystal oscillator drift.
+- Introducing a global playback epoch and buffer offset seeking (`mediaSource.start(when, offset)`) guarantees late-joining clients synchronize immediately without disrupting existing nodes.
+- Clamping smoothstep progress, supporting zero-duration jumps, using shortest-arc circular interpolation for hue, and tying spatial orbit to global network epoch time restores the mathematical purity and acoustic harmony of the spatial audio mesh.

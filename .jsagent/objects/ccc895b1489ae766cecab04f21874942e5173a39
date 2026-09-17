@@ -1,0 +1,3 @@
+### R2. Audit and Fix the Network Synchronization Orchestration
+Review `server.js` and `src/core/MediaEngine.js`. Ensure the NTP socket.io media buffering and trajectory interpolation logic is completely robust against network jitter, late-joining clients, and state-mutation bugs (like the previous `lerp` bug). Implement and commit fixes for any flaws found.
+

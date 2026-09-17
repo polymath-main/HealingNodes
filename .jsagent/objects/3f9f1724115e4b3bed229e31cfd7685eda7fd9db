@@ -1,0 +1,15 @@
+### Defect 1: Mid/Side Acoustic Matrix Flaw in `public/app.js`
+- **Location**: `public/app.js:232-239`
+- **Current Code**:
+  ```javascript
+  const mixRatio = Math.abs(Math.cos(baseNodeAngle)); // 0 rad = 1 (Mid). PI/2 rad = 0 (Side)
+  const applyMid = audioCtx.createGain(); applyMid.gain.value = mixRatio;
+  const applySide = audioCtx.createGain(); applySide.gain.value = 1.0 - mixRatio;
+  ```
+- **Physical Defect**:
+  1. In acoustic Mid/Side decoding, the soundfield equation is:
+     $$\text{Left} = Mid + Side = \frac{L+R}{2} + \frac{L-R}{2}$$
+     $$\text{Right} = Mid - Side = \frac{L+R}{2} - \frac{L-R}{2}$$
+     A node positioned on the right perimeter ($\theta \in (0, \pi)$, specifically $\theta = \pi/2$) requires **inverted Side polarity** ($-Side = \frac{R-L}{2}$) relative to the left perimeter ($\theta \in (\pi, 2\pi)$, specifically $\theta = 3\pi/2$). In `app.js`, both sides receive $+Side$, destroying the acoustic dipole.
+  2. Because $\text{mixRatio} = |\cos(\theta)|$, when $\theta = \pi$ (rear center), $|\cos(\pi)| = 1.0$, which routes 100% Mid (dialogue) to the rear. In spatial theater, dialogue belongs only in front ($\theta \approx 0$).
+

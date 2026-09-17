@@ -1,0 +1,19 @@
+### 4.2 Mathematical Proof: The 2nd-Order Butterworth Crossover Failure
+Let the crossover cutoff frequency be $\omega_0 = 2\pi f_c$.
+The continuous-time analog prototype transfer functions for 2nd-order Butterworth filters are:
+$$H_{LP}(s) = \frac{\omega_0^2}{s^2 + \sqrt{2}\omega_0 s + \omega_0^2}$$
+$$H_{HP}(s) = \frac{s^2}{s^2 + \sqrt{2}\omega_0 s + \omega_0^2}$$
+Evaluating along the frequency axis $s = j\omega$ at the crossover frequency $\omega = \omega_0$:
+$$H_{LP}(j\omega_0) = \frac{\omega_0^2}{-\omega_0^2 + j\sqrt{2}\omega_0^2 + \omega_0^2} = \frac{1}{j\sqrt{2}} = -j\frac{1}{\sqrt{2}} = \frac{1}{\sqrt{2}} \angle -90^\circ \quad (-3.01\text{ dB})$$
+$$H_{HP}(j\omega_0) = \frac{-\omega_0^2}{-\omega_0^2 + j\sqrt{2}\omega_0^2 + \omega_0^2} = \frac{-1}{j\sqrt{2}} = j\frac{1}{\sqrt{2}} = \frac{1}{\sqrt{2}} \angle +90^\circ \quad (-3.01\text{ dB})$$
+
+#### Acoustic Summation:
+1. **In-Phase Summation ($H_{LP} + H_{HP}$)**:
+   $$H_{sum}(j\omega_0) = -j\frac{1}{\sqrt{2}} + j\frac{1}{\sqrt{2}} = 0 \quad (-\infty\text{ dB})$$
+   **The two filters are $180^\circ$ out of phase at the crossover frequency. Direct summing produces a COMPLETE NOTCH / NULL.**
+2. **Inverted Polarity Summation ($H_{LP} - H_{HP}$)**:
+   $$H_{sum}(j\omega_0) = -j\frac{1}{\sqrt{2}} - j\frac{1}{\sqrt{2}} = -j\sqrt{2} \implies |H_{sum}(j\omega_0)| = \sqrt{2} = +3.01\text{ dB}$$
+   **Inverting one band produces a $+3\text{ dB}$ resonance peak at the crossover frequency.**
+
+Therefore, **a 2nd-order Butterworth crossover can NEVER yield a flat magnitude response when summed acoustically.**
+

@@ -1,0 +1,10 @@
+## 🔒 Key Constraints
+- NEVER write, modify, or create source code files directly.
+- NEVER run build/test commands yourself — require workers to do so.
+- NEVER investigate or explore the problem at the code level — dispatch Explorers for technical investigation.
+- File-editing tools ONLY for metadata/state files (.md) in .agents/ folder (and PROJECT.md).
+- Audit enforcement: Binary veto on integrity violations.
+- Always include path to ORIGINAL_REQUEST.md in every subagent dispatch.
+- Mandatory integrity warning in Worker dispatch prompts.
+- Universal QA Analyzer must pass with 0 errors.
+

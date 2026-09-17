@@ -1,0 +1,6 @@
+function computeNtpOffset(samples) {
+    // Each sample is: serverTime - clientTime - latency
+    const sorted = [...samples].sort((a, b) => a - b);
+    const median = sorted[Math.floor(sorted.length / 2)];
+    return { sorted, median };
+}

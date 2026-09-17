@@ -1,0 +1,14 @@
+### 1.2 Health & Audit Assessment
+While structural syntax passes cleanly, the architectural and mathematical audit revealed **9 critical functional, acoustic, and synchronization defects** that must be addressed to fulfill requirements R1 and R2 of `ORIGINAL_REQUEST.md`:
+1. Mid/Side acoustic matrix flaw in `public/app.js` (identical $+Side$ polarity applied to both left and right perimeter nodes; dialogue blasted directly at rear $\theta = \pi$).
+2. Crossover implementation flaw (uses `allpass` instead of Butterworth `highpass` at 40Hz on desktop/TV; completely omitted in `initModeEngine()`).
+3. Dynamics limiter omission in `initModeEngine()` (phone/desktop speakers vulnerable to digital clipping or voice coil damage from raw 33Hz + noise).
+4. Audio signal graph routing discrepancies in `initModeEngine()` (`baseOsc` routed to Left channel of `ChannelMergerNode` instead of `PannerNode`; missing 2kHz lowpass filter and 0.55 noise gain; missing per-node harmonic exponent $r_h^{i \bmod 4}$).
+5. Missing REST endpoint `GET /api/state` in `server.js` (specified in `ARCHITECTURE_BLUEPRINT.md` and required by admin console).
+6. Missing Circadian Scheduling logic (`node-cron` package is installed in `package.json` but completely omitted in `server.js` and `ModeEngine.js`).
+7. Media sync flaw for late-joining clients in `MediaEngine.js` (broadcasts `'sync'` rather than active playback state and timestamp offset; zero playback position tracking).
+8. Cumulative AudioNode leak and potential crash on uninitialized `theaterDest` in `app.js` `scheduleMediaPlayback`.
+9. Global `timeOffsets` array in `public/app.js` never cleared upon socket reconnects, contaminating NTP calculations with stale latency samples.
+
+---
+

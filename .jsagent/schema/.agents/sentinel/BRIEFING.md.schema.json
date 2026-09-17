@@ -1,0 +1,13 @@
+{
+  "file": "BRIEFING.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_mission": "b94945da18b189d76e037e3c7947d67224f78937",
+    "md_section____my_identity": "04bbd6b257cba731c47e9f787e57ee9cd5a1d0ec",
+    "md_section____key_constraints": "17ca03639efdffbc8d396bf367f7dabea387c1df",
+    "md_section_user_context": "a4eaca0ec3c959042146a15f7bdc623f5ef72d14",
+    "md_section_project_status": "281fd6530e7c8d19cd7feb79a210ae0e30eb6238",
+    "md_section_victory_audit_status": "3cc8872b313a6ac74e3e15c8143b25588b12c21e",
+    "__skeleton__": "c221bacc3792abab49d4b8b90ce492f2883d626c"
+  }
+}

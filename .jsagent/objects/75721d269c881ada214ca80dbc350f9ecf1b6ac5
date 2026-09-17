@@ -1,0 +1,15 @@
+### 3.4 Corrected Distributed Decoding Architecture
+For distributed single-device nodes (rendering acoustic radiation into a room at angle $\theta$):
+The soundfield pressure at angle $\theta$ follows the 1st-order coincident microphone / Ambisonic formulation:
+$$P(\theta) = M + S \cdot \sin(\theta)$$
+- Front ($\theta = 0$): $P(0) = M + 0 = M$ (Pure Center).
+- Left ($\theta = \pi/2$): $P(\pi/2) = M + S = L$ (Pure Left!).
+- Right ($\theta = 3\pi/2$): $P(3\pi/2) = M - S = R$ (Pure Right!).
+- Rear ($\theta = \pi$): $P(\pi) = M - 0 = M$, or with cardioid directivity factor $\frac{1 + \cos\theta}{2}$, dialogue in the rear is attenuated and surround ambience preserved.
+
+If the node itself is a **stereo playback device** (phones, laptops, TVs), it should decode $M$ and $S$ into stereo output:
+$$L_{out} = M + S \cdot w_{side}, \quad R_{out} = M - S \cdot w_{side}$$
+where $w_{side} = 1 + \sin^2(\theta)$ dynamically widens the stereo image for off-center devices.
+
+---
+

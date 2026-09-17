@@ -1,0 +1,15 @@
+### 3.2 Mode Engine Architecture (Core 1)
+- **Environmental State Vector $V$**:
+  $$V = [f_{base},\, T_{breath},\, \alpha_{noise},\, \phi_{color},\, harmonic\_ratio,\, \omega_{orbit},\, \Delta f_{binaural}]$$
+- **Continuous Trajectory Interpolation**:
+  - Smoothstep easing: $S(t) = 3t^2 - 2t^3$ where $t = \text{clamp}\left(\frac{\Delta t}{D}, 0, 1\right)$.
+  - Interpolation: $V_k(t) = (1 - S(t)) \cdot V_{k,\text{start}} + S(t) \cdot V_{k,\text{target}}$.
+  - Freeze snapshot: `startState` must be snapshotted once at initiation to guarantee clean convergence without exponential creep.
+- **Orbital Spatial Panning**:
+  $$\theta(t) = \theta_i + \omega_{orbit} \cdot t_{audio}, \quad x = r \cos(\theta(t)), \quad z = r \sin(\theta(t))$$
+- **Breathing LFO**:
+  $$\omega_{breath} = \frac{2\pi}{T_{breath}}, \quad g_{breath}(t) = 0.75 + 0.25 \cdot \left(\frac{\sin(\omega_{breath} t) + 1}{2}\right)$$
+- **Visual Engine Sub-Harmonics & HSL**:
+  - Aliasing mitigation: $f_{visual} = f_{base} / 300 \approx 0.11\text{ Hz}$ at 33 Hz.
+  - HSL angle mapping: $\text{hue} = \phi_{color} + \frac{180}{\pi} \theta(t) \cdot 0.3 \pmod{360}$.
+

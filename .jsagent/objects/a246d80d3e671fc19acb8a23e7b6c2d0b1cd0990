@@ -1,0 +1,5 @@
+### 3.1 Mathematical Theory (`THEORY.md`)
+- **Spatial Triangulation**: $\theta_i = \frac{2\pi \cdot i}{N}$ for $N$ connected nodes uniformly distributes wavefronts around the geometric center (the listener).
+- **Acoustic Anchor (33 Hz)**: Resonant root harmonic of architectural space ($\lambda \approx 10.4\text{ m}$), targeting vagus nerve stimulation and low-gamma binding.
+- **Organic Spectral Entropy ($1/f$)**: Voss-McCartney pink noise simulating natural acoustic baselines to support parasympathetic regulation.
+

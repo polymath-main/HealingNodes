@@ -1,0 +1,142 @@
+### 6.3 Media Theater State Machine & Late-Join Playback Seeking
+
+#### `src/core/MediaEngine.js` (Track Playback Epoch):
+```javascript
+class MediaEngine {
+    constructor(io, getNodesFunc, getActiveCoreFunc) {
+        this.io = io;
+        this.getNodes = getNodesFunc;
+        this.getActiveCore = getActiveCoreFunc;
+        this.currentMediaState = {
+            isPlaying: false,
+            url: '',
+            playbackStartTime: null, // Global server timestamp when playback starts at offset 0
+            pauseOffsetSec: 0
+        };
+    }
+
+    setMediaUrl(url) {
+        this.currentMediaState.url = url;
+        this.currentMediaState.isPlaying = false;
+        this.currentMediaState.playbackStartTime = null;
+        this.currentMediaState.pauseOffsetSec = 0;
+        this.broadcastState('sync');
+    }
+
+    play() {
+        this.currentMediaState.isPlaying = true;
+        const targetSyncTime = Date.now() + 4000; // 4s buffer margin
+        this.currentMediaState.playbackStartTime = targetSyncTime - (this.currentMediaState.pauseOffsetSec * 1000);
+        this.broadcastState('play', targetSyncTime, this.currentMediaState.pauseOffsetSec);
+    }
+
+    pause() {
+        if (this.currentMediaState.isPlaying && this.currentMediaState.playbackStartTime) {
+            const elapsedMs = Date.now() - this.currentMediaState.playbackStartTime;
+            this.currentMediaState.pauseOffsetSec = Math.max(0, elapsedMs / 1000);
+        }
+        this.currentMediaState.isPlaying = false;
+        this.broadcastState('pause');
+    }
+
+    // Targeted state sync for newly connected socket
+    syncClient(socketId) {
+        const nodes = this.getNodes();
+        const N = nodes.length;
+        const index = nodes.indexOf(socketId);
+        const baseAngleRads = (2 * Math.PI * (index >= 0 ? index : 0)) / (N || 1);
+        
+        let action = 'sync';
+        let targetSyncTime = null;
+        let startOffsetSec = 0;
+        
+        if (this.currentMediaState.isPlaying && this.currentMediaState.playbackStartTime) {
+            action = 'play';
+            targetSyncTime = this.currentMediaState.playbackStartTime;
+        }
+
+        this.io.to(socketId).emit('media_action', {
+            action: action,
+            baseAngleRads: baseAngleRads,
+            targetSyncTime: targetSyncTime,
+            url: this.currentMediaState.url
+        });
+    }
+
+    broadcastState(action, targetTimeMs = null, offsetSec = 0) {
+        const nodes = this.getNodes();
+        const N = nodes.length;
+        this.io.emit('admin_state_update', { nodeCount: N, activeCore: this.getActiveCore(), mediaState: this.currentMediaState });
+        if (N === 0) return;
+
+        nodes.forEach((id, index) => {
+            const baseAngleRads = (2 * Math.PI * index) / N;
+            this.io.to(id).emit('media_action', {
+                action: action,
+                baseAngleRads: baseAngleRads,
+                targetSyncTime: targetTimeMs,
+                url: this.currentMediaState.url
+            });
+        });
+    }
+}
+```
+
+#### `public/app.js` (Accurate Jitter Buffer & Offset Playback):
+```javascript
+async function handleMediaAction(state) {
+    if (activeCore !== 'media') return;
+    baseNodeAngle = state.baseAngleRads;
+    updateSpatialMix(baseNodeAngle); // Dynamically update active M/S gain
+
+    if (state.action === 'play') {
+        if (!mediaBuffer || currentMediaUrl !== state.url) {
+            await loadMediaBuffer(state.url);
+        }
+        scheduleMediaPlayback(state.targetSyncTime);
+    } else if (state.action === 'pause') {
+        if (mediaSource) {
+            try { mediaSource.stop(); } catch(e) {}
+            mediaSource = null;
+        }
+    } else if (state.action === 'sync') {
+        if (state.url && (!mediaBuffer || currentMediaUrl !== state.url)) {
+            await loadMediaBuffer(state.url);
+        }
+    }
+}
+
+function scheduleMediaPlayback(playbackStartTimeMs) {
+    if (!mediaBuffer || !audioCtx) return;
+    
+    // Calculate global playback position
+    const nowServer = Date.now() + serverTimeOffset;
+    const deltaMs = playbackStartTimeMs - nowServer;
+
+    if (mediaSource) {
+        try { mediaSource.stop(); } catch(e) {}
+        mediaSource = null;
+    }
+
+    mediaSource = audioCtx.createBufferSource();
+    mediaSource.buffer = mediaBuffer;
+    connectMediaGraph(mediaSource);
+
+    if (deltaMs >= 0) {
+        // Playback is scheduled in the future: wait until target time, start from 0
+        const when = audioCtx.currentTime + (deltaMs / 1000);
+        mediaSource.start(when, 0);
+        console.log(`[Media] Scheduled future start at local audioCtx time: ${when}`);
+    } else {
+        // Late arrival or playback already underway: calculate elapsed offset
+        const elapsedSec = Math.abs(deltaMs) / 1000;
+        if (elapsedSec < mediaBuffer.duration) {
+            mediaSource.start(audioCtx.currentTime, elapsedSec);
+            console.log(`[Media] Late-sync start at audioCtx time: ${audioCtx.currentTime}, offset: ${elapsedSec}s`);
+        } else {
+            console.log(`[Media] Playback already completed (elapsed: ${elapsedSec}s > duration: ${mediaBuffer.duration}s)`);
+        }
+    }
+}
+```
+

@@ -1,0 +1,14 @@
+### 7.3 Tier 3: Network Synchronization & Socket.io Simulation
+- **Execution**: Headless HTTP server on ephemeral port (`PORT=0`) with simulated WebSocket/Socket.io client instances.
+- **Test Scenarios**:
+  1. `test_socket_mesh.js`:
+     - Spin up server, connect 4 simulated client sockets.
+     - Verify server tracks 4 nodes and assigns $\theta = 0, \pi/2, \pi, 3\pi/2$.
+     - Disconnect socket 2; verify recalculation to $N=3$ with $\theta = 0, 2\pi/3, 4\pi/3$.
+  2. `test_late_join_sync.js`:
+     - Start media playback on active mesh.
+     - Connect late-joining socket; verify client receives current media URL, `isPlaying: true`, and correct track seek offset.
+  3. `test_jitter_resilience.js`:
+     - Introduce synthetic 150ms packet transmission delay.
+     - Verify `targetSyncTime` lookahead window (2500ms for Mode, 5000ms for Media) provides positive $t_{audio}$ execution margin on all nodes.
+

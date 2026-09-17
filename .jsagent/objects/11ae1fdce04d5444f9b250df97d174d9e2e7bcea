@@ -1,0 +1,11 @@
+### 2.2 Circular Angular Interpolation Flaw (`phi_color`)
+`phi_color` represents a hue angle in degrees on the HSL circle: $[0^\circ, 360^\circ)$.
+In `ModeEngine.js`, `this.lerp(start, end, eased)` interpolates linearly between scalar numbers.
+- Suppose the system transitions from preset `energetic` (`phi_color = 15`) to preset `thinking` (`phi_color = 280`):
+  Linear lerp moves: $15 \to 80 \to 140 \to 200 \to 280$ (a traverse of $265^\circ$).
+  The shortest path along the color circle is counter-clockwise through zero: $15^\circ \to 0^\circ/360^\circ \to 280^\circ$ (a traverse of only $95^\circ$).
+- Linear interpolation causes wild, jarring sweeps across the entire spectrum (yellow, green, cyan, blue) instead of smoothly transitioning through red and magenta.
+- *Remedy*: Circular/shortest-arc interpolation:
+  $$\Delta = ((target - start + 540) \bmod 360) - 180$$
+  $$\text{current} = (start + \Delta \cdot eased + 360) \bmod 360$$
+

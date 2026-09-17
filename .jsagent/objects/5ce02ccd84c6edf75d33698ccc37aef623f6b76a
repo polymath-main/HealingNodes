@@ -1,0 +1,17 @@
+# Project: HealingNodes Dual-Core Structural, DSP, and Architectural Audit
+
+/* __JAGE_REF_md_section_architecture__ */
+/* __JAGE_REF_md_section_code_layout__ */
+/* __JAGE_REF_md_section_feature_inventory__ */
+/* __JAGE_REF_md_section_milestones__ */
+## Interface Contracts
+/* __JAGE_REF_md_section_client___server_ntp_sync__ */
+/* __JAGE_REF_md_section_mediaengine___client_playhead_synchronization__ */
+### Mid/Side Matrix Routing in `public/app.js`
+- Mid Channel ($M$): Sum Left + Right scaled by $0.5$.
+- Side Channel ($S$): Difference Left - Right (Left + Right with Gain $-1.0$) scaled by $0.5$.
+- Position Decoding:
+  - Front ($\theta \approx 0$): High Mid ($M$), Low Side ($S$).
+  - Left ($\theta \approx \pi/2$): Full $+S$.
+  - Right ($\theta \approx 3\pi/2$): Inverted Side ($-S$).
+  - Rear ($\theta \approx \pi$): Attenuated Mid ($-6\text{ dB}$ or $-12\text{ dB}$), spatialized Side.

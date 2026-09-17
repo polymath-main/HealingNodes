@@ -1,0 +1,35 @@
+### 6.4 Flaw 4.4: AudioWorklet Multi-Channel State Collision & Alpha Parameter Truncation (`app.js`, lines 21–48)
+```javascript
+27:         for (let channel = 0; channel < output.length; ++channel) {
+28:             const outChannel = output[channel];
+29:             for (let i = 0; i < outChannel.length; ++i) {
+30:                 const white = Math.random() * 2 - 1;
+31:                 this.b0 = 0.99886 * this.b0 + white * 0.0555179;
+                    ...
+39:                 this.brown = (white * 0.02) + (this.brown * 0.95);
+40:                 let blend = Math.max(0, Math.min(1, alpha - 1));
+41:                 outChannel[i] = pink * (1 - blend) + (this.brown * 3.5) * blend;
+42:             }
+43:         }
+```
+
+#### Defect 4.4A: Shared Filter State Across Channels
+- `this.b0` through `this.b6` and `this.brown` are single instance variables.
+- If `output.length == 2` (stereo worklet output), channel 0 computes 128 samples and mutates `this.b0`...`this.b6`. Then channel 1 processes 128 samples using the corrupted endpoint states of channel 0 with different random numbers!
+- This causes inter-channel feedback and phase correlation anomalies.
+
+#### Defect 4.4B: Alpha Parameter Range Truncation
+- Line 40 computes:
+  `let blend = Math.max(0, Math.min(1, alpha - 1));`
+- Under `PHASE2_IMPLEMENTATION_PLAN.md` (Table 9), $\alpha$ ranges from $0$ to $3$:
+  - $\alpha = 0.5$ (White Noise, "Energetic" preset).
+  - $\alpha = 1.0$ (Pink Noise).
+  - $\alpha = 2.0$ (Brown Noise).
+  - $\alpha = 3.0$ (Red Noise, "Sleep Onset" preset).
+- In the code:
+  - If $\alpha \le 1.0$: `alpha - 1 <= 0` $\implies$ `blend = 0`. **White noise ($\alpha = 0.5$) generates 100% Pink Noise! White noise cannot be produced.**
+  - If $\alpha \ge 2.0$: `alpha - 1 >= 1` $\implies$ `blend = 1`. **Red noise ($\alpha = 2.5 - 3.0$) generates 100% Brown Noise! Red noise cannot be produced.**
+  - The spectrum generator is completely locked to interpolating only between Pink and Brown, discarding half of the defined psychological states.
+
+---
+

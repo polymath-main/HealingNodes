@@ -1,0 +1,12 @@
+## 4. Conclusion
+
+`public/app.js` fails across all four primary DSP evaluation categories:
+1. Mid/Side processing fails due to mono downmixing, right-channel polarity inversion, and rear dialogue bleed.
+2. Crossover design fails because it is an asymmetric highpass/allpass configuration rather than a Linkwitz-Riley crossover.
+3. Limiter design fails to prevent clipping on transients and is completely omitted from Core 1.
+4. Spatial panner coordinates are rotated $90^\circ$, grounding oscillators are misrouted, the noise worklet corrupts multi-channel state, and per-node harmonic chord stacking is omitted.
+
+The complete mathematical analysis, proofs, and before-and-after implementation specifications are documented in `dsp_audit_report.md`.
+
+---
+

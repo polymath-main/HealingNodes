@@ -1,0 +1,6 @@
+## Task Summary
+- **What to build**: Web Audio DSP fixes in `public/app.js`: M/S extraction, discrete stereo reconstruction matrix, polarity inversion for right-side nodes, front-to-rear surround attenuation for rear nodes, 4th-order Linkwitz-Riley / 2nd-order critically damped crossover, brickwall limiter, spatial routing & 3D HRTF orientation, noise worklet filter/gain, harmonic chord multiplier based on myIndex, and guards against uninitialized AudioContext.
+- **Success criteria**: All DSP audit items resolved, QA analyzer passes with 0 structural errors, clean audio graph routing.
+- **Interface contracts**: PROJECT.md, dsp_audit_report.md
+- **Code layout**: `public/app.js`
+

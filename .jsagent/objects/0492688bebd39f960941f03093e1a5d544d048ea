@@ -1,0 +1,4 @@
+# Universal Offline QA Analyzer Skill
+
+When the user asks you to act as a QA Tester or when you need to verify the codebase offline, use this universal tool to scan the project. It uses a Plugin Architecture to support multiple languages.
+

@@ -1,0 +1,6 @@
+## Project Status
+- **Phase**: in progress
+- **Active Subagent**: teamwork_preview_orchestrator_1 (634d7488-2df3-4eef-b42d-f35a66fcd938)
+- **Crons Active**: task-22 (Progress cron: */8 * * * *), task-24 (Liveness cron: */10 * * * *)
+- **Routing Decision**: General -> teamwork_preview_orchestrator. Rationale: Full multi-part SWE codebase audit, structural bug fixing, and QA verification across Web Audio DSP and server network sync; not a pure math proof or document review, and not a single lightweight fix.
+

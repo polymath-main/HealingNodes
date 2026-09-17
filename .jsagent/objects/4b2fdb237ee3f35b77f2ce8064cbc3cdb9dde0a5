@@ -1,0 +1,3 @@
+## Key Decisions Made
+- Use native ES module / CommonJS testing compatible with Node.js `node:test` and `node:assert`.
+

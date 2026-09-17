@@ -1,0 +1,87 @@
+## 1. Observation
+
+Direct observations from `public/app.js` and architectural documents:
+
+1. **Mid/Side Routing in `public/app.js` (lines 220–241)**:
+   - Line 220–229:
+     ```javascript
+     const splitter = audioCtx.createChannelSplitter(2);
+     mediaSource.connect(splitter);
+
+     const midMix = audioCtx.createGain(); midMix.gain.value = 0.5; // (L+R)/2
+     splitter.connect(midMix, 0); splitter.connect(midMix, 1);
+
+     const sideMix = audioCtx.createGain(); sideMix.gain.value = 0.5; // (L-R)/2
+     const invertGain = audioCtx.createGain(); invertGain.gain.value = -1.0;
+     splitter.connect(sideMix, 0); 
+     splitter.connect(invertGain, 1); invertGain.connect(sideMix);
+     ```
+   - Line 232–241:
+     ```javascript
+     const mixRatio = Math.abs(Math.cos(baseNodeAngle)); // 0 rad = 1 (Mid). PI/2 rad = 0 (Side)
+     const finalMix = audioCtx.createGain();
+     
+     const applyMid = audioCtx.createGain(); applyMid.gain.value = mixRatio;
+     const applySide = audioCtx.createGain(); applySide.gain.value = 1.0 - mixRatio;
+     
+     midMix.connect(applyMid); applyMid.connect(finalMix);
+     sideMix.connect(applySide); applySide.connect(finalMix);
+     
+     finalMix.connect(window.theaterDest); // Route to crossover & limiter
+     ```
+   - `finalMix` is a single-channel mono GainNode summing scalar multiples of Mid and Side. There is no `ChannelMergerNode` or stereo decoding matrix.
+   - For a node at angle $\theta = \frac{3\pi}{2}$ ($270^\circ$ / Right), $\cos(\frac{3\pi}{2}) = 0 \implies \text{mixRatio} = 0 \implies \text{applySide} = 1.0$. The right node plays $+S = (L - R)/2$ instead of $-S = (R - L)/2$.
+   - For a node at angle $\theta = \pi$ ($180^\circ$ / Rear), $|\cos(\pi)| = |-1| = 1.0 \implies \text{applyMid} = 1.0$. The rear surround node plays 100% front-center dialogue.
+
+2. **Crossover Filtering in `public/app.js` (lines 185–194)**:
+   - Lines 185–193:
+     ```javascript
+     const isPhone = window.innerWidth < 768;
+     const crossover = audioCtx.createBiquadFilter();
+     if (isPhone) {
+         crossover.type = "highpass";
+         crossover.frequency.value = 150; // Protect phone speakers
+         crossover.Q.value = 0.707; // Butterworth
+     } else {
+         crossover.type = "allpass"; // Let subs through
+     }
+     ```
+   - Phone runs a single 2nd-order highpass filter. Desktop/TV runs an allpass filter with default frequency 350 Hz. Low frequencies are discarded rather than split.
+
+3. **Limiter in `public/app.js` (lines 196–201)**:
+   - Lines 196–198:
+     ```javascript
+     const limiter = audioCtx.createDynamicsCompressor();
+     limiter.threshold.value = -1.0; limiter.knee.value = 0.0; limiter.ratio.value = 20.0;
+     limiter.attack.value = 0.002; limiter.release.value = 0.100;
+     ```
+   - No lookahead buffer. Max ratio is 20:1.
+   - Core 1 (`initModeEngine()`, line 137) has `masterGain.connect(audioCtx.destination)` with no compressor or limiter at all.
+
+4. **Mode Engine Signal Graph in `public/app.js` (lines 139–153)**:
+   - Lines 146–152:
+     ```javascript
+     baseOscGain.connect(merger, 0, 0); // L
+     binOscGain.connect(merger, 0, 1);  // R
+     ...
+     baseOsc.connect(baseOscGain); binauralOsc.connect(binOscGain);
+     ```
+   - `baseOsc` is routed exclusively to the Left channel of `merger` and is never spatialized via `panner3D`.
+
+5. **AudioWorklet Noise Processor in `public/app.js` (lines 27–42)**:
+   - Lines 27–41:
+     ```javascript
+     for (let channel = 0; channel < output.length; ++channel) {
+         const outChannel = output[channel];
+         for (let i = 0; i < outChannel.length; ++i) {
+             ...
+             let blend = Math.max(0, Math.min(1, alpha - 1));
+             outChannel[i] = pink * (1 - blend) + (this.brown * 3.5) * blend;
+         }
+     }
+     ```
+   - `this.b0`..`this.b6` and `this.brown` are shared across channels. For $\alpha \le 1$, `blend = 0` (White noise cannot be produced). For $\alpha \ge 2$, `blend = 1` (Red noise cannot be produced).
+
+6. **Panner 3D Coordinates in `public/app.js` (lines 271–272)**:
+   - `panner3D.positionX.setValueAtTime(2 * Math.cos(currentAngleRads), time);`
+   - `panner3D.position

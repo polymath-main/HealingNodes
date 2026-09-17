@@ -1,0 +1,23 @@
+### 3.2 Code Observation: Extraction (`public/app.js`, lines 219–230)
+```javascript
+219:     // --- M/S Phase Extraction Matrix ---
+220:     const splitter = audioCtx.createChannelSplitter(2);
+221:     mediaSource.connect(splitter);
+222: 
+223:     const midMix = audioCtx.createGain(); midMix.gain.value = 0.5; // (L+R)/2
+224:     splitter.connect(midMix, 0); splitter.connect(midMix, 1);
+225: 
+226:     const sideMix = audioCtx.createGain(); sideMix.gain.value = 0.5; // (L-R)/2
+227:     const invertGain = audioCtx.createGain(); invertGain.gain.value = -1.0;
+228:     splitter.connect(sideMix, 0); 
+229:     splitter.connect(invertGain, 1); invertGain.connect(sideMix);
+```
+
+#### Verification of Extraction:
+- `splitter` outputs 0 (Left) and 1 (Right) are mono (1 channel).
+- When both connect to `midMix`, Web Audio input mixing rules sum them: $(L + R)$. With `midMix.gain.value = 0.5`, output is $\frac{L + R}{2}$.
+- `splitter` output 1 is inverted by `invertGain` (gain $-1.0$) and summed with output 0 into `sideMix` (gain $0.5$), producing $\frac{L - R}{2}$.
+- **Extraction Result**: The extraction math itself is mathematically correct and valid according to W3C Web Audio API.
+
+---
+

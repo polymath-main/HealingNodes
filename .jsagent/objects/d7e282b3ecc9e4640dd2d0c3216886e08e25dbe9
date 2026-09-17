@@ -1,0 +1,20 @@
+## Investigation State
+- **Explored paths**:
+  - `server.js`
+  - `src/core/MediaEngine.js`
+  - `src/core/ModeEngine.js`
+  - `src/services/YouTubeProxy.js`
+  - `public/app.js`
+  - `public/admin.html`
+  - `ARCHITECTURE_BLUEPRINT.md`
+  - `PHASE2_IMPLEMENTATION_PLAN.md`
+  - `PHASE3_THEATER_ARCHITECTURE.md`
+- **Key findings**:
+  - NTP sync lacks turnaround timestamps ($t_1, t_2$), lacks minimum-RTT jitter filtering, lacks periodic re-sync, and breaks on reconnect by appending to un-cleared array.
+  - MediaEngine late-join flaw: server transmits `sync` without playhead position; late clients stay silent; existing clients re-buffer mid-playback.
+  - Jitter buffer defect ($tDelta < 0$): late buffer completion starts playback from track offset 0:00 rather than seeking to elapsed time, creating permanent multi-second echo desync.
+  - Spatial orbit uses un-synchronized `audioCtx.currentTime`; `myIndex` is ignored in client audio synthesis.
+  - Smoothstep progress allows negative overshoot on clock slip; `durationMs = 0` is coerced to 1000ms; `phi_color` lerp ignores circular shortest path.
+  - Concurrency: duplicate socket IDs in `nodes` array; leaked interval in `ModeEngine`; duplicate YouTube proxy streams.
+- **Unexplored areas**: None within network sync scope.
+

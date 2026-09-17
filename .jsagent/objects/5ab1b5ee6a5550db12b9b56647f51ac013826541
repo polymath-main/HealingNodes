@@ -1,0 +1,5 @@
+## Key Decisions Made
+- Completed rigorous mathematical derivations of Mid/Side dipole acoustic radiation and Linkwitz-Riley vs Butterworth transfer functions.
+- Authored full audit report `dsp_audit_report.md` and 5-component `handoff.md`.
+- Verified structural compliance with Universal QA Analyzer (passed with 0 errors).
+

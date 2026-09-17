@@ -1,0 +1,6 @@
+## 🔒 Key Constraints
+- Read-only investigation — do NOT implement
+- Termux environment constraints: targeted searches only, no unbounded scans
+- Follow 5-component handoff report protocol
+- Deliverables: network_sync_report.md and handoff.md
+

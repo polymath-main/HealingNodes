@@ -1,0 +1,11 @@
+### 3.3 Mid/Side Gain Locking on Dynamic Mesh Resizing
+In `public/app.js`:
+- In `scheduleMediaPlayback()`, `mixRatio = Math.abs(Math.cos(baseNodeAngle))` configures `applyMid.gain.value` and `applySide.gain.value`.
+- These gain nodes are created as local variables inside `scheduleMediaPlayback()`.
+- When another client joins or leaves, `server.js` recomputes angles:
+  `baseAngleRads = (2 * Math.PI * index) / N;`
+- The client receives the new `baseNodeAngle`, but the active Web Audio gain nodes running on the playing source are **never updated**.
+- The physical M/S acoustic division of the room remains permanently locked to the old configuration until the track is stopped and restarted.
+
+---
+

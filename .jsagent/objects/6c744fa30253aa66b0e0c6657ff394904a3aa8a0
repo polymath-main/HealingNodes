@@ -1,0 +1,10 @@
+### 2.3 Spatial Orbit Rotation Desynchronization (`public/app.js`)
+Look at lines 264–273 of `public/app.js`:
+```javascript
+264:     if (isAudioActive && audioCtx) {
+265:         const time = audioCtx.currentTime;
+...
+269:             currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
+270:             if (panner3D) {
+271:                 panner3D.positionX.setValueAtTime(2 * Math.cos(currentAngleRads), time);
+272:                 panner3D.position

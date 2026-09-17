@@ -1,0 +1,7 @@
+function testMidSide(L, R, theta) {
+    const mid = (L + R) * 0.5;
+    const side = (L - R) * 0.5;
+    const mixRatio = Math.abs(Math.cos(theta));
+    const output = mid * mixRatio + side * (1.0 - mixRatio);
+    return { mid, side, mixRatio, output };
+}

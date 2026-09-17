@@ -1,0 +1,22 @@
+### 4.4 Code Observation: Crossover in `public/app.js` (lines 185–194)
+```javascript
+185:     const isPhone = window.innerWidth < 768;
+186:     const crossover = audioCtx.createBiquadFilter();
+187:     if (isPhone) {
+188:         crossover.type = "highpass";
+189:         crossover.frequency.value = 150; // Protect phone speakers
+190:         crossover.Q.value = 0.707; // Butterworth
+191:     } else {
+192:         crossover.type = "allpass"; // Let subs through
+193:     }
+```
+
+#### Defect 2.1: False Crossover Architecture
+- This code does **NOT** implement a crossover network. It is a single highpass filter on mobile devices, and an allpass filter on desktop devices.
+- Low frequencies (<150 Hz) on mobile devices are simply discarded rather than routed to subwoofer or desktop nodes.
+- Desktop/TV nodes have `crossover.type = "allpass"`. Because `crossover.frequency.value` is omitted in the `else` branch, it defaults to the Web Audio default of **350 Hz**.
+- A 2nd-order allpass filter at 350 Hz passes all frequencies at unity gain, but introduces a **$180^\circ$ phase inversion around 350 Hz**.
+- When a phone node (highpassed at 150 Hz) and a PC node (allpass phase-rotated at 350 Hz) play together in the same room, the acoustic soundwaves collide with chaotic phase offsets, creating **severe comb filtering, phase cancellation, and hollow vocal coloration** in the crucial 150 Hz–800 Hz range.
+
+---
+

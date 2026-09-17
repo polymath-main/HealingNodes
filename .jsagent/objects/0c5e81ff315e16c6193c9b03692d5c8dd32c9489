@@ -1,0 +1,10 @@
+## Code Layout
+- `public/app.js`: Client-side Web Audio DSP graph, Mid/Side matrix, crossover filters, limiters, HRTF panner, NTP client sync, trajectory animation.
+- `server.js`: Express + Socket.io server, NTP timestamp responder, room/mesh state manager, REST endpoints.
+- `src/core/MediaEngine.js`: Server-side media state, stream orchestration, playhead tracking, late-join sync payload builder.
+- `src/core/ModeEngine.js`: Algorithmic mode synthesis parameters, circadian cycle schedules.
+- `tests/`: Automated 4-tier E2E and unit test suite (`node:test`).
+- `PROJECT.md`: Project architecture, feature inventory, and milestone tracking.
+- `TEST_INFRA.md`: E2E test suite methodology and specification.
+- `TEST_READY.md`: Signal that test suite is complete and ready.
+

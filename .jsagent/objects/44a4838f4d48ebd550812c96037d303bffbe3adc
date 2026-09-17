@@ -1,0 +1,6 @@
+### Defect 3: Limiter and Crossover Missing in Mode Engine
+- **Location**: `public/app.js:136-167`
+- **Current Code**: `masterGain.connect(audioCtx.destination);` directly.
+- **Blueprint Spec** (`PHASE3_THEATER_ARCHITECTURE.md:10`):
+  "Every node will now pass through a Hardware Profiling Crossover and a Brickwall Limiter before reaching `audioCtx.destination`." Mode Engine generates high-energy 33Hz sines that endanger phone speakers if not protected by the 150Hz crossover and limiter.
+

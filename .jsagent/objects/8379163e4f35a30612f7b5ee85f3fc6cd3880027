@@ -1,0 +1,23 @@
+## 2. Logic Chain
+
+1. **Premise**: Network audio synchronization requires sub-millisecond to low-millisecond timing alignment to avoid comb filtering and echo.
+2. **From Observation 1**: The client clock sync uses a median of unweighted offsets without RTT filtering, ignores server turnaround delay ($t_2 - t_1$), does not track drift over time, and fails to clear `timeOffsets` on reconnect.
+   - **Inference**: High-jitter packets and crystal drift corrupt the clock offset by tens of milliseconds. Reconnection permanently disables synchronization updates.
+3. **From Observation 2**:
+   - Smoothstep progress calculation does not clamp `progress >= 0`. Any backward clock step causes polynomial extrapolation with extreme overshoot ($S(-1) = 5$).
+   - Angular hue `phi_color` is interpolated linearly across scalars, causing a $265^\circ$ traverse instead of a $95^\circ$ shortest path.
+   - Spatial orbital rotation uses un-synchronized local `audioCtx.currentTime`, and `myIndex` is omitted from frequency calculation.
+   - **Inference**: Spatial geometry and audio synthesis do not match theoretical design; nodes rotate independently and play in unison rather than forming a spatialized chord.
+4. **From Observation 3**:
+   - The server maintains no timestamp of when media playback started (`playbackStartTime`).
+   - When a client late-joins, the server emits `action: 'sync'` to the entire mesh.
+   - Existing clients re-fetch and re-decode the buffer mid-track.
+   - Late clients buffer the track and remain silent.
+   - If download finishes after `targetSyncTime` ($tDelta < 0$), `mediaSource.start()` is called with offset 0:00.
+   - **Inference**: Late-joining devices cannot synchronize to the current playhead; slow-buffering devices permanently desynchronize by seconds; and connecting a new device disrupts existing playback for the entire room.
+5. **From Observation 4**:
+   - Reconnection duplicates socket IDs in `nodes`, distorting $N$ and resulting in wrong spatial division.
+   - Unbounded interval timers and un-aborted YouTube streams create memory and network resource leaks.
+
+---
+

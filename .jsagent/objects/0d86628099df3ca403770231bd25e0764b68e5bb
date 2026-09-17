@@ -1,0 +1,7 @@
+## 🔒 Key Constraints
+- Read-only on application code; do not implement or alter project source code.
+- Write only to own directory (/data/data/com.termux/files/home/Projects/HealingNodes/.agents/teamwork_preview_spec_miner_qa/).
+- Single-threaded, targeted operations complying with Android Termux environment constraints.
+- Universal Offline QA Analyzer must be run and reported.
+- Deliver findings in spec_qa_report.md and handoff.md.
+

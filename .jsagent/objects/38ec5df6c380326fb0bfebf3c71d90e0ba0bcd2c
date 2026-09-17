@@ -1,0 +1,22 @@
+### 7.1 Tier 1: Unit & DSP Math Verification
+- **Execution**: Pure headless math in Node.js (execution time < 50ms).
+- **Test Scenarios**:
+  1. `test_ms_matrix.js`:
+     - Verify $Mid = (L + R)/2$ and $Side = (L - R)/2$.
+     - Verify Mono center dialogue ($L=1, R=1$): $Mid = 1, Side = 0$.
+     - Verify Pure out-of-phase stereo reverb ($L=1, R=-1$): $Mid = 0, Side = 1$.
+     - Verify Spatial Dipole: Right perimeter node ($\theta \approx \pi/2$) inverts Side polarity compared to Left perimeter node ($\theta \approx 3\pi/2$).
+     - Verify Rear center channel attenuation: dialogue does not pass to $\theta = \pi$.
+  2. `test_crossover_limiter.js`:
+     - Verify Butterworth highpass filter response at 150 Hz ($Q = 0.7071$) attenuates 33 Hz by $> 20\text{ dB}$.
+     - Verify 40 Hz highpass filter maintains flat passband ($> 60\text{ Hz}$) with $< 0.1\text{ dB}$ ripple.
+     - Verify Brickwall Limiter parameters: threshold -1 dBFS, ratio 20:1, knee 0 dB.
+  3. `test_lerp_trajectory.js`:
+     - Verify Smoothstep $S(0) = 0, S(0.5) = 0.5, S(1) = 1$.
+     - Verify derivative $S'(0) = 0, S'(1) = 0$ (zero initial/terminal jerk).
+     - Verify fixed snapshot interpolation: snapshot remains constant, zero creeping drift.
+  4. `test_ntp_math.js`:
+     - Verify 10-sample array with outlier injection (e.g. +300ms spike) yields accurate median clock offset.
+     - Verify conversion of server epoch ms to AudioContext seconds:
+       $$t_{audio} = audioCtx.currentTime + \frac{targetSyncTime - serverOffset - Date.now()}{1000}$$
+

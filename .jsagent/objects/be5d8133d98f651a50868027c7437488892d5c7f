@@ -1,0 +1,9 @@
+## Artifact Index
+- DISPATCH.md — Initial dispatch instructions
+- qa-analyzer-SKILL.md — Local copy of qa-analyzer skill instructions
+- progress.md — Progress tracking & heartbeat
+- probe_engine.js — Engine probe verification script
+- probe_dsp_math.js — Mathematical DSP and M/S matrix probe script
+- spec_qa_report.md — Full QA and Spec Mining findings report
+- handoff.md — Standard 5-component hard handoff report
+

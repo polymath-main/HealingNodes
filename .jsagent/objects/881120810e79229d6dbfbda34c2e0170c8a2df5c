@@ -1,0 +1,6 @@
+## Key Decisions Made
+- Decomposed into 3 core milestones plus E2E test suite track in PROJECT.md.
+- Dispatched E2E Test Writer to write 4-tier test suite in tests/.
+- Dispatched M1 DSP Worker to implement Web Audio DSP architecture fixes in public/app.js.
+- Sequenced M2 after M1 to prevent concurrent edit collisions on public/app.js.
+

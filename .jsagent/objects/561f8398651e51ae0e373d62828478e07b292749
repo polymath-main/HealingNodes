@@ -1,0 +1,14 @@
+# Original User Request
+
+## Initial Request — 2026-09-17T20:59:12Z
+
+/* __JAGE_REF_md_section_teamwork_project_prompt___draft__ */
+## Requirements
+
+/* __JAGE_REF_md_section_r1__audit_and_fix_the_web_audio_dsp_architecture__ */
+/* __JAGE_REF_md_section_r2__audit_and_fix_the_network_synchronization_orchestration__ */
+## Acceptance Criteria
+
+/* __JAGE_REF_md_section_verification__automated_qa__ */
+### Verification: Agent-as-Judge
+- [ ] An independent reviewer agent audits the committed DSP math and confirms the changes strictly adhere to physical Web Audio API constraints (no illegal routing, correct phase-inversion mathematics).

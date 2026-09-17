@@ -1,0 +1,40 @@
+### 1.1 Mathematical Formulation of Clock Offset and RTT
+In `server.js` (lines 104–106):
+```javascript
+socket.on('sync_ping', (clientTime) => {
+    socket.emit('sync_pong', { clientTime: clientTime, serverTime: Date.now() });
+});
+```
+In `public/app.js` (lines 58–66):
+```javascript
+socket.on('sync_pong', (data) => {
+    const latency = (Date.now() - data.clientTime) / 2;
+    timeOffsets.push(data.serverTime - data.clientTime - latency);
+    if (timeOffsets.length < 10) setTimeout(() => socket.emit('sync_ping', Date.now()), 100);
+    else {
+        timeOffsets.sort((a,b) => a-b);
+        serverTimeOffset = timeOffsets[Math.floor(10/2)];
+        document.getElementById('status-text').innerText = "Synchronized. Ready.";
+    }
+});
+```
+
+#### Mathematical Comparison with RFC 5905 (NTPv4)
+Let:
+- $t_0$ = Client ping dispatch timestamp (`data.clientTime`)
+- $t_1$ = Server ping arrival timestamp
+- $t_2$ = Server pong transmission timestamp (`data.serverTime`)
+- $t_3$ = Client pong receipt timestamp (`Date.now()`)
+
+The standard NTP formulas specify:
+$$\text{Round-Trip Time (RTT)} = (t_3 - t_0) - (t_2 - t_1)$$
+$$\text{Clock Offset } \theta = \frac{(t_1 - t_0) + (t_2 - t_3)}{2}$$
+
+In the current HealingNodes code:
+- The server records only a single timestamp `serverTime: Date.now()`, assuming $t_1 \equiv t_2$.
+- The client computes:
+  $$\text{latency} = \frac{t_3 - t_0}{2}$$
+  $$\text{offset}_{\text{app}} = t_2 - t_0 - \text{latency} = t_2 - t_0 - \frac{t_3 - t_0}{2} = t_2 - \frac{t_0 + t_3}{2}$$
+- When $t_1 \equiv t_2$, $\text{offset}_{\text{app}}$ algebraically equals the NTP formula.
+- **Flaw**: Under Node.js event-loop load (e.g., during track uploads or multi-socket broadcasts), the socket reception time $t_1$ and the packet emit time $t_2$ differ by several milliseconds. Failing to separate $t_1$ and $t_2$ attributes server event-loop queuing delay directly to one-way network transit latency, systematically biasing the calculated offset.
+

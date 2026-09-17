@@ -1,0 +1,12 @@
+## 2. Logic Chain
+
+1. **Premise 1**: Physical spatial audio requires phase coherence and dipole polarity. Mid/Side acoustic expansion requires that the Right perimeter channel receives $-Side = (R - L)/2$ and Left perimeter channel receives $+Side = (L - R)/2$ (Observation 3).
+2. **Premise 2**: In `public/app.js`, both right and left nodes receive $+Side$ because `applySide` connects directly to `sideMix` without polarity inversion for $\theta \in (0, \pi)$ (Observation 3). Furthermore, $|\cos(\pi)| = 1.0$ causes rear nodes to play full dialogue. Therefore, the Mid/Side spatial expansion algorithm has acoustic and imaging flaws.
+3. **Premise 3**: Mobile phone speakers suffer coil damage and severe harmonic distortion when driven with sub-150Hz frequencies. Desktop/TV speakers cannot reproduce sub-40Hz DC rumble (Observation 4).
+4. **Premise 4**: In `public/app.js`, `allpass` is used for desktop/TVs instead of highpass 40Hz Butterworth, and `initModeEngine()` bypasses the crossover and limiter entirely, driving 33Hz raw sines into phone speakers (Observations 4, 5). Therefore, the hardware protection architecture is violated.
+5. **Premise 5**: Reliable multi-device sync requires late-joining clients to acquire active playback state and audio time offsets (Observation 8). `MediaEngine.js` only emits `'sync'` and does not track playback start timestamps. Therefore, late-joining clients remain out-of-sync and silent.
+6. **Premise 6**: The repository lacks an automated test suite (`package.json` test script errors out). Node.js `v24.18.0` provides built-in `node:test` and `node:assert` that run single-threaded with zero dependencies (Observation 2).
+7. **Conclusion**: A 4-Tier test architecture can be implemented immediately using `node:test`, verifying DSP math, Web Audio graph topology, Socket.io network synchronization, and E2E system transitions without external packages.
+
+---
+

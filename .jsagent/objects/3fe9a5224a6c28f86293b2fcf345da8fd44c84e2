@@ -1,0 +1,22 @@
+### 7.4 Tier 4: End-to-End System & Cross-Core Scenarios
+- **Execution**: Integrated tests verifying full system operational flows.
+- **Test Scenarios**:
+  1. `test_core_switching.js`:
+     - Switch Core: Mode $\rightarrow$ Media $\rightarrow$ Mode.
+     - Verify clients receive `core_switch`, tear down prior audio context safely, and transition state cleanly.
+  2. `test_circadian_cron.js`:
+     - Trigger scheduled cron tasks programmatically.
+     - Verify `ModeEngine.startTrajectory` is invoked with corresponding circadian preset vectors.
+  3. `test_rest_api.js`:
+     - Test all REST endpoints via HTTP:
+       - `POST /api/core/switch`
+       - `POST /api/trajectory/start`
+       - `POST /api/trajectory/stop`
+       - `GET /api/state`
+       - `POST /api/media/play`
+       - `POST /api/media/pause`
+  4. Universal QA Check:
+     - Run `python ~/.gemini/config/skills/qa-analyzer/scripts/analyzer.py .` to ensure 0 syntax errors across entire suite and source.
+
+---
+

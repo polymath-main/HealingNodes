@@ -1,0 +1,3 @@
+## Mission
+Build complete automated E2E and unit test suite for HealingNodes using Node.js native `node:test` and `node:assert` covering 4-tier architecture.
+

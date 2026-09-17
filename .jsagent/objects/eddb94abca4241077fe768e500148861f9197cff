@@ -1,0 +1,5 @@
+### Defect 5: Missing `GET /api/state` Endpoint
+- **Location**: `server.js`
+- **Specification**: `ARCHITECTURE_BLUEPRINT.md:120`, `PHASE2_IMPLEMENTATION_PLAN.md:254`
+- **Impact**: Clients or management tools cannot query the current 7D vector, node count, and active core via HTTP.
+

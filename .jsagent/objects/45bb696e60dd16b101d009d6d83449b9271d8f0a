@@ -1,0 +1,11 @@
+### 5.1 Code Observation: Limiter in `public/app.js` (lines 196–201)
+```javascript
+196:     // 2. Brickwall Limiter
+197:     const limiter = audioCtx.createDynamicsCompressor();
+198:     limiter.threshold.value = -1.0; limiter.knee.value = 0.0; limiter.ratio.value = 20.0;
+199:     limiter.attack.value = 0.002; limiter.release.value = 0.100;
+200:     
+201:     crossover.connect(limiter);
+202:     limiter.connect(audioCtx.destination);
+```
+

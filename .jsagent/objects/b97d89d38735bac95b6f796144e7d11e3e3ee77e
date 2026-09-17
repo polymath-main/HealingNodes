@@ -1,0 +1,3 @@
+### 6.2 Correct Trajectory Math & Epoch-Based Orbit
+
+#### `src/core/ModeEngine.js` (Clamped Progress, 

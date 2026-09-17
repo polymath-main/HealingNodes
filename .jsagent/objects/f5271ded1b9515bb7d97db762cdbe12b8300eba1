@@ -1,0 +1,6 @@
+## 🔒 Key Constraints
+- Read-only investigation — do NOT implement
+- Audit public/app.js, ARCHITECTURE_BLUEPRINT.md, THEORY.md, PHASE2_IMPLEMENTATION_PLAN.md, PHASE3_THEATER_ARCHITECTURE.md
+- Produce comprehensive dsp_audit_report.md and handoff.md
+- Communicate with parent via send_message
+

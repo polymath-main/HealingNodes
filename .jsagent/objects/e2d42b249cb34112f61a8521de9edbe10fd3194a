@@ -1,0 +1,31 @@
+/* __JAGE_REF_md_section_handoff_report___web_audio_dsp_architecture_audit__ */
+/* __JAGE_REF_md_section_1__observation__ */
+Z.setValueAtTime(2 * Math.sin(currentAngleRads), time);`
+   - Angle 0 maps to $(2, 0, 0)$ (listener's Right ear), rotating spatial orbit by $90^\circ$ from Front Center.
+
+7. **Harmonic Stacking in `public/app.js` (lines 150 & 173)**:
+   - `const initialFreq = currentV.f_base * currentV.harmonic_ratio;`
+   - `const targetFreq = currentV.f_base * currentV.harmonic_ratio;`
+   - Multiplier `(harmonic_ratio ** (myIndex % 4))` specified in blueprints is absent; `myIndex` is ignored.
+
+---
+
+/* __JAGE_REF_md_section_2__logic_chain__ */
+/* __JAGE_REF_md_section_3__caveats__ */
+/* __JAGE_REF_md_section_4__conclusion__ */
+## 5. Verification Method
+
+To independently verify these findings:
+1. **Source Code Inspection**:
+   - View `public/app.js` lines 220–241 to confirm mono `finalMix` and `Math.abs(Math.cos)` formulation.
+   - View `public/app.js` lines 185–194 to confirm `type = "allpass"` without frequency setting.
+   - View `public/app.js` lines 146–152 to confirm `baseOscGain` connected to `merger, 0, 0`.
+   - View `public/app.js` lines 27–42 to confirm `blend = Math.max(0, Math.min(1, alpha - 1))`.
+2. **QA Analyzer Tool**:
+   - Run Universal QA Analyzer smoke test:
+     ```bash
+     python ~/.gemini/config/skills/qa-analyzer/scripts/analyzer.py /data/data/com.termux/files/home/Projects/HealingNodes/public
+     ```
+3. **Mathematical Validation**:
+   - Evaluate $P(\theta) = M + S \cdot \sin(\theta)$ vs. $M \cdot |\cos(\theta)| + S \cdot (1 - |\cos(\theta)|)$ at $\theta = 0, \frac{\pi}{2}, \pi, \frac{3\pi}{2}$.
+   - Evaluate Butterworth vs. Linkwitz-Riley transfer functions at $s = j\omega_0$.

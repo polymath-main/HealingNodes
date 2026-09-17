@@ -1,0 +1,51 @@
+### 3.3 Code Observation: Distribution & Absence of Decoding (`public/app.js`, lines 231–241)
+```javascript
+231:     // Dynamic mix based on physical geometry
+232:     const mixRatio = Math.abs(Math.cos(baseNodeAngle)); // 0 rad = 1 (Mid). PI/2 rad = 0 (Side)
+233:     const finalMix = audioCtx.createGain();
+234:     
+235:     const applyMid = audioCtx.createGain(); applyMid.gain.value = mixRatio;
+236:     const applySide = audioCtx.createGain(); applySide.gain.value = 1.0 - mixRatio;
+237:     
+238:     midMix.connect(applyMid); applyMid.connect(finalMix);
+239:     sideMix.connect(applySide); applySide.connect(finalMix);
+240:     
+241:     finalMix.connect(window.theaterDest); // Route to crossover & limiter
+```
+
+#### Defect 1.1: Complete Lack of Stereo Decoding Matrix
+`finalMix` sums `applyMid` and `applySide` into a **single 1-channel mono bus**:
+$$\text{finalMix} = \text{mixRatio} \cdot M + (1 - \text{mixRatio}) \cdot S$$
+`finalMix` connects through `crossover` and `limiter` directly to `audioCtx.destination`. Under W3C up-mixing rules, a mono signal connected to a 2-channel destination is mirrored identically to both left and right physical outputs:
+$$L_{out} = \text{finalMix}, \quad R_{out} = \text{finalMix}$$
+There is **NO `ChannelMergerNode`**, and **NO $(M + S)$ / $(M - S)$ stereo decoding**. Every device in the mesh plays pure monophonic sound across both its speakers/headphones.
+
+#### Defect 1.2: Acoustic Polarity & Chirality Inversion on Right Nodes
+Line 232 computes:
+`const mixRatio = Math.abs(Math.cos(baseNodeAngle));`
+Consider a 4-node distributed mesh where $\theta_i = \frac{2\pi i}{4}$:
+1. **Node 0 ($\theta = 0$, Front Center)**:
+   $\text{mixRatio} = |\cos(0)| = 1.0 \implies \text{Node outputs } M = \frac{L + R}{2}$. (Correct for center dialogue).
+2. **Node 1 ($\theta = \frac{\pi}{2}$, Left Side, 90°)**:
+   $\text{mixRatio} = |\cos(\frac{\pi}{2})| = 0.0 \implies \text{Node outputs } +S = \frac{L - R}{2}$.
+3. **Node 2 ($\theta = \pi$, Rear Center, 180°)**:
+   $\text{mixRatio} = |\cos(\pi)| = |-1| = 1.0 \implies \text{Node outputs } M = \frac{L + R}{2}$!
+   **Flaw**: The rear surround speaker outputs 100% front-center dialogue rather than surround diffuse ambience!
+4. **Node 3 ($\theta = \frac{3\pi}{2}$, Right Side, 270°)**:
+   $\text{mixRatio} = |\cos(\frac{3\pi}{2})| = 0.0 \implies \text{Node outputs } +S = \frac{L - R}{2}$!
+   **Fatal Flaw**: Node 3 is positioned on the **RIGHT** side of the room, but plays $+S = \frac{L - R}{2}$.
+   In physical acoustics, the lateral dipole velocity pattern is antisymmetric:
+   $$S(\theta) = S \cdot \sin(\theta)$$
+   At the Right position ($\theta = \frac{3\pi}{2}$ or $-90^\circ$), $\sin(\frac{3\pi}{2}) = -1$. The acoustic output MUST be:
+   $$-S = -(L - R)/2 = \frac{R - L}{2}$$
+   Because `app.js` uses `Math.abs(Math.cos(baseNodeAngle))` and adds positive `sideMix`, Node 3 outputs $+L - R$.
+   If an actor speaks on the right ($L=0, R=1$):
+   - Node 1 (Left) plays: $+S = -0.5$.
+   - Node 3 (Right) plays: $+S = -0.5$.
+   The right side of the room plays inverted phase of the actor's voice, while the right channel is completely absent! The acoustic stereophonic soundstage in the room is completely scrambled.
+
+#### Defect 1.3: Destructive Phase Cancellation at Intermediate Angles
+For intermediate angles (e.g. $\theta = \frac{\pi}{4} = 45^\circ$, where $\cos(\frac{\pi}{4}) \approx 0.7071$):
+$$\text{finalMix} = 0.7071 \cdot \left(\frac{L + R}{2}\right) + (1 - 0.7071) \cdot \left(\frac{L - R}{2}\right) = 0.5 L + 0.2071 R$$
+Summing $M$ and $S$ into a single scalar channel cancels out a significant portion of $R$ ($-3.8\text{ dB}$ attenuation on $R$, $+0\text{ dB}$ on $L$), artificially pulling the phantom image toward the left channel regardless of where the node is placed.
+

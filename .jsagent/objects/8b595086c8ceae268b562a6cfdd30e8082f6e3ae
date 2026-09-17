@@ -1,0 +1,18 @@
+### 4.3 The Linkwitz-Riley Standard (LR4 & LR2)
+To achieve flat acoustic magnitude response across the crossover band ($0\text{ dB}$ gain at $\omega_0$ with no lobing):
+1. **4th-Order Linkwitz-Riley (LR4, 24 dB/octave)**:
+   Formed by cascading **TWO identical 2nd-order Butterworth filters ($Q = 0.7071$) in series**:
+   $$H_{LR4\_LP}(s) = [H_{Butt2\_LP}(s)]^2, \quad H_{LR4\_HP}(s) = [H_{Butt2\_HP}(s)]^2$$
+   At $\omega = \omega_0$:
+   $$H_{LR4\_LP}(j\omega_0) = \left(-j\frac{1}{\sqrt{2}}\right)^2 = -\frac{1}{2} = 0.5 \angle 180^\circ \quad (-6.02\text{ dB})$$
+   $$H_{LR4\_HP}(j\omega_0) = \left(j\frac{1}{\sqrt{2}}\right)^2 = -\frac{1}{2} = 0.5 \angle 180^\circ \quad (-6.02\text{ dB})$$
+   Sum:
+   $$H_{LR4\_sum}(j\omega_0) = -0.5 + (-0.5) = -1.0 = 1.0 \angle 180^\circ \quad (\mathbf{0.00\text{ dB, Flat!}})$$
+   The phase difference between low and high bands is **$0^\circ$ across the entire spectrum**.
+2. **2nd-Order Linkwitz-Riley (LR2, 12 dB/octave)**:
+   Formed using a single 2nd-order biquad with **critically damped $Q = 0.5$** and an inverted highpass branch:
+   $$|H_{LP}(j\omega_0)| = 0.5 \quad (-6\text{ dB}), \quad |H_{HP}(j\omega_0)| = 0.5 \quad (-6\text{ dB})$$
+   Sum with inversion: $0.5 - (-0.5) = 1.0$ ($0\text{ dB}$ flat).
+
+---
+

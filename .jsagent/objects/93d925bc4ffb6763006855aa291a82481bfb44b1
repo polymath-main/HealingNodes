@@ -1,0 +1,11 @@
+# Teamwork Project Prompt — Draft
+
+> Status: Launched
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+> Requested team: Deploy the full team
+
+Perform a comprehensive, rigorous structural, DSP, and architectural audit of the entire HealingNodes Dual-Core project codebase to ensure mathematical accuracy, system stability, and flawless execution. The team must actively implement and commit fixes for any bugs discovered.
+
+Working directory: /data/data/com.termux/files/home/Projects/HealingNodes
+Integrity mode: development
+

@@ -1,0 +1,18 @@
+### 6.7 Flaw 4.7: AudioParam Parameter Scheduling Lag and Accumulation
+In `scheduleModeUpdate` (lines 169–178):
+```javascript
+let tDelta = state.targetSyncTime - serverTimeOffset - Date.now();
+if (tDelta < 0) tDelta = 0;
+const t = audioCtx.currentTime + (tDelta / 1000) + 0.1;
+const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+
+baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+```
+- Server broadcasts `targetSyncTime = Date.now() + 2500` every 1 second.
+- `t` is scheduled $2.6\text{ seconds}$ in the future.
+- Because `cancelScheduledValues` is not called, scheduled exponential ramps accumulate in the Web Audio event queue.
+- Furthermore, because the visual engine updates canvas colors and pulse frequencies immediately upon socket packet receipt (`currentV = state.v`), the visual display changes **2.6 to 5 seconds before the audio pitch finishes gliding**, breaking audiovisual synchrony.
+
+---
+

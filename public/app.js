@@ -181,27 +181,29 @@ function scheduleModeUpdate(state) {
 // CORE 2: MEDIA THEATER (Phase 3 - M/S & Limiters)
 // ==========================================
 async function initMediaEngine() {
-    // 1. Hardware Profiling Crossover
+    // 1. Hardware Profiling Crossover (Linkwitz-Riley 4th Order)
     const isPhone = window.innerWidth < 768;
-    const crossover = audioCtx.createBiquadFilter();
+    const crossover1 = audioCtx.createBiquadFilter();
+    const crossover2 = audioCtx.createBiquadFilter(); // Cascaded for LR4
+    
     if (isPhone) {
-        crossover.type = "highpass";
-        crossover.frequency.value = 150; // Protect phone speakers
-        crossover.Q.value = 0.707; // Butterworth
+        crossover1.type = "highpass"; crossover1.frequency.value = 150; crossover1.Q.value = 0.707;
+        crossover2.type = "highpass"; crossover2.frequency.value = 150; crossover2.Q.value = 0.707;
     } else {
-        crossover.type = "allpass"; // Let subs through
+        crossover1.type = "allpass"; crossover2.type = "allpass"; 
     }
 
     // 2. Brickwall Limiter
     const limiter = audioCtx.createDynamicsCompressor();
     limiter.threshold.value = -1.0; limiter.knee.value = 0.0; limiter.ratio.value = 20.0;
-    limiter.attack.value = 0.002; limiter.release.value = 0.100;
+    limiter.attack.value = 0.001; limiter.release.value = 0.050;
     
-    crossover.connect(limiter);
+    crossover1.connect(crossover2);
+    crossover2.connect(limiter);
     limiter.connect(audioCtx.destination);
 
     // 3. Setup M/S Node Graph (waiting for source)
-    window.theaterDest = crossover;
+    window.theaterDest = crossover1;
     document.getElementById('status-text').innerText = "Theater Active. Waiting for Admin Play.";
 }
 
@@ -209,7 +211,11 @@ function scheduleMediaPlayback(targetSyncTimeMs) {
     if (!mediaBuffer || !audioCtx) return;
     
     let tDelta = targetSyncTimeMs - serverTimeOffset - Date.now();
-    if (tDelta < 0) tDelta = 0; // If late, play immediately
+    let playOffset = 0;
+    if (tDelta < 0) {
+        playOffset = Math.abs(tDelta) / 1000; // Calculate exact late-join offset in seconds
+        tDelta = 0; // Play immediately
+    }
     const executionTime = audioCtx.currentTime + (tDelta / 1000);
 
     if (mediaSource) mediaSource.stop();
@@ -240,8 +246,9 @@ function scheduleMediaPlayback(targetSyncTimeMs) {
     
     finalMix.connect(window.theaterDest); // Route to crossover & limiter
     
-    mediaSource.start(executionTime);
-    console.log(`[Media] Scheduled at ${executionTime}`);
+    // Play with precise offset if late
+    mediaSource.start(executionTime, playOffset);
+    console.log(`[Media] Scheduled at ${executionTime} with play offset ${playOffset}s`);
 }
 
 // ==========================================

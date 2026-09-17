@@ -1,0 +1,10 @@
+### 3.1 Mathematical Theory of Mid/Side Processing
+In stereophonic signal processing:
+- **Mid ($M$)**: Sum of channels containing center-panned coherent acoustic energy (dialogue, lead vocals, kick drum, bass).
+  $$M = \frac{L + R}{2} \quad \text{or} \quad M = \frac{L + R}{\sqrt{2}} \quad (\text{constant power})$$
+- **Side ($S$)**: Difference of channels containing decorrelated ambient/lateral energy (reverberation, stereo spread, spatial effects).
+  $$S = \frac{L - R}{2} \quad \text{or} \quad S = \frac{L - R}{\sqrt{2}}$$
+- **Canonical Stereo Reconstruction (Decoding)**:
+  $$L = M + S = \frac{L + R}{2} + \frac{L - R}{2} = L$$
+  $$R = M - S = \frac{L + R}{2} - \frac{L - R}{2} = R$$
+

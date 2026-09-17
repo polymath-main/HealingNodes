@@ -1,0 +1,41 @@
+### 3.2 Playback Head Desynchronization on Negative Delta ($tDelta < 0$)
+In `public/app.js` (lines 208–244):
+```javascript
+function scheduleMediaPlayback(targetSyncTimeMs) {
+    if (!mediaBuffer || !audioCtx) return;
+    
+    let tDelta = targetSyncTimeMs - serverTimeOffset - Date.now();
+    if (tDelta < 0) tDelta = 0; // If late, play immediately
+    const executionTime = audioCtx.currentTime + (tDelta / 1000);
+
+    if (mediaSource) mediaSource.stop();
+    mediaSource = audioCtx.createBufferSource();
+    mediaSource.buffer = mediaBuffer;
+    ...
+    mediaSource.start(executionTime);
+    console.log(`[Media] Scheduled at ${executionTime}`);
+}
+```
+- Suppose the server broadcasts `play` with `targetSyncTime = Date.now() + 5000`.
+- Fast Node A finishes downloading in 2 seconds; $tDelta = +3000\text{ ms}$; Node A schedules playback at $t = currentTime + 3.0\text{ s}$ from track offset $0.0\text{ s}$.
+- Slow Node B (mobile device with high network latency or slower CPU decoding) finishes downloading in 6.5 seconds (1.5 seconds after scheduled start time).
+- On Node B: $tDelta = -1500\text{ ms}$.
+- Line 212 executes: `if (tDelta < 0) tDelta = 0;`.
+- Line 213: `executionTime = audioCtx.currentTime`.
+- Line 243: `mediaSource.start(executionTime);`.
+- In the Web Audio API specification:
+  `AudioBufferSourceNode.prototype.start([when[, offset[, duration]]])`
+  When `offset` is omitted, it defaults to `0.0`.
+- **Fatal Consequence**: Node B starts playing from the very beginning ($0:00$) of the track, while Node A is at $0:01.5$ of the track! The two devices are now permanently 1.5 seconds desynchronized, producing an unbearable stadium echo that never corrects.
+- *Remedy*:
+  ```javascript
+  if (tDelta < 0) {
+      const lateOffsetSec = Math.abs(tDelta) / 1000;
+      if (lateOffsetSec < mediaBuffer.duration) {
+          mediaSource.start(audioCtx.currentTime, lateOffsetSec);
+      }
+  } else {
+      mediaSource.start(audioCtx.currentTime + (tDelta / 1000), 0);
+  }
+  ```
+

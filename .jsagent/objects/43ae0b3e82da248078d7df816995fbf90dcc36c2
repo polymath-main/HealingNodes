@@ -1,0 +1,15 @@
+### Defect 2: Crossover Filter Deviation in `public/app.js`
+- **Location**: `public/app.js:186-193`
+- **Current Code**:
+  ```javascript
+  if (isPhone) {
+      crossover.type = "highpass";
+      crossover.frequency.value = 150;
+      crossover.Q.value = 0.707;
+  } else {
+      crossover.type = "allpass";
+  }
+  ```
+- **Blueprint Spec** (`PHASE3_THEATER_ARCHITECTURE.md:15-22`):
+  Non-phones must use a `highpass` filter at `40Hz` with $Q = 0.707$ (Butterworth response) to block sub-audible excursion damage. Using `allpass` at default frequency introduces unwanted phase shift and provides zero cone protection.
+

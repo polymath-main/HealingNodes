@@ -1,0 +1,4 @@
+### 4.1 Web Audio BiquadFilterNode Specifications
+In the Web Audio API, `audioCtx.createBiquadFilter()` implements standard 2nd-order (12 dB/octave) digital biquad filters derived from Robert Bristow-Johnson’s Audio EQ Cookbook.
+For `type = "lowpass"` and `type = "highpass"`, setting `Q.value = 0.7071` ($\frac{1}{\sqrt{2}}$) produces a **2nd-order Butterworth filter**, characterized by a maximally flat magnitude response in the passband.
+

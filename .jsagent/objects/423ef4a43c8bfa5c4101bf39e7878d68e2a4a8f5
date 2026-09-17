@@ -1,0 +1,4 @@
+## Key Decisions Made
+- Authored comprehensive report `network_sync_report.md` detailing all failure modes, mathematical proofs, and exact code remediation architectures.
+- Authored standard 5-component `handoff.md`.
+

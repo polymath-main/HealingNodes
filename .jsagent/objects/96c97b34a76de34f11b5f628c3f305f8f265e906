@@ -1,0 +1,22 @@
+## 4. Conclusion
+
+The HealingNodes network synchronization orchestration currently fails under real-world conditions (Wi-Fi jitter, reconnects, late joins, multi-node scaling). 
+
+To achieve production-grade mathematical accuracy and stability:
+1. **NTP Protocol**: Implement RFC 5905 two-way timestamps $(t_0, t_1, t_2, t_3)$, a minimum-RTT filter, array clearing on reconnect, and a 20-second recurring sync interval.
+2. **Trajectory & Spatial Math**:
+   - Clamp smoothstep progress to $[0, 1]$.
+   - Allow `durationMs = 0` for instant state jumps.
+   - Implement shortest-arc angular interpolation for `phi_color`.
+   - Calculate orbital rotation using synchronized network epoch time $(Date.now() + serverTimeOffset)/1000$.
+   - Apply node harmonic chord stacking: $f_{base} \times r_h^{myIndex \bmod 4}$.
+3. **Late-Join & Playback Scheduling**:
+   - Store `playbackStartTime` on the server in `MediaEngine`.
+   - Send targeted state sync to joining sockets without re-broadcasting `sync` to existing playing nodes.
+   - Seek to current playhead when $tDelta < 0$: `mediaSource.start(audioCtx.currentTime, Math.abs(tDelta)/1000)`.
+4. **Concurrency**: Use unique socket tracking (`Set` or array deduplication), provide `destroy()` for `ModeEngine`, and handle stream aborts.
+
+Detailed code architecture specifications and remediation snippets are documented in `network_sync_report.md`.
+
+---
+

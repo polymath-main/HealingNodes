@@ -1,0 +1,9 @@
+## Team Roster
+| Agent | Type | Work Item | Status | Conv ID |
+|-------|------|-----------|--------|---------|
+| explorer_dsp | teamwork_preview_explorer | Web Audio DSP Architecture Audit | completed | c75bc4cf-e14c-45f3-8de8-2ceb9c5a369b |
+| explorer_net | teamwork_preview_explorer | Network Synchronization Audit | completed | 3d0211de-6479-4a00-8540-ce25517b3b17 |
+| spec_miner_qa | teamwork_preview_spec_miner | QA & Spec Miner & Testing Infra | completed | f6b94003-c9f3-4e01-a1fb-5b6d907f78f5 |
+| test_writer | teamwork_preview_test_writer | E2E Test Suite (Tiers 1-4) | in-progress | c726fa36-261c-45c1-97a0-920fa1d9920c |
+| worker_m1 | teamwork_preview_worker | M1 DSP Architecture Fixes | in-progress | bce78b9e-5826-48f0-8b80-f87a5fbe409d |
+

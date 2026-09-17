@@ -1,0 +1,23 @@
+### 6.4 Concurrency and Registration Hardening (`server.js`)
+```javascript
+// Ensure unique socket IDs
+socket.on('register', (role) => {
+    if (role === 'client') {
+        if (!nodes.includes(socket.id)) {
+            nodes.push(socket.id);
+        }
+        socket.emit('core_switch', { activeCore });
+        if (activeCore === 'mode') {
+            modeEngine.broadcastState();
+        } else {
+            mediaEngine.syncClient(socket.id); // Only sync the joining client, don't disturb the mesh
+        }
+    } else if (role === 'admin') {
+        if (activeCore === 'mode') modeEngine.broadcastState();
+        else mediaEngine.broadcastState('sync');
+    }
+});
+```
+
+---
+

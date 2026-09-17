@@ -1,0 +1,16 @@
+## 5. Edge Cases & Observed Behavior
+
+| # | Feature | Input / Condition | Observed Behavior | Defect / Impact |
+|---|---------|-------------------|-------------------|-----------------|
+| 1 | M/S Matrix | Hard-right audio ($L=0, R=1$) at side nodes ($90^\circ$ and $270^\circ$) | Both left ($270^\circ$) and right ($90^\circ$) nodes output $-0.50$ in phase | Destroys acoustic stereo field; right-panned audio is heard identically on both sides |
+| 2 | M/S Matrix | Center dialogue ($L=1, R=1$) at rear node ($\theta = 180^\circ$) | Node outputs $1.00$ (full Mid dialogue) directly behind listener | Violates theater acoustics; rear speakers should receive ambient Side reverb, not direct dialogue |
+| 3 | Crossover | TV / Desktop node (`innerWidth >= 768`) in Media Core | Crossover filter type is set to `"allpass"` at default 350Hz | Fails to filter sub-40Hz DC rumble; introduces phase distortion at 350Hz |
+| 4 | Crossover & Limiter | Phone connected to Mode Core (`activeCore = 'mode'`) | Mode Core bypasses crossover and limiter entirely; sends 33Hz directly to destination | Can distort or damage phone micro-speakers incapable of 33Hz reproduction |
+| 5 | Mode Audio Graph | `binaural_offset = 0` | Binaural oscillator remains active at full 0.8 gain in Right channel | Interferes with base oscillator; prevents pure mono/spatial base tone |
+| 6 | Mode Audio Graph | Multiple nodes connect ($N \ge 2$) | All nodes compute `currentV.f_base * currentV.harmonic_ratio` identically | Node index `myIndex` is ignored; harmonic octave stacking ($r_h^{i \bmod 4}$) is lost |
+| 7 | Media Sync | New node joins while media is actively playing | Server emits `'sync'`, node downloads buffer but never receives play command or seek offset | Late-joining node remains completely silent while other nodes play |
+| 8 | Media Sync | Multiple clicks on Admin "PLAY" | `scheduleMediaPlayback` runs repeatedly, instantiating and connecting new gain nodes without disconnecting prior ones | Memory leak and audio gain accumulation |
+| 9 | NTP Sync | Socket disconnects and reconnects | `timeOffsets` array retains previous 10 values without reset; appends 11th | Stale time offset samples pollute median latency calculation |
+| 10 | Mode Trajectory | `startTrajectory(target, 0)` | Duration evaluated as `durationMs || 1000`, resulting in 1000ms instead of instantaneous morph | Fails to apply instant parameter jumps |
+| 11 | REST API | `GET /api/state` | Route not defined in `server.js` | Returns 404 Cannot GET /api/state; violates blueprint spec |
+| 12 | Circadian Schedule | Background hourly automation | `node-cron` package is installed but never required or executed | 

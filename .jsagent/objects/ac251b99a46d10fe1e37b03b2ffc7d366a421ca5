@@ -1,0 +1,95 @@
+## 1. Observation
+
+Direct observations from codebase inspection across `server.js`, `src/core/MediaEngine.js`, `src/core/ModeEngine.js`, `public/app.js`, and `src/services/YouTubeProxy.js`:
+
+1. **NTP Clock Sync (`server.js:104–106`, `public/app.js:58–66`)**:
+   - `server.js` emits only a single timestamp:
+     ```javascript
+     104: socket.on('sync_ping', (clientTime) => {
+     105:     socket.emit('sync_pong', { clientTime: clientTime, serverTime: Date.now() });
+     106: });
+     ```
+   - In `public/app.js`:
+     ```javascript
+     58: socket.on('sync_pong', (data) => {
+     59:     const latency = (Date.now() - data.clientTime) / 2;
+     60:     timeOffsets.push(data.serverTime - data.clientTime - latency);
+     61:     if (timeOffsets.length < 10) setTimeout(() => socket.emit('sync_ping', Date.now()), 100);
+     62:     else {
+     63:         timeOffsets.sort((a,b) => a-b);
+     64:         serverTimeOffset = timeOffsets[Math.floor(10/2)];
+     65:         document.getElementById('status-text').innerText = "Synchronized. Ready.";
+     66:     }
+     67: });
+     ```
+   - `timeOffsets` is global (`let timeOffsets = []`). On reconnect, `socket.on('connect')` fires `socket.emit('sync_ping', Date.now())` without clearing `timeOffsets`. Because `timeOffsets.length >= 10`, `if (timeOffsets.length < 10)` is false, pinging halts after 1 sample, and `serverTimeOffset = timeOffsets[5]` returns a stale sorted value from the previous connection.
+   - The offset selection uses a simple median of raw `timeOffsets` without recording or filtering by RTT ($RTT = t_3 - t_0$). Asymmetric Wi-Fi delays directly skew the median.
+   - No recurring periodic synchronization exists; clock drift over time (10–100 PPM) is uncorrected.
+
+2. **Trajectory Interpolation & Positioning (`src/core/ModeEngine.js:18, 32–37`, `public/app.js:76–80, 172–177, 269–273`)**:
+   - In `src/core/ModeEngine.js`:
+     ```javascript
+     18: this.duration = durationMs || 1000;
+     ```
+     `0 || 1000` evaluates to `1000`, preventing instantaneous transitions.
+   - In `src/core/ModeEngine.js`:
+     ```javascript
+     32: let progress = this.duration === 0 ? 1 : (now - this.startTime) / this.duration;
+     33: if (progress >= 1) progress = 1;
+     34: const eased = progress * progress * (3 - 2 * progress);
+     ```
+     When `now < this.startTime` (e.g., backward system clock adjustments or NTP step), `progress < 0`. Because there is no lower bound clamp, smoothstep evaluates to values $> 1$ (e.g. $progress = -1 \implies eased = 5$), resulting in extreme polynomial parameter overshoot.
+   - In `src/core/ModeEngine.js`:
+     ```javascript
+     37: this.currentState[key] = this.lerp(this.startState[key], this.targetState[key], eased);
+     ```
+     `phi_color` ($0–360^\circ$ hue) is linearly interpolated, traversing the long arc (e.g. $15^\circ \to 280^\circ$ travels $265^\circ$ rather than $95^\circ$ through red).
+   - In `public/app.js`:
+     ```javascript
+     265: const time = audioCtx.currentTime;
+     269: currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
+     ```
+     `time` is the local `audioCtx.currentTime` (uptime since local audio started). Nodes joining at different times have different `time` values, rotating out-of-phase.
+   - In `public/app.js`:
+     ```javascript
+     173: const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+     175: baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+     ```
+     `myIndex` sent by the server in `audio_state_update` is ignored. The harmonic stacking formula $f_{base} \times r_h^{i \bmod 4}$ is not implemented.
+
+3. **Late-Joining Clients & Theater Core Desynchronization (`server.js:93–97`, `src/core/MediaEngine.js:29–45`, `public/app.js:83–95, 208–244`)**:
+   - In `server.js`:
+     ```javascript
+     93: if (role === 'client') {
+     94:     nodes.push(socket.id);
+     95:     socket.emit('core_switch', { activeCore }); 
+     96:     if (activeCore === 'mode') modeEngine.broadcastState();
+     97:     else mediaEngine.broadcastState('sync');
+     98: }
+     ```
+   - In `MediaEngine.js`: `broadcastState('sync')` sends `action: 'sync'` to **all** nodes in `nodes`.
+   - In `public/app.js`:
+     ```javascript
+     92: } else if (state.action === 'sync') {
+     93:     if (state.url) await loadMediaBuffer(state.url);
+     94: }
+     ```
+     Existing playing nodes re-download and re-decode the buffer mid-playback, causing audio stuttering.
+     The late-joining node downloads the buffer and stops; it never plays because `action` was `'sync'` not `'play'`, and the server tracks no playback epoch.
+   - In `public/app.js`:
+     ```javascript
+     211: let tDelta = targetSyncTimeMs - serverTimeOffset - Date.now();
+     212: if (tDelta < 0) tDelta = 0; // If late, play immediately
+     213: const executionTime = audioCtx.currentTime + (tDelta / 1000);
+     ...
+     243: mediaSource.start(executionTime);
+     ```
+     When $tDelta < 0$, it starts playback from offset 0:00 instead of seeking to the elapsed offset ($\text{Math.abs}(tDelta)/1000$). Late devices play seconds behind earlier devices, creating a permanent echo.
+
+4. **Concurrency & Lifecycle Hazards (`server.js:94, 108–114`, `src/core/ModeEngine.js:12`, `src/services/YouTubeProxy.js:13–15`)**:
+   - `nodes.push(socket.id)` has no uniqueness check. Reconnecting clients insert duplicate entries, corrupting node count $N$ and angular geometry $(2\pi \cdot i)/N$.
+   - `ModeEngine.js:12`: `this.intervalId = setInterval(() => this.tick(), 1000)` has no teardown/clear method, leaking when active core is switched or during testing.
+   - `YouTubeProxy.js:13`: Each client spawns an independent `ytdl()` stream to YouTube for the identical URL without abort handling on socket/request close.
+
+---
+

@@ -1,0 +1,8 @@
+## Key Decisions Made
+- Executed Universal QA Analyzer: verified 0 structural/syntax errors across JS/HTML/CSS files.
+- Probed ModeEngine and MediaEngine lifecycle and trajectory interpolation via probe script.
+- Probed Mid/Side matrix math: revealed critical acoustic dipole phase flaw (left and right perimeter nodes receiving identical $+Side$ polarity) and rear dialogue blasting at $\theta = \pi$.
+- Probed Butterworth crossover: identified `allpass` substitution on desktop/TVs and complete omission in Mode Engine.
+- Identified 9 critical DSP, architectural, and network synchronization defects.
+- Formulated a zero-dependency 4-Tier E2E test architecture using Node.js built-in `node:test` and `node:assert`.
+

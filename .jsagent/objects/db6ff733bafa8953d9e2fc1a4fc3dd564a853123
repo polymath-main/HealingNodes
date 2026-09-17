@@ -1,0 +1,6 @@
+## 🔒 Key Constraints
+- Exclusively own and modify `public/app.js`. Do NOT modify `server.js` or files in `src/`.
+- DO NOT cheat, hardcode test results, or create dummy/facade implementations.
+- Verify with `python ~/.gemini/config/skills/qa-analyzer/scripts/analyzer.py .`.
+- Maintain real Web Audio API DSP state and routing.
+

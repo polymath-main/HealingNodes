@@ -1,0 +1,64 @@
+/* __JAGE_REF_md_section_specification___qa_mining_report__healingnodes_dual_core_architecture__ */
+Z  
+**Agent**: Specification Miner (QA & Spec Discovery)  
+**Workspace**: `/data/data/com.termux/files/home/Projects/HealingNodes`  
+**Parent Conversation ID**: `634d7488-2df3-4eef-b42d-f35a66fcd938`  
+
+---
+
+/* __JAGE_REF_md_section_1__executive_summary___qa_status__ */
+/* __JAGE_REF_md_section_1_1_universal_offline_qa_analyzer_run__ */
+Zero unmatched brackets, braces, parentheses, or unclosed string literals exist across all JavaScript, HTML, and CSS source files.
+
+/* __JAGE_REF_md_section_1_2_health___audit_assessment__ */
+## 2. Repository and Dependency Survey
+
+/* __JAGE_REF_md_section_2_1_package_manifest___package_json____ */
+/* __JAGE_REF_md_section_2_2_git_status_and_recent_commit_log__ */
+/* __JAGE_REF_md_section_2_3_directory_and_source_file_map__ */
+## 3. Specifications & System Architecture Mapping
+
+/* __JAGE_REF_md_section_3_1_mathematical_theory___theory_md____ */
+/* __JAGE_REF_md_section_3_2_mode_engine_architecture__core_1___ */
+/* __JAGE_REF_md_section_3_3_media_theater_architecture__core_2___ */
+/* __JAGE_REF_md_section_4__features_discovered__ */
+/* __JAGE_REF_md_section_5__edge_cases___observed_behavior__ */
+Zero automated circadian transitions occur |
+
+---
+
+## 6. Deep-Dive Code & Physical Math Defect Findings
+
+/* __JAGE_REF_md_section_defect_1__mid_side_acoustic_matrix_flaw_in__public_app_js___ */
+/* __JAGE_REF_md_section_defect_2__crossover_filter_deviation_in__public_app_js___ */
+/* __JAGE_REF_md_section_defect_3__limiter_and_crossover_missing_in_mode_engine__ */
+/* __JAGE_REF_md_section_defect_4__signal_graph_discrepancies_in__initmodeengine_____ */
+/* __JAGE_REF_md_section_defect_5__missing__get__api_state__endpoint__ */
+/* __JAGE_REF_md_section_defect_6__missing_circadian_scheduler__ */
+/* __JAGE_REF_md_section_defect_7__late_joining_media_sync___position_tracking__ */
+/* __JAGE_REF_md_section_defect_8__audionode_accumulation_leak_in__schedulemediaplayback___ */
+/* __JAGE_REF_md_section_defect_9__ntp_reconnect_stale_state__ */
+/* __JAGE_REF_md_section_7__4_tier_e2e_test_suite_architecture___design_plan__ */
+/* __JAGE_REF_md_section_7_1_tier_1__unit___dsp_math_verification__ */
+/* __JAGE_REF_md_section_7_2_tier_2__component___mock_web_audio_integration_tests__ */
+/* __JAGE_REF_md_section_7_3_tier_3__network_synchronization___socket_io_simulation__ */
+/* __JAGE_REF_md_section_7_4_tier_4__end_to_end_system___cross_core_scenarios__ */
+## 8. Summary of Actionable Implementation Recommendations
+
+1. **Fix `public/app.js` DSP Architecture (R1)**:
+   - Fix M/S matrix: invert Side polarity on right hemisphere nodes ($\theta \in (0, \pi)$) and attenuate Mid dialogue at rear ($\theta \approx \pi$).
+   - Replace `crossover.type = "allpass"` with `highpass` at 40Hz ($Q = 0.707$) for desktop/TV devices.
+   - Insert Hardware Profiling Crossover and Brickwall Limiter into `initModeEngine()` to protect transducers from raw 33Hz tones.
+   - Route `baseOsc` through `panner3D` and apply per-node harmonic stacking $f_{local} = f_{base} \cdot r_h^{i \bmod 4}$.
+   - Add 2kHz lowpass filter and 0.55 gain on noise engine.
+   - Clean up existing AudioNodes in `scheduleMediaPlayback` before creating new ones; ensure `window.theaterDest` is safely initialized.
+   - Reset `timeOffsets = []` on socket reconnect in `initNetwork()`.
+2. **Fix Network Synchronization & Server Orchestration (R2)**:
+   - Add missing `GET /api/state` endpoint to `server.js`.
+   - Implement `node-cron` circadian schedule in `server.js` / `ModeEngine.js` for the 6 daily transitions.
+   - Update `MediaEngine.js` to track `playbackStartTime` and track offset; broadcast full play state to late-joining nodes.
+   - Prevent duplicate socket IDs in `nodes` array in `server.js`.
+3. **Establish Automated Verification**:
+   - Add `"test": "node --test tests/**/*.js"` to `package.json`.
+   - Implement the 4-tier test suite using `node:test` and `node:assert`.
+   - Run Universal QA Analyzer on all modified files before committing.

@@ -1,0 +1,5 @@
+### Defect 6: Missing Circadian Scheduler
+- **Location**: `server.js`
+- **Specification**: `ARCHITECTURE_BLUEPRINT.md:133-143`, `PHASE2_IMPLEMENTATION_PLAN.md:260-271`
+- **Impact**: The 6 daily circadian presets (Dawn Wake at 06:00, Flow State at 09:00, Homeostasis at 13:00, Late Creative at 17:00, Evening Wind-Down at 21:00, Sleep Onset at 23:00) are never initiated.
+

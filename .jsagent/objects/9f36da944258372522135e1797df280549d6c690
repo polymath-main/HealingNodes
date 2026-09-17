@@ -1,0 +1,27 @@
+## 7. 4-Tier E2E Test Suite Architecture & Design Plan
+
+To ensure mathematical precision, physical compliance, and network robustness across all components, a **4-Tier Testing Architecture** is designed using Node.js built-in `node:test` and `node:assert`. This requires zero external npm packages and adheres strictly to Android Termux single-threaded constraints.
+
+```
+tests/
+├── tier1_unit_dsp/
+│   ├── test_ms_matrix.js          # Mid/Side phase extraction, polarity & angle math
+│   ├── test_crossover_limiter.js  # Butterworth filter curves & DynamicsCompressor specs
+│   ├── test_lerp_trajectory.js    # Smoothstep easing, fixed snapshot & convergence
+│   ├── test_ntp_math.js           # Median offset, jitter rejection & timestamp conversion
+│   └── test_noise_registers.js    # Voss-McCartney IIR state independence & slope
+├── tier2_component/
+│   ├── test_mode_engine.js        # ModeEngine state machine, tick, start/stop trajectory
+│   ├── test_media_engine.js       # MediaEngine state machine, URL, play, pause, broadcast
+│   └── test_audio_graph_mock.js   # Mock Web Audio API topology & parameter automation
+├── tier3_network/
+│   ├── test_socket_mesh.js        # Ephemeral server + multi-client simulation (N=1..8)
+│   ├── test_geometry_recalc.js    # 2*PI/N angle recalculation on join/leave/reconnect
+│   ├── test_late_join_sync.js     # Late-joining client playback state and sync recovery
+│   └── test_jitter_resilience.js  # Artificial network latency injection & lookahead buffer
+└── tier4_e2e/
+    ├── test_core_switching.js     # End-to-end Mode Core <-> Media Core switching
+    ├── test_circadian_cron.js     # Circadian scheduler preset triggers & transition
+    └── test_rest_api.js           # HTTP endpoints (/api/state, /api/trajectory, /api/core)
+```
+

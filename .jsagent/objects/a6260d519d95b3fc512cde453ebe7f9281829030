@@ -1,0 +1,4 @@
+### Defect 7: Late-Joining Media Sync & Position Tracking
+- **Location**: `src/core/MediaEngine.js:29-45`, `server.js:93-97`
+- **Impact**: When a new node connects during active media playback, it only receives `action: 'sync'`. It does not receive `isPlaying = true`, current track timestamp, or scheduled play time.
+

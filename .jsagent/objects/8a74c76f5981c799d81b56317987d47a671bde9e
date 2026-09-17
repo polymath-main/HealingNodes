@@ -1,0 +1,12 @@
+### Key Findings Matrix
+
+| Audit Domain | Status | Severity | Primary Defect |
+| :--- | :--- | :--- | :--- |
+| **1. Mid/Side Matrix** | **FAILED** | **CRITICAL** | Absence of decoding matrix; mono downmixing; polarity inversion on right nodes ($\theta = 3\pi/2$); rear node blares front dialogue due to `Math.abs(Math.cos)`. |
+| **2. Crossovers** | **FAILED** | **HIGH** | Not a crossover network; phone runs 2nd-order HPF while PC runs unconfigured 350Hz allpass, inducing severe room comb filtering; 2nd-order Butterworth summing yields $\pm 3\text{ dB}$ or nulls instead of Linkwitz-Riley flat summation. |
+| **3. Brickwall Limiter** | **FAILED** | **HIGH** | `DynamicsCompressorNode` max ratio is 20:1 (not $\infty:1$); 2ms attack without lookahead allows transient clipping; zero knee induces pumping; Core 1 completely lacks a limiter. |
+| **4. Spatial & Binaural** | **FAILED** | **CRITICAL** | Base grounding oscillator hijacked into Left channel of binaural merger; noise missing 2kHz lowpass; HRTF panner coordinates rotated $90^\circ$; Worklet state shared across channels; harmonic stacking ($i \bmod 4$) omitted. |
+| **5. Engine Lifecycle** | **FAILED** | **MEDIUM** | Race condition: `theaterDest` undefined if play event precedes user start gesture, crashing audio thread; `AudioContext` closed without proper resume handlers. |
+
+---
+
