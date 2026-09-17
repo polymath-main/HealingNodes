@@ -3,99 +3,556 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealingNodes - Trajectory Dashboard</title>
+    <title>HealingNodes — System Override Console</title>
     <style>
-        body { margin: 0; padding: 20px; background-color: #1a1a2e; color: #e2e2e2; font-family: 'Courier New', Courier, monospace; }
-        h1 { border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .panel { background-color: #16213e; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .stat-value { font-size: 1.5em; color: #43e8d8; font-weight: bold; }
-        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; }
-        .box { flex: 1; min-width: 200px; background: #0f172a; padding: 15px; border-radius: 6px; }
-        button { background-color: #0f3460; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: inherit; margin: 5px; width: 100%; transition: 0.3s; }
-        button:hover { background-color: #e94560; }
-        input[type="range"] { width: 100%; }
-        .slider-group { margin-top: 15px; }
+        :root {
+            --bg:     #0d0d1a;
+            --panel:  #141428;
+            --card:   #1a1a35;
+            --accent: #43e8d8;
+            --warn:   #e94560;
+            --purple: #9d4edd;
+            --text:   #d0d0e8;
+            --dim:    #6060a0;
+            --border: #2a2a50;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+        header {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: normal;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        .badge {
+            background: #1a3a1a;
+            color: #4caf50;
+            border: 1px solid #4caf50;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 0.75em;
+        }
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 16px;
+            max-width: 1400px;
+        }
+        @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .panel h2 {
+            margin: 0 0 14px 0;
+            font-size: 0.85em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--dim);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        /* Mesh status row */
+        .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+        .stat-box {
+            flex: 1; min-width: 100px;
+            background: var(--card);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-label { font-size: 0.7em; color: var(--dim); letter-spacing: 1px; }
+        .stat-value { font-size: 1.6em; color: var(--accent); font-weight: bold; }
+
+        /* Vector visualizer canvas */
+        #vector-canvas {
+            width: 100%;
+            height: 160px;
+            display: block;
+            background: var(--card);
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        /* Preset buttons grid */
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .preset-btn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 14px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85em;
+            text-align: left;
+            transition: border-color 0.2s, background 0.2s;
+            line-height: 1.4;
+        }
+        .preset-btn:hover { border-color: var(--accent); background: #1f1f40; }
+        .preset-btn.danger:hover { border-color: var(--warn); }
+        .preset-btn.special { border-color: var(--purple); color: var(--purple); }
+        .preset-btn.special:hover { background: #2a1040; }
+        .preset-name { font-weight: bold; display: block; margin-bottom: 4px; }
+        .preset-desc { font-size: 0.75em; color: var(--dim); }
+
+        /* Duration slider */
+        .slider-group { margin-bottom: 14px; }
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.8em;
+            color: var(--dim);
+        }
+        .slider-group label span { color: var(--accent); }
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        /* Manual override sliders */
+        .override-grid { display: flex; flex-direction: column; gap: 12px; }
+        .override-row { display: grid; grid-template-columns: 160px 1fr 70px; align-items: center; gap: 8px; }
+        .override-label { font-size: 0.8em; color: var(--dim); }
+        .override-value { font-size: 0.85em; color: var(--accent); text-align: right; }
+
+        /* Stop / action buttons */
+        .action-row { display: flex; gap: 10px; margin-top: 14px; }
+        .btn {
+            flex: 1;
+            padding: 11px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85em;
+            background: var(--card);
+            color: var(--text);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn:hover { background: #1f1f40; border-color: var(--accent); }
+        .btn.stop { color: var(--warn); border-color: var(--warn); }
+        .btn.stop:hover { background: #2a0f14; }
+        .btn.apply { color: var(--accent); border-color: var(--accent); }
+        .btn.apply:hover { background: #0f2a28; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #toast.show { opacity: 1; }
+
+        /* Span full width */
+        .full { grid-column: 1 / -1; }
     </style>
 </head>
 <body>
-    <h1>System Override Console</h1>
 
-    <div class="panel flex-row">
-        <div class="box">
-            <h2>Mesh Status</h2>
-            <p>Active Nodes: <span id="admin-nodes" class="stat-value">0</span></p>
+<header>
+    <h1>HealingNodes — Override Console</h1>
+    <span class="badge" id="conn-badge">OFFLINE</span>
+</header>
+
+<main>
+
+    <!-- ── Status ── -->
+    <div class="panel">
+        <h2>Mesh Status</h2>
+        <div class="stat-row">
+            <div class="stat-box">
+                <div class="stat-label">ACTIVE NODES</div>
+                <div class="stat-value" id="stat-nodes">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">f_base (Hz)</div>
+                <div class="stat-value" id="stat-freq">33.00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">BREATH (s)</div>
+                <div class="stat-value" id="stat-breath">10.00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">RATIO</div>
+                <div class="stat-value" id="stat-ratio">1.500</div>
+            </div>
         </div>
-        <div class="box">
-            <h2>Current Vector</h2>
-            <p>Freq: <span id="v-freq" class="stat-value">0</span> Hz</p>
-            <p>Breath: <span id="v-breath" class="stat-value">0</span> s</p>
-            <p>Ratio: <span id="v-ratio" class="stat-value">0</span></p>
-            <p>Orbit Vel: <span id="v-orbit" class="stat-value">0</span></p>
+        <div class="stat-row" style="margin-top:10px;">
+            <div class="stat-box">
+                <div class="stat-label">α NOISE</div>
+                <div class="stat-value" id="stat-alpha">1.00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">φ HUE (°)</div>
+                <div class="stat-value" id="stat-phi">200</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">ORBIT (r/s)</div>
+                <div class="stat-value" id="stat-orbit">0.000</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">BINAURAL (Hz)</div>
+                <div class="stat-value" id="stat-binaural">0</div>
+            </div>
         </div>
+
+        <h2 style="margin-top:18px;">Live Vector V(t)</h2>
+        <canvas id="vector-canvas" width="600" height="160"></canvas>
     </div>
 
+    <!-- ── Emotional Trajectory Presets ── -->
     <div class="panel">
-        <h2>Emotional Trajectory (Phase 2)</h2>
+        <h2>Emotional Trajectory Presets</h2>
+
         <div class="slider-group">
-            <label>Morph Duration: <span id="duration-val">5</span> Minutes</label>
+            <label>Morph Duration <span id="duration-val">5</span> min</label>
             <input type="range" id="duration-slider" min="1" max="60" value="5">
         </div>
-        
-        <div class="flex-row" style="margin-top:20px;">
-            <div class="box">
-                <button onclick="triggerTrajectory('sadness')">Catharsis (Minor 3rd, Brown Noise)</button>
-                <button onclick="triggerTrajectory('focused')">Flow State (Golden Ratio, Pink Noise)</button>
-                <button onclick="triggerTrajectory('energetic')">Energetic (Perfect 5th, White Noise)</button>
-            </div>
-            <div class="box">
-                <button onclick="triggerTrajectory('thinking')">Deep Thinking (Sub-Bass, Red Noise)</button>
-                <button onclick="triggerTrajectory('hybrid')" style="background-color: #7928ca;">Transcendental Hybrid (Quantum)</button>
-                <button onclick="triggerTrajectory('homeostasis')">Homeostasis (Baseline)</button>
-            </div>
+
+        <div class="preset-grid">
+            <button class="preset-btn" onclick="firePreset('homeostasis')">
+                <span class="preset-name">Homeostasis</span>
+                <span class="preset-desc">33Hz · Pink · 1.5 ratio · Baseline</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('focused')">
+                <span class="preset-name">Flow State</span>
+                <span class="preset-desc">40Hz · Pink · φ ratio · Focus block</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('sadness')">
+                <span class="preset-name">Catharsis</span>
+                <span class="preset-desc">30Hz · Brown · Minor 3rd · Slow orbit</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('energetic')">
+                <span class="preset-name">Energetic</span>
+                <span class="preset-desc">55Hz · White-Pink · P5 · Fast breath</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('thinking')">
+                <span class="preset-name">Deep Thinking</span>
+                <span class="preset-desc">33Hz · Red Noise · P4 · 4Hz Binaural</span>
+            </button>
+            <button class="preset-btn special" onclick="firePreset('hybrid')">
+                <span class="preset-name">Transcendental Hybrid</span>
+                <span class="preset-desc">108Hz · Polyrhythm · φ · Orbit + Sync</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('dawn')">
+                <span class="preset-name">Dawn Wake</span>
+                <span class="preset-desc">40Hz · Pink · φ · Gentle orbit</span>
+            </button>
+            <button class="preset-btn" onclick="firePreset('sleep')">
+                <span class="preset-name">Sleep Onset</span>
+                <span class="preset-desc">20Hz · Red · 1.0 ratio · Still</span>
+            </button>
+        </div>
+
+        <div class="action-row">
+            <button class="btn stop" onclick="stopTrajectory()">Stop Trajectory</button>
         </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-        
-        // Presets mapping
-        const PRESETS = {
-            'homeostasis': { f_base: 33, T_breath: 10, alpha_noise: 1.0, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 },
-            'sadness': { f_base: 30, T_breath: 12, alpha_noise: 2.0, phi_color: 240, harmonic_ratio: 1.2, orbital_velocity: 0, binaural_offset: 0 },
-            'focused': { f_base: 40, T_breath: 8, alpha_noise: 1.0, phi_color: 120, harmonic_ratio: 1.618, orbital_velocity: 0, binaural_offset: 0 },
-            'energetic': { f_base: 55, T_breath: 4, alpha_noise: 0.5, phi_color: 0, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 },
-            'thinking': { f_base: 33, T_breath: 15, alpha_noise: 2.5, phi_color: 280, harmonic_ratio: 1.333, orbital_velocity: 0, binaural_offset: 0 },
-            'hybrid': { f_base: 108, T_breath: 6.18, alpha_noise: 1.5, phi_color: 360, harmonic_ratio: 1.618, orbital_velocity: 0.05, binaural_offset: 4 }
-        };
+    <!-- ── Manual Vector Override ── -->
+    <div class="panel full">
+        <h2>Manual Override — V = [f_base, T_breath, α_noise, φ_color, harmonic_ratio, orbital_velocity, binaural_offset]</h2>
+        <div class="override-grid" id="override-grid">
+            <!-- Rendered by JS -->
+        </div>
+        <div class="action-row">
+            <button class="btn apply" onclick="applyManualOverride()">Apply Override (Instant)</button>
+            <button class="btn apply" onclick="applyManualOverrideWithMorph()">Apply with Morph Duration</button>
+        </div>
+    </div>
 
-        socket.on('connect', () => socket.emit('register', 'admin'));
+</main>
 
-        socket.on('admin_state_update', (data) => {
-            document.getElementById('admin-nodes').innerText = data.nodeCount;
-            if(data.state) {
-                document.getElementById('v-freq').innerText = data.state.f_base.toFixed(2);
-                document.getElementById('v-breath').innerText = data.state.T_breath.toFixed(2);
-                document.getElementById('v-ratio').innerText = data.state.harmonic_ratio.toFixed(3);
-                document.getElementById('v-orbit').innerText = data.state.orbital_velocity.toFixed(3);
+<div id="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+// ---------------------------------------------------------------------------
+// Presets — real-world sensed values
+// All 7 vector dimensions explicitly set.
+// Orbital velocity in rad/s; >0 = rotating spatial field.
+// Binaural offset in Hz; 4Hz = theta wave entrainment, 0 = off.
+// ---------------------------------------------------------------------------
+const PRESETS = {
+    homeostasis: {
+        f_base: 33, T_breath: 10, alpha_noise: 1.0,
+        phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0
+    },
+    focused: {
+        // 40Hz = gamma binding. φ (1.618) ratio = golden harmonic.
+        // Green hue (120°) = alertness. No orbit — static stable field.
+        f_base: 40, T_breath: 8, alpha_noise: 1.0,
+        phi_color: 120, harmonic_ratio: 1.618, orbital_velocity: 0, binaural_offset: 0
+    },
+    sadness: {
+        // 30Hz sub-gamma. Minor 3rd (1.2) — minor mode tension.
+        // Brown noise (α=2) — heavier, denser. Blue (240°). Slow drift.
+        f_base: 30, T_breath: 12, alpha_noise: 2.0,
+        phi_color: 240, harmonic_ratio: 1.2, orbital_velocity: 0.008, binaural_offset: 0
+    },
+    energetic: {
+        // 55Hz = upper beta/low gamma. Perfect 5th (1.5) — stable brightness.
+        // White-pink blend (α=0.5). Red-orange (0–30°). Fast breath. Light orbit.
+        f_base: 55, T_breath: 4, alpha_noise: 0.5,
+        phi_color: 15, harmonic_ratio: 1.5, orbital_velocity: 0.025, binaural_offset: 0
+    },
+    thinking: {
+        // 33Hz gamma anchor. P4 (1.333). Red noise (α=2.5) — deep contemplative.
+        // Purple (280°). 4Hz binaural = theta entrainment → deep focus.
+        f_base: 33, T_breath: 15, alpha_noise: 2.5,
+        phi_color: 280, harmonic_ratio: 1.333, orbital_velocity: 0, binaural_offset: 4
+    },
+    hybrid: {
+        // 108Hz = sacred/mantra tone (Aum harmonic). Golden ratio.
+        // α=1.5 mid-spectrum. Full-circle hue cycle (360 = 0). Orbital rotation.
+        // 6.18s = φ-based breath period. 4Hz binaural sync.
+        f_base: 108, T_breath: 6.18, alpha_noise: 1.5,
+        phi_color: 0, harmonic_ratio: 1.618, orbital_velocity: 0.05, binaural_offset: 4
+    },
+    dawn: {
+        // Circadian dawn: 40Hz gentle rise. φ ratio. Warm yellow (40°). Slow orbit.
+        f_base: 40, T_breath: 8, alpha_noise: 1.0,
+        phi_color: 40, harmonic_ratio: 1.618, orbital_velocity: 0.01, binaural_offset: 0
+    },
+    sleep: {
+        // Delta approach. 20Hz sub-delta. Still field. Red noise. Deep blue. Slow breath.
+        f_base: 20, T_breath: 18, alpha_noise: 2.8,
+        phi_color: 260, harmonic_ratio: 1.0, orbital_velocity: 0, binaural_offset: 0
+    }
+};
+
+// Slider config for manual override UI
+const SLIDER_CONFIG = [
+    { key: 'f_base',          label: 'f_base (Hz)',         min: 10,   max: 200,  step: 0.5,   decimals: 1 },
+    { key: 'T_breath',        label: 'T_breath (s)',        min: 2,    max: 30,   step: 0.5,   decimals: 1 },
+    { key: 'alpha_noise',     label: 'α noise (1=pink)',    min: 0,    max: 3,    step: 0.05,  decimals: 2 },
+    { key: 'phi_color',       label: 'φ color hue (°)',     min: 0,    max: 360,  step: 1,     decimals: 0 },
+    { key: 'harmonic_ratio',  label: 'harmonic ratio',      min: 1.0,  max: 3.0,  step: 0.001, decimals: 3 },
+    { key: 'orbital_velocity',label: 'orbital vel (r/s)',   min: 0,    max: 0.2,  step: 0.001, decimals: 3 },
+    { key: 'binaural_offset', label: 'binaural offset (Hz)',min: 0,    max: 40,   step: 0.5,   decimals: 1 },
+];
+
+// Build manual override sliders
+const grid = document.getElementById('override-grid');
+SLIDER_CONFIG.forEach(cfg => {
+    const row = document.createElement('div');
+    row.className = 'override-row';
+    const defaultVal = PRESETS.homeostasis[cfg.key];
+    row.innerHTML = `
+        <div class="override-label">${cfg.label}</div>
+        <input type="range" id="ovr-${cfg.key}"
+               min="${cfg.min}" max="${cfg.max}" step="${cfg.step}" value="${defaultVal}">
+        <div class="override-value" id="ovr-val-${cfg.key}">${defaultVal.toFixed(cfg.decimals)}</div>
+    `;
+    grid.appendChild(row);
+
+    // Live label update
+    row.querySelector(`#ovr-${cfg.key}`).addEventListener('input', (e) => {
+        document.getElementById(`ovr-val-${cfg.key}`).innerText =
+            parseFloat(e.target.value).toFixed(cfg.decimals);
+    });
+});
+
+// Duration slider
+document.getElementById('duration-slider').addEventListener('input', (e) => {
+    document.getElementById('duration-val').innerText = e.target.value;
+});
+
+// ---------------------------------------------------------------------------
+// Socket
+// ---------------------------------------------------------------------------
+const socket = io();
+
+socket.on('connect', () => {
+    socket.emit('register', 'admin');
+    document.getElementById('conn-badge').innerText = 'ONLINE';
+    document.getElementById('conn-badge').style.background = '#1a3a1a';
+});
+socket.on('disconnect', () => {
+    document.getElementById('conn-badge').innerText = 'OFFLINE';
+    document.getElementById('conn-badge').style.background = '#3a1a1a';
+});
+
+let liveState = { ...PRESETS.homeostasis };
+
+socket.on('admin_state_update', (data) => {
+    document.getElementById('stat-nodes').innerText   = data.nodeCount;
+    if (!data.state) return;
+    liveState = data.state;
+    const s = data.state;
+    document.getElementById('stat-freq').innerText    = s.f_base.toFixed(2);
+    document.getElementById('stat-breath').innerText  = s.T_breath.toFixed(2);
+    document.getElementById('stat-ratio').innerText   = s.harmonic_ratio.toFixed(3);
+    document.getElementById('stat-alpha').innerText   = s.alpha_noise.toFixed(2);
+    document.getElementById('stat-phi').innerText     = Math.round(s.phi_color);
+    document.getElementById('stat-orbit').innerText   = s.orbital_velocity.toFixed(3);
+    document.getElementById('stat-binaural').innerText= s.binaural_offset.toFixed(1);
+    drawVectorCanvas(s);
+});
+
+// ---------------------------------------------------------------------------
+// Vector Visualizer — normalized bar graph of V, animated per update
+// ---------------------------------------------------------------------------
+const vc   = document.getElementById('vector-canvas');
+const vctx = vc.getContext('2d');
+
+const VECTOR_KEYS = ['f_base','T_breath','alpha_noise','phi_color','harmonic_ratio','orbital_velocity','binaural_offset'];
+const VECTOR_RANGES = {
+    f_base: [10, 200], T_breath: [2, 30], alpha_noise: [0, 3],
+    phi_color: [0, 360], harmonic_ratio: [1, 3],
+    orbital_velocity: [0, 0.2], binaural_offset: [0, 40]
+};
+const VECTOR_LABELS = ['f', 'T', 'α', 'φ', 'r', 'ω', 'Δf'];
+
+function drawVectorCanvas(state) {
+    const W = vc.width  = vc.clientWidth;
+    const H = vc.height = vc.clientHeight || 160;
+    vctx.clearRect(0, 0, W, H);
+
+    const N     = VECTOR_KEYS.length;
+    const barW  = Math.floor(W / N) - 4;
+    const padL  = 2;
+
+    VECTOR_KEYS.forEach((key, i) => {
+        const [lo, hi] = VECTOR_RANGES[key];
+        const norm      = Math.max(0, Math.min(1, (state[key] - lo) / (hi - lo)));
+        const barH      = Math.floor(norm * (H - 36));
+        const x         = padL + i * (barW + 4);
+        const y         = H - 20 - barH;
+
+        // Hue from phi_color for current bar, or fixed for others
+        const hue = (key === 'phi_color') ? state.phi_color : (i * 52 + 170) % 360;
+        vctx.fillStyle = `hsla(${hue}, 70%, 55%, 0.85)`;
+        vctx.fillRect(x, y, barW, barH);
+
+        // Value label
+        vctx.fillStyle = '#43e8d8';
+        vctx.font = '10px Courier New';
+        vctx.textAlign = 'center';
+        let disp = state[key];
+        if      (key === 'phi_color')       disp = Math.round(disp) + '°';
+        else if (key === 'harmonic_ratio')  disp = disp.toFixed(3);
+        else if (key === 'orbital_velocity')disp = disp.toFixed(3);
+        else if (key === 'binaural_offset') disp = disp.toFixed(1);
+        else                                 disp = disp.toFixed(1);
+        vctx.fillText(disp, x + barW / 2, y - 3);
+
+        // Key label
+        vctx.fillStyle = '#6060a0';
+        vctx.fillText(VECTOR_LABELS[i], x + barW / 2, H - 5);
+    });
+}
+
+// Initial draw
+drawVectorCanvas(PRESETS.homeostasis);
+
+// ---------------------------------------------------------------------------
+// Actions
+// ---------------------------------------------------------------------------
+function getDurationMs() {
+    return parseInt(document.getElementById('duration-slider').value, 10) * 60 * 1000;
+}
+
+function firePreset(key) {
+    const target = PRESETS[key];
+    fetch('/api/trajectory/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetState: target, durationMs: getDurationMs() })
+    }).then(r => r.json()).then(() => toast(`Trajectory: ${key}`));
+}
+
+function stopTrajectory() {
+    fetch('/api/trajectory/stop', { method: 'POST' })
+        .then(r => r.json()).then(() => toast('Trajectory stopped — state frozen.'));
+}
+
+function readOverrideSliders() {
+    const v = {};
+    SLIDER_CONFIG.forEach(cfg => {
+        v[cfg.key] = parseFloat(document.getElementById(`ovr-${cfg.key}`).value);
+    });
+    return v;
+}
+
+function applyManualOverride() {
+    fetch('/api/trajectory/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetState: readOverrideSliders(), durationMs: 500 })
+    }).then(() => toast('Override applied (instant).'));
+}
+
+function applyManualOverrideWithMorph() {
+    fetch('/api/trajectory/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetState: readOverrideSliders(), durationMs: getDurationMs() })
+    }).then(() => toast(`Override morphing over ${document.getElementById('duration-val').innerText} min.`));
+}
+
+// Sync override sliders from live state when admin page loads
+function syncSlidersFromState() {
+    fetch('/api/state').then(r => r.json()).then(data => {
+        if (!data.state) return;
+        SLIDER_CONFIG.forEach(cfg => {
+            const el = document.getElementById(`ovr-${cfg.key}`);
+            const vl = document.getElementById(`ovr-val-${cfg.key}`);
+            if (el) {
+                el.value = data.state[cfg.key];
+                vl.innerText = parseFloat(data.state[cfg.key]).toFixed(cfg.decimals);
             }
         });
+    }).catch(() => {});
+}
+syncSlidersFromState();
 
-        document.getElementById('duration-slider').addEventListener('input', (e) => {
-            document.getElementById('duration-val').innerText = e.target.value;
-        });
-
-        function triggerTrajectory(presetKey) {
-            const mins = document.getElementById('duration-slider').value;
-            const ms = mins * 60 * 1000;
-            const target = PRESETS[presetKey];
-            
-            fetch('/api/trajectory/start', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ targetState: target, durationMs: ms })
-            }).then(() => alert(`Started Trajectory: ${presetKey} over ${mins} mins`));
-        }
-    </script>
+// Toast notification
+let toastTimer = null;
+function toast(msg) {
+    const el = document.getElementById('toast');
+    el.innerText = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+</script>
 </body>
 </html>
