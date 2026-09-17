@@ -1,0 +1,21 @@
+## 6. Breathing LFO (Corrected)
+
+The breathing cycle has angular frequency:
+$$\omega_{breath} = \frac{2\pi}{T_{breath}}$$
+
+The breath signal:
+$$\text{breath}(t) = \sin(\omega_{breath} \cdot t_{audio})$$
+
+Normalized to $[0, 1]$:
+$$\text{breathNorm}(t) = \frac{\text{breath}(t) + 1}{2}$$
+
+Applied to `breathGain` (amplitude modulation — the actual audible breath):
+$$g_{breath}(t) = 0.75 + 0.25 \cdot \text{breathNorm}(t) \quad \in [0.75, 1.0]$$
+
+Applied visually (canvas pulse radius modulation):
+$$r_{pulse}(t) = r_{base} + \text{vibration} \cdot (0.08 \cdot r_{base}) + \text{breath}(t) \cdot (0.06 \cdot r_{base})$$
+
+**Critical fix**: The original code modulated only `breathingFilter.frequency` (400±200 Hz). This produces a barely perceptible timbral wobble, not an audible breath. The corrected implementation modulates `breathGain.gain` directly, producing real amplitude breathing.
+
+---
+

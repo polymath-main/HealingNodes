@@ -1,0 +1,58 @@
+# HealingNodes — Phase 2 Implementation Plan (Complete & Corrected)
+
+/* __JAGE_REF_md_section_1__architectural_synthesis__ */
+/* __JAGE_REF_md_section_2__the_environmental_state_vector_v__ */
+Z plane around listener. |
+| Binaural offset | $\Delta f$ | Hz | 0–40 | L/R beat frequency. 4Hz=theta, 10Hz=alpha, 40Hz=gamma. |
+
+---
+
+## 3. Server-Side Continuous Vector Interpolation (Corrected)
+
+/* __JAGE_REF_md_section_the_lerp_bug__fixed___ */
+/* __JAGE_REF_md_section_smoothstep_easing__ */
+Zero velocity at $t=0$ and $t=1$ (no abrupt start/stop)
+- Maximum rate of change at $t=0.5$
+- Clean arrival at target — $S(1) = 1$ exactly
+
+/* __JAGE_REF_md_section_broadcast_format__ */
+## 4. Spectral Noise — AudioWorklet (Corrected)
+
+/* __JAGE_REF_md_section_pink_noise__voss_mccartney_iir_cascade__ */
+/* __JAGE_REF_md_section_brown_noise__leaky_integrator__ */
+/* __JAGE_REF_md_section_blend_formula__ */
+/* __JAGE_REF_md_section_5__audio_signal_graph__ */
+/* __JAGE_REF_md_section_why_binaural_bypasses_pannernode__ */
+## 6. Harmonic Gliding & Spatial Orbit
+
+/* __JAGE_REF_md_section_node_frequency__per_node___ */
+/* __JAGE_REF_md_section_orbital_spatial_panning__ */
+Z.setValueAtTime(r * Math.sin(angle), audioCtx.currentTime);
+```
+
+---
+
+/* __JAGE_REF_md_section_7__breathing_lfo__ */
+## 8. Visual Engine (Corrected)
+
+/* __JAGE_REF_md_section_color___hsl_from_phi_color__ */
+/* __JAGE_REF_md_section_visual_pulsation___sub_harmonic__ */
+/* __JAGE_REF_md_section_layer_geometry__ */
+/* __JAGE_REF_md_section_9__admin_presets___real_world_sensed_values__ */
+## 10. API Specification
+
+/* __JAGE_REF_md_section__post__api_trajectory_start___ */
+/* __JAGE_REF_md_section__post__api_trajectory_stop___ */
+/* __JAGE_REF_md_section__get__api_state___ */
+## 11. Circadian Automation Schedule
+
+`node-cron` fires automatic morphs (45-minute transition) at physiologically motivated hours:
+
+| Hour | Target State | Notes |
+|------|-------------|-------|
+| 06:00 | Dawn Wake (40Hz, φ, Yellow, ω=0.01) | Sunrise cortisol + alpha wake |
+| 09:00 | Flow State (40Hz, φ, Green) | Peak cognitive window |
+| 13:00 | Homeostasis (33Hz) | Post-lunch parasympathetic anchor |
+| 17:00 | Late Creative (38Hz, 1.2, Purple, Δf=2Hz) | Beta creativity |
+| 21:00 | Evening Wind-Down (30Hz, Brown, Blue) | Parasympathetic shift |
+| 23:00 | Sleep Onset (20Hz, Red, Indigo) | Delta descent |

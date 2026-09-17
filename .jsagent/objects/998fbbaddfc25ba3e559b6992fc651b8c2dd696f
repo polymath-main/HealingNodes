@@ -1,0 +1,11 @@
+### Color — HSL from phi_color
+
+`phi_color` is a hue angle in degrees (0–360). It is NOT a radian offset for `Math.sin`.
+
+```javascript
+const hue = (phi_color + (currentAngle * 180/Math.PI * 0.3)) % 360;
+const sat  = 0.55 + breathNorm * 0.25;
+const lit  = 0.35 + breathNorm * 0.15;
+const [r, g, b] = hslToRgb(hue, sat, lit);
+```
+

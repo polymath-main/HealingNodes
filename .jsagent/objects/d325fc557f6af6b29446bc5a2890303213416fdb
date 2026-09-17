@@ -1,0 +1,9 @@
+function stopEngine() {
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    mediaBuffer = null;
+    mediaSource = null;
+    isAudioActive = false;
+    document.getElementById('ui-container').classList.remove('fade-out');
+    document.getElementById('status-text').innerText = "Engine Stopped.";
+    document.getElementById('start-btn').innerText = `Enter ${activeCore === 'mode' ? 'Daydream' : 'Theater'}`;
+}

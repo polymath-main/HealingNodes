@@ -1,0 +1,14 @@
+## 3. Connectivity & Synchronization
+
+- **Transport**: Socket.io (WebSocket with HTTP long-poll fallback).
+- **NTP-style Clock Sync**: The client fires 10 `sync_ping` messages on connect. Each pong returns `serverTime` and the original `clientTime`. RTT = `now - clientTime`. Clock offset = `serverTime - clientTime - RTT/2`. Median of 10 samples is used (robust against outlier spikes).
+- **Audio Scheduling Lookahead**: The server broadcasts `targetSyncTime = Date.now() + 2500ms`. The client converts this to a local AudioContext timestamp:
+  ```
+  t_audio = audioCtx.currentTime + (targetSyncTime - serverTimeOffset - Date.now()) / 1000 + 0.05s
+  ```
+  All `setTargetAtTime()` calls use `t_audio` as the start point, ensuring all nodes apply the parameter change simultaneously regardless of individual network latency.
+- **Jitter**: `setTargetAtTime(value, t, timeConstant=2.0)` provides an exponential ramp — 63% of the change in 2s, eliminating click artifacts from sudden parameter jumps.
+- **Auto-reconnect**: Socket.io built-in exponential backoff (`reconnectionDelayMax: 5000`).
+
+---
+

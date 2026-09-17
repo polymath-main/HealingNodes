@@ -1,0 +1,32 @@
+## 5. Audio Signal Graph
+
+```
+White Noise (Math.random)
+    │
+    ▼ Voss-McCartney IIR + Leaky Integrator + blend
+AudioWorkletNode 'spectral-noise' [param: alpha]
+    │
+    ▼ BiquadFilter (lowpass, 2kHz, Q=0.707)  ← anti-alias, keeps sub-sonic warmth
+    │
+    ▼ GainNode (noiseGain = 0.55)
+    │
+    ▼ PannerNode (HRTF, inverse, refDist=1m, rolloff=1)
+    │                                         ▲
+    │              OscillatorNode (sine)       │
+    │              freq = f_base × harmonic_ratio
+    │                  │
+    │              GainNode (oscGain = 0.35) ──┘
+    │
+    ▼ GainNode (breathGain) ← animated: 0.75 + 0.25·breathNorm(t) @ RAF 60fps
+    │
+    ▼ GainNode (masterGain = 0.6)
+    │
+    ├──────────────────────────────────────────────── AudioDestinationNode
+    │
+    └── ChannelMergerNode (2ch)
+           ├─ [L] OscillatorNode (f_local)         ← binauralOscL
+           └─ [R] OscillatorNode (f_local + Δf)    ← binauralOscR
+        (gain 0 when Δf=0, 0.15 when Δf>0)
+        → masterGain (bypasses PannerNode to preserve ILD)
+```
+

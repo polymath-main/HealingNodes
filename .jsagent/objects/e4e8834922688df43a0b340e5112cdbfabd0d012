@@ -1,0 +1,10 @@
+function scheduleModeUpdate(state) {
+    let tDelta = state.targetSyncTime - serverTimeOffset - Date.now();
+    if (tDelta < 0) tDelta = 0;
+    const t = audioCtx.currentTime + (tDelta / 1000) + 0.1;
+    const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+    
+    baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+    binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+    if(noiseNode) noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+}

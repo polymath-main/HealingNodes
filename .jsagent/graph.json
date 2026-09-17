@@ -1,22 +1,52 @@
 {
   "nodes": {
-    "PHASE2_IMPLEMENTATION_PLAN.md:TrajectoryManager": {
+    "PHASE2_IMPLEMENTATION_PLAN.md:progress": {
       "file": "PHASE2_IMPLEMENTATION_PLAN.md",
-      "name": "TrajectoryManager",
-      "type": "Class",
-      "startLine": 31
+      "name": "progress",
+      "type": "Variable",
+      "startLine": 43
     },
-    "PHASE2_IMPLEMENTATION_PLAN.md:SpectralNoiseProcessor": {
+    "PHASE2_IMPLEMENTATION_PLAN.md:hue": {
       "file": "PHASE2_IMPLEMENTATION_PLAN.md",
-      "name": "SpectralNoiseProcessor",
-      "type": "Class",
-      "startLine": 88
+      "name": "hue",
+      "type": "Variable",
+      "startLine": 193
     },
-    "PHASE2_IMPLEMENTATION_PLAN.md:applyHarmonicUpdate": {
+    "PHASE2_IMPLEMENTATION_PLAN.md:sat": {
       "file": "PHASE2_IMPLEMENTATION_PLAN.md",
-      "name": "applyHarmonicUpdate",
-      "type": "Function",
-      "startLine": 143
+      "name": "sat",
+      "type": "Variable",
+      "startLine": 194
+    },
+    "PHASE2_IMPLEMENTATION_PLAN.md:lit": {
+      "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+      "name": "lit",
+      "type": "Variable",
+      "startLine": 195
+    },
+    "PHASE3_THEATER_ARCHITECTURE.md:isPhone": {
+      "file": "PHASE3_THEATER_ARCHITECTURE.md",
+      "name": "isPhone",
+      "type": "Variable",
+      "startLine": 15
+    },
+    "PHASE3_THEATER_ARCHITECTURE.md:cutoffFreq": {
+      "file": "PHASE3_THEATER_ARCHITECTURE.md",
+      "name": "cutoffFreq",
+      "type": "Variable",
+      "startLine": 16
+    },
+    "PHASE3_THEATER_ARCHITECTURE.md:crossover": {
+      "file": "PHASE3_THEATER_ARCHITECTURE.md",
+      "name": "crossover",
+      "type": "Variable",
+      "startLine": 19
+    },
+    "PHASE3_THEATER_ARCHITECTURE.md:safetyLimiter": {
+      "file": "PHASE3_THEATER_ARCHITECTURE.md",
+      "name": "safetyLimiter",
+      "type": "Variable",
+      "startLine": 25
     },
     "public/app.js:isAudioActive": {
       "file": "public/app.js",
@@ -24,101 +54,137 @@
       "type": "Variable",
       "startLine": 2
     },
-    "public/app.js:wakeLock": {
+    "public/app.js:activeCore": {
       "file": "public/app.js",
-      "name": "wakeLock",
+      "name": "activeCore",
       "type": "Variable",
       "startLine": 3
-    },
-    "public/app.js:currentV": {
-      "file": "public/app.js",
-      "name": "currentV",
-      "type": "Variable",
-      "startLine": 10
-    },
-    "public/app.js:currentAngleRads": {
-      "file": "public/app.js",
-      "name": "currentAngleRads",
-      "type": "Variable",
-      "startLine": 11
-    },
-    "public/app.js:baseNodeAngle": {
-      "file": "public/app.js",
-      "name": "baseNodeAngle",
-      "type": "Variable",
-      "startLine": 12
     },
     "public/app.js:timeOffsets": {
       "file": "public/app.js",
       "name": "timeOffsets",
       "type": "Variable",
-      "startLine": 13
+      "startLine": 7
     },
     "public/app.js:serverTimeOffset": {
       "file": "public/app.js",
       "name": "serverTimeOffset",
       "type": "Variable",
-      "startLine": 14
+      "startLine": 8
+    },
+    "public/app.js:baseNodeAngle": {
+      "file": "public/app.js",
+      "name": "baseNodeAngle",
+      "type": "Variable",
+      "startLine": 9
+    },
+    "public/app.js:currentV": {
+      "file": "public/app.js",
+      "name": "currentV",
+      "type": "Variable",
+      "startLine": 12
+    },
+    "public/app.js:currentAngleRads": {
+      "file": "public/app.js",
+      "name": "currentAngleRads",
+      "type": "Variable",
+      "startLine": 13
+    },
+    "public/app.js:mediaBuffer": {
+      "file": "public/app.js",
+      "name": "mediaBuffer",
+      "type": "Variable",
+      "startLine": 17
+    },
+    "public/app.js:mediaSource": {
+      "file": "public/app.js",
+      "name": "mediaSource",
+      "type": "Variable",
+      "startLine": 18
+    },
+    "public/app.js:currentMediaUrl": {
+      "file": "public/app.js",
+      "name": "currentMediaUrl",
+      "type": "Variable",
+      "startLine": 19
     },
     "public/app.js:workletCode": {
       "file": "public/app.js",
       "name": "workletCode",
       "type": "Variable",
-      "startLine": 16
+      "startLine": 21
     },
     "public/app.js:SpectralNoiseProcessor": {
       "file": "public/app.js",
       "name": "SpectralNoiseProcessor",
       "type": "Class",
-      "startLine": 17
-    },
-    "public/app.js:requestWakeLock": {
-      "file": "public/app.js",
-      "name": "requestWakeLock",
-      "type": "Function",
-      "startLine": 51
+      "startLine": 22
     },
     "public/app.js:initNetwork": {
       "file": "public/app.js",
       "name": "initNetwork",
       "type": "Function",
-      "startLine": 61
+      "startLine": 50
     },
-    "public/app.js:initAudio": {
+    "public/app.js:loadMediaBuffer": {
       "file": "public/app.js",
-      "name": "initAudio",
+      "name": "loadMediaBuffer",
       "type": "Function",
-      "startLine": 86
+      "startLine": 98
     },
-    "public/app.js:stopAudio": {
+    "public/app.js:initEngine": {
       "file": "public/app.js",
-      "name": "stopAudio",
+      "name": "initEngine",
       "type": "Function",
-      "startLine": 144
+      "startLine": 107
     },
-    "public/app.js:scheduleAudioUpdate": {
+    "public/app.js:stopEngine": {
       "file": "public/app.js",
-      "name": "scheduleAudioUpdate",
+      "name": "stopEngine",
       "type": "Function",
-      "startLine": 151
+      "startLine": 123
+    },
+    "public/app.js:initModeEngine": {
+      "file": "public/app.js",
+      "name": "initModeEngine",
+      "type": "Function",
+      "startLine": 136
+    },
+    "public/app.js:scheduleModeUpdate": {
+      "file": "public/app.js",
+      "name": "scheduleModeUpdate",
+      "type": "Function",
+      "startLine": 169
+    },
+    "public/app.js:initMediaEngine": {
+      "file": "public/app.js",
+      "name": "initMediaEngine",
+      "type": "Function",
+      "startLine": 183
+    },
+    "public/app.js:scheduleMediaPlayback": {
+      "file": "public/app.js",
+      "name": "scheduleMediaPlayback",
+      "type": "Function",
+      "startLine": 208
     },
     "public/app.js:canvas": {
       "file": "public/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 169
+      "startLine": 250
     },
     "public/app.js:ctx": {
       "file": "public/app.js",
       "name": "ctx",
       "type": "Variable",
-      "startLine": 170
+      "startLine": 251
     },
     "public/app.js:drawDaydream": {
       "file": "public/app.js",
       "name": "drawDaydream",
       "type": "Function",
-      "startLine": 179
+      "startLine": 260
     },
     "server.js:express": {
       "file": "server.js",
@@ -132,47 +198,101 @@
       "type": "Variable",
       "startLine": 2
     },
+    "server.js:multer": {
+      "file": "server.js",
+      "name": "multer",
+      "type": "Variable",
+      "startLine": 4
+    },
+    "server.js:fs": {
+      "file": "server.js",
+      "name": "fs",
+      "type": "Variable",
+      "startLine": 5
+    },
+    "server.js:path": {
+      "file": "server.js",
+      "name": "path",
+      "type": "Variable",
+      "startLine": 6
+    },
+    "server.js:mediaDir": {
+      "file": "server.js",
+      "name": "mediaDir",
+      "type": "Variable",
+      "startLine": 9
+    },
+    "server.js:storage": {
+      "file": "server.js",
+      "name": "storage",
+      "type": "Variable",
+      "startLine": 12
+    },
+    "server.js:upload": {
+      "file": "server.js",
+      "name": "upload",
+      "type": "Variable",
+      "startLine": 16
+    },
     "server.js:app": {
       "file": "server.js",
       "name": "app",
       "type": "Variable",
-      "startLine": 5
+      "startLine": 18
     },
     "server.js:server": {
       "file": "server.js",
       "name": "server",
       "type": "Variable",
-      "startLine": 6
+      "startLine": 19
     },
     "server.js:io": {
       "file": "server.js",
       "name": "io",
       "type": "Variable",
-      "startLine": 7
+      "startLine": 20
     },
     "server.js:nodes": {
       "file": "server.js",
       "name": "nodes",
       "type": "Variable",
-      "startLine": 13
+      "startLine": 25
+    },
+    "server.js:activeCore": {
+      "file": "server.js",
+      "name": "activeCore",
+      "type": "Variable",
+      "startLine": 26
     },
     "server.js:TrajectoryManager": {
       "file": "server.js",
       "name": "TrajectoryManager",
       "type": "Class",
-      "startLine": 15
+      "startLine": 29
     },
     "server.js:trajectory": {
       "file": "server.js",
       "name": "trajectory",
       "type": "Variable",
-      "startLine": 84
+      "startLine": 91
+    },
+    "server.js:currentMediaState": {
+      "file": "server.js",
+      "name": "currentMediaState",
+      "type": "Variable",
+      "startLine": 94
+    },
+    "server.js:broadcastMediaState": {
+      "file": "server.js",
+      "name": "broadcastMediaState",
+      "type": "Function",
+      "startLine": 96
     },
     "server.js:PORT": {
       "file": "server.js",
       "name": "PORT",
       "type": "Variable",
-      "startLine": 117
+      "startLine": 176
     }
   },
   "edges": []

@@ -1,0 +1,3 @@
+## 2. Hardware Safety & Physics Constraints (The Excursion Limiter)
+Different devices (Nodes) have vastly different physical acoustic capacities. A subwoofer can handle 30Hz; a phone speaker physically cannot reproduce below ~150Hz.
+

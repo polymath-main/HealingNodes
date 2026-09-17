@@ -1,0 +1,15 @@
+## 9. Automation & Circadian Scheduling
+
+`node-cron` fires automatic morphs at physiologically-motivated times (45-minute transition):
+
+| Time  | State              | Rationale                                         |
+|-------|--------------------|---------------------------------------------------|
+| 06:00 | Dawn Wake          | Cortisol rise. Alpha/Beta boundary. Warm sunrise hue. |
+| 09:00 | Flow State         | Peak cognitive window. 40Hz gamma. Golden ratio. |
+| 13:00 | Homeostasis        | Post-lunch dip mitigation. Return to anchor.     |
+| 17:00 | Late Creative      | Beta creativity. Slight theta binaural. Violet.  |
+| 21:00 | Evening Wind-Down  | Parasympathetic shift. Brown noise. Blue hue.    |
+| 23:00 | Sleep Onset        | Delta approach. Sub-20Hz. Red noise. Still field.|
+
+---
+

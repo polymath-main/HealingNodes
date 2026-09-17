@@ -1,0 +1,103 @@
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+
+// Ensure media directory exists
+const mediaDir = path.join(__dirname, 'public', 'media');
+if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir, { recursive: true });
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, mediaDir),
+    filename: (req, file, cb) => cb(null, 'theater_track.mp3') // Overwrite for simplicity in V1
+});
+const upload = multer({ storage: storage });
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+app.use(express.static('public'));
+app.use(express.json());
+
+let nodes = [];
+let activeCore = 'mode'; // 'mode' or 'media'
+
+// --- CORE 1: Mode Engine (Trajectory Manager) ---
+/* __JAGE_REF_js_block_TrajectoryManager__ */
+const trajectory = new TrajectoryManager();
+
+// --- CORE 2: Media Engine (Spatial Theater) ---
+let currentMediaState = { isPlaying: false, url: '/media/theater_track.mp3' };
+
+/* __JAGE_REF_js_block_broadcastMediaState__ */
+
+// --- REST APIs ---
+app.post('/api/core/switch', (req, res) => {
+    activeCore = req.body.core;
+    console.log(`[Orchestrator] Core switched to: ${activeCore}`);
+    io.emit('core_switch', { activeCore });
+    res.json({ success: true, activeCore });
+});
+
+// Mode Engine APIs
+app.post('/api/trajectory/start', (req, res) => {
+    trajectory.startTrajectory(req.body.targetState, req.body.durationMs);
+    res.json({ success: true });
+});
+app.post('/api/trajectory/stop', (req, res) => {
+    trajectory.stopTrajectory();
+    res.json({ success: true });
+});
+
+// Media Engine APIs
+app.post('/api/media/upload', upload.single('track'), (req, res) => {
+    console.log('[Media Engine] New track uploaded.');
+    res.json({ success: true, url: '/media/theater_track.mp3' });
+});
+
+app.post('/api/media/play', (req, res) => {
+    currentMediaState.isPlaying = true;
+    const executionTime = Date.now() + 3000; // 3 seconds for clients to fetch and buffer
+    console.log(`[Media Engine] PLAY broadcast. Execution time: ${executionTime}`);
+    broadcastMediaState('play', executionTime);
+    res.json({ success: true });
+});
+
+app.post('/api/media/pause', (req, res) => {
+    currentMediaState.isPlaying = false;
+    console.log(`[Media Engine] PAUSE broadcast.`);
+    broadcastMediaState('pause');
+    res.json({ success: true });
+});
+
+// --- Socket Events ---
+io.on('connection', (socket) => {
+    socket.on('register', (role) => {
+        if (role === 'client') {
+            nodes.push(socket.id);
+            socket.emit('core_switch', { activeCore }); // Tell them which engine to boot
+            if (activeCore === 'mode') trajectory.broadcastState();
+            else broadcastMediaState('sync'); // Resync new node to media
+        }
+    });
+
+    socket.on('sync_ping', (clientTime) => {
+        socket.emit('sync_pong', { clientTime: clientTime, serverTime: Date.now() });
+    });
+
+    socket.on('disconnect', () => {
+        if (nodes.includes(socket.id)) {
+            nodes = nodes.filter(id => id !== socket.id);
+            if (activeCore === 'mode') trajectory.broadcastState();
+            else broadcastMediaState('sync');
+        }
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`[HealingNodes Dual-Core] Engine running on http://0.0.0.0:${PORT}`);
+});

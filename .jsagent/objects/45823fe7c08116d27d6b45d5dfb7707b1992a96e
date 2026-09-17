@@ -1,0 +1,32 @@
+async function initModeEngine() {
+    const masterGain = audioCtx.createGain(); masterGain.gain.value = 0.316; masterGain.connect(audioCtx.destination);
+    
+    // Hard-pan Binaural via ChannelMerger (Fix for Binaural blending bug)
+    const merger = audioCtx.createChannelMerger(2);
+    merger.connect(masterGain);
+
+    const baseOscGain = audioCtx.createGain(); baseOscGain.gain.value = 0.8;
+    const binOscGain = audioCtx.createGain(); binOscGain.gain.value = 0.8;
+    
+    baseOscGain.connect(merger, 0, 0); // L
+    binOscGain.connect(merger, 0, 1);  // R
+
+    baseOsc = audioCtx.createOscillator(); binauralOsc = audioCtx.createOscillator();
+    const initialFreq = currentV.f_base * currentV.harmonic_ratio;
+    baseOsc.frequency.value = initialFreq; binauralOsc.frequency.value = initialFreq + currentV.binaural_offset;
+    baseOsc.connect(baseOscGain); binauralOsc.connect(binOscGain);
+
+    panner3D = audioCtx.createPanner(); panner3D.panningModel = "HRTF"; panner3D.connect(masterGain);
+    breathingFilter = audioCtx.createGain(); breathingFilter.connect(panner3D); // VCA amplitude mod
+
+    try {
+        if (audioCtx.audioWorklet) {
+            const blob = new Blob([workletCode], { type: "application/javascript" });
+            await audioCtx.audioWorklet.addModule(URL.createObjectURL(blob));
+            noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+            noiseNode.connect(breathingFilter);
+        }
+    } catch (e) { console.warn('No Worklet', e); noiseNode = null; }
+
+    baseOsc.start(); binauralOsc.start();
+}

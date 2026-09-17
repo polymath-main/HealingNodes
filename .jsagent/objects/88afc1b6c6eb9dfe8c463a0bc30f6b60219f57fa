@@ -1,0 +1,8 @@
+### Visual Pulsation — Sub-Harmonic
+
+`f_base` (e.g. 33Hz) is above the Nyquist frequency of 60fps display (30Hz). Directly drawing `Math.sin(t · 2π · 33)` produces aliased noise. Corrected to sub-harmonic:
+
+$$f_{visual} = \frac{f_{base}}{300}$$
+
+At 33Hz → $f_{visual} \approx 0.11$ Hz → visible slow pulse every ~9 seconds.
+

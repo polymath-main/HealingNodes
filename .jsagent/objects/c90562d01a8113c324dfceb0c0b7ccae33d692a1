@@ -1,0 +1,12 @@
+## 3. Mid/Side (M/S) Spatial Expansion for External Media
+Instead of just playing the same stereo file on all devices, the mesh will execute mathematical **Mid/Side processing** based on the node's angle ($\frac{2\pi}{N}$).
+
+*   **Mid (Center) Information:** Dialogue, lead vocals, kick drums. (Mathematically: $L + R$)
+*   **Side (Perimeter) Information:** Reverb, wide synths, cinematic atmospheres. (Mathematically: $L - R$)
+
+**The Physics:**
+If a Node is positioned in front of the user ($\theta \approx 0$ or $2\pi$), it will dynamically phase its audio matrix to output mostly **Mid** information.
+If a Node is on the side or rear ($\theta \approx \pi/2$ or $3\pi/2$), it will invert the phase of the Right channel and sum it with the Left, completely canceling the center dialogue and leaving ONLY the wide spatial reverb.
+
+This physically wraps the movie or song around the user's room using pure phase cancellation.
+

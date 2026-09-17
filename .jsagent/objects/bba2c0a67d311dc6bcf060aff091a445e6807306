@@ -1,0 +1,21 @@
+## 2. Signal Graph (Corrected)
+
+```
+baseOsc (sine, f_local) ──► oscGain (0.35) ──────────────────────────────────┐
+                                                                                ▼
+noiseWorklet ──► noiseFilter (LP 2kHz) ──► noiseGain (0.55) ──► panner3D (HRTF) ──► breathGain ──► masterGain ──► destination
+                                                                                ▲
+binauralOscL (f_local) ──► binGainL ──► ChannelMerger[0] ─────────────────────┘ (WRONG — see binaural note)
+binauralOscR (f_local + Δf) ──► binGainR ──► ChannelMerger[1] ──► masterGain (BYPASSES panner — preserves L/R ILD)
+```
+
+**Binaural pair routing rationale**: The binaural inter-aural level difference (ILD) must be preserved at the listener's ears. Routing through `PannerNode` would spatialize both channels identically and destroy the beat frequency. The `ChannelMergerNode` delivers L and R directly to `masterGain` output, which the browser maps to hardware L/R channels.
+
+**Node frequencies**:
+$$f_{local}(i) = f_{base} \times harmonic\_ratio \times \phi_{HRTF}$$
+
+For node index $i$ of $N$ total nodes, the harmonic multiplier stacks as:
+$$f_{local}(i) = f_{base} \times harmonic\_ratio^{\,i \bmod 4}$$
+
+---
+

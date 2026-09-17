@@ -1,0 +1,9 @@
+### Orbital Spatial Panning
+
+$$\theta(t) = \theta_i + \omega_{orbit} \cdot t_{audio}$$
+$$x(t) = r \cdot \cos(\theta(t)), \quad z(t) = r \cdot \sin(\theta(t))$$
+
+Updated every animation frame via `requestAnimationFrame` (60fps):
+```javascript
+panner3D.positionX.setValueAtTime(r * Math.cos(angle), audioCtx.currentTime);
+panner3D.position

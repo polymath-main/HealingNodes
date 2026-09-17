@@ -1,0 +1,6 @@
+## 4. Psychoacoustic Environmental Overlays
+The existing Phase 2 features (Pink/Brown noise, base oscillators, fluid visuals) don't disappear. They become **Psychoacoustic Overlays**.
+
+*   **Example (Deep Thinking Movie Mode):** While watching a film, the engine introduces a barely audible 1/f^2 Brown Noise floor at -40dB to mask real-world room reflections, and injects a 7.83Hz Schumann resonance into the Subwoofer node to physically ground the listener's nervous system while they watch.
+*   **Fletcher-Munson Compensation:** If the user turns the master volume down, the DSP automatically boosts the low and high frequencies (Loudness Contour) to match the nonlinear frequency response of human hearing at low SPL (Sound Pressure Levels).
+

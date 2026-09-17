@@ -1,0 +1,47 @@
+function initNetwork() {
+    socket = io();
+    socket.on('connect', () => {
+        document.getElementById('status-text').innerText = "Connected. Synchronizing...";
+        socket.emit('register', 'client');
+        socket.emit('sync_ping', Date.now());
+    });
+    
+    socket.on('sync_pong', (data) => {
+        const latency = (Date.now() - data.clientTime) / 2;
+        timeOffsets.push(data.serverTime - data.clientTime - latency);
+        if (timeOffsets.length < 10) setTimeout(() => socket.emit('sync_ping', Date.now()), 100);
+        else {
+            timeOffsets.sort((a,b) => a-b);
+            serverTimeOffset = timeOffsets[Math.floor(10/2)];
+            document.getElementById('status-text').innerText = "Synchronized. Ready.";
+        }
+    });
+
+    socket.on('core_switch', (data) => {
+        if (isAudioActive) stopEngine(); // Force reboot if active
+        activeCore = data.activeCore;
+        document.getElementById('status-text').innerText = `Switched to ${activeCore.toUpperCase()} Core`;
+        document.getElementById('start-btn').innerText = `Enter ${activeCore === 'mode' ? 'Daydream' : 'Theater'}`;
+    });
+
+    socket.on('audio_state_update', (state) => {
+        if (activeCore !== 'mode') return;
+        baseNodeAngle = state.baseAngleRads;
+        if(state.v) currentV = state.v;
+        if (isAudioActive && audioCtx) scheduleModeUpdate(state);
+    });
+
+    socket.on('media_action', async (state) => {
+        if (activeCore !== 'media') return;
+        baseNodeAngle = state.baseAngleRads;
+        
+        if (state.action === 'play') {
+            if (!mediaBuffer && state.url) await loadMediaBuffer(state.url);
+            scheduleMediaPlayback(state.targetSyncTime);
+        } else if (state.action === 'pause') {
+            if (mediaSource) { mediaSource.stop(); mediaSource = null; }
+        } else if (state.action === 'sync') {
+            if (state.url) await loadMediaBuffer(state.url);
+        }
+    });
+}

@@ -1,0 +1,10 @@
+## 7. Breathing LFO
+
+$$\omega_{breath} = \frac{2\pi}{T_{breath}}$$
+
+$$g_{breath}(t) = 0.75 + 0.25 \cdot \frac{\sin(\omega_{breath} \cdot t) + 1}{2}$$
+
+Applied to `breathGain.gain` every frame. Range: $[0.75, 1.0]$ — produces 25% amplitude modulation, perceived as the room "breathing."
+
+---
+

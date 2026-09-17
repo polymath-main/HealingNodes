@@ -1,0 +1,8 @@
+## 1. Browser Capabilities & Limitations (Web Audio API)
+
+- **Audio Rendering**: Client-side synthesis using the native Web Audio API (`AudioContext`). No external audio frameworks. Requires an initial user interaction (the "Enter Daydream" button) to unlock the audio context per browser Autoplay Policy (Chrome, Safari, Firefox).
+- **Background Throttling**: Mobile browsers throttle `setInterval`/`setTimeout` in background tabs to ≥1Hz. Audio scheduling is immune because it uses `AudioContext.currentTime` and the `setTargetAtTime` / `cancelScheduledValues` APIs which execute on the browser's C++ audio thread, independent of the JavaScript event loop.
+- **WakeLock API**: `navigator.wakeLock.request('screen')` prevents display sleep on mobile nodes so the spatial engine stays active. Gracefully degraded if unsupported.
+
+---
+

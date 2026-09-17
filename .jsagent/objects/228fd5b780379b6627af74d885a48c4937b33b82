@@ -1,0 +1,22 @@
+### The Lerp Bug (Fixed)
+
+The previous `TrajectoryManager` called:
+```javascript
+this.currentState[key] = this.lerp(this.currentState[key], this.targetState[key], eased);
+```
+
+Because `currentState` is mutated each tick and `eased` re-computes from `startTime`, `start` is never the original baseline — it's the already-moved value. The interpolation exponentially creeps but never converges cleanly.
+
+**Correct approach**: snapshot `startState` once at trajectory launch. Every tick interpolates the fixed snapshot:
+
+```javascript
+// At startTrajectory():
+this.startState = { ...this.currentState };  // frozen snapshot
+
+// At each tick():
+const progress = smoothstep((Date.now() - this.startTime) / this.duration);
+for (const key in this.startState) {
+    this.currentState[key] = lerp(this.startState[key], this.targetState[key], progress);
+}
+```
+

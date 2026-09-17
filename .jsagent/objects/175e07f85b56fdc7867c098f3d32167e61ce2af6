@@ -1,0 +1,6 @@
+## 1. Architectural Synthesis
+
+Phase 2 moves from a static acoustic mesh to a dynamic system governed by the **Environmental State Vector V** and **Emotional Trajectory Engine**. All client audio synthesis runs locally via Web Audio API AudioWorklet + PannerNode. The server is a pure mathematical orchestrator — it never streams audio, only emits JSON state deltas.
+
+---
+

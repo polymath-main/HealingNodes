@@ -1,0 +1,6 @@
+### Smoothstep Easing
+
+$$S(t) = 3t^2 - 2t^3, \quad t = \text{clamp}\!\left(\frac{t_{elapsed}}{D}, 0, 1\right)$$
+
+This provides:
+- 

@@ -1,0 +1,17 @@
+### `POST /api/trajectory/start`
+```json
+{
+  "targetState": {
+    "f_base": 40,
+    "T_breath": 8,
+    "alpha_noise": 1.0,
+    "phi_color": 120,
+    "harmonic_ratio": 1.618,
+    "orbital_velocity": 0,
+    "binaural_offset": 0
+  },
+  "durationMs": 300000
+}
+```
+Response: `{ "success": true, "target": {...}, "durationMs": 300000 }`
+

@@ -1,0 +1,8 @@
+async function loadMediaBuffer(url) {
+    document.getElementById('status-text').innerText = "Downloading Media Chunk...";
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    mediaBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    document.getElementById('status-text').innerText = "Media Ready.";
+}

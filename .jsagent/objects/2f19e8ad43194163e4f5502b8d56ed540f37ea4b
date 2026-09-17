@@ -1,0 +1,9 @@
+### Layer Geometry
+
+3 concentric fluid boundaries, each at a phase offset of $2\pi/3$:
+$$\text{distortion}(\theta, t, \text{layer}) = A_1 \sin(\theta \cdot n_1 \cdot r_h + t \cdot \omega_1 + \phi_{layer}) + A_2 \cos(\theta \cdot n_2 \cdot r_h - t \cdot \omega_2 + \phi_{layer})$$
+
+Where $\phi_{layer} = 2\pi \cdot \text{layer} / 3$.
+
+---
+

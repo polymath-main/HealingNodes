@@ -1,0 +1,11 @@
+## 4. Spatial Geometry (Quadtree → Circle)
+
+Phase-offset assignment for $N$ connected nodes:
+$$\theta_i = \frac{2\pi \cdot i}{N}, \quad i \in \{0, 1, \ldots, N-1\}$$
+
+This ensures uniform angular separation so wavefronts from all nodes constructively interfere at the geometric center (the listener).
+
+Orbital rotation (Transcendental Hybrid mode):
+$$\theta(t) = \theta_i + \omega_{orbit} \cdot t_{audio}$$
+
+The 3D panner position is projected onto the horizontal orbital plane (X

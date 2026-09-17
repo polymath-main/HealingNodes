@@ -1,0 +1,7 @@
+### Blend Formula
+
+$$t_{blend} = \text{clamp}(\alpha_{noise} - 1,\; 0,\; 1)$$
+$$\text{out}[n] = \text{pink}[n] \cdot (1 - t_{blend}) + \text{brown}[n] \cdot t_{blend}$$
+
+---
+

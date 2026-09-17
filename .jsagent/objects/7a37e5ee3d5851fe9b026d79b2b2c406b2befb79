@@ -1,0 +1,16 @@
+function broadcastMediaState(action, targetTimeMs = null) {
+    const N = nodes.length;
+    io.emit('admin_state_update', { nodeCount: N, activeCore, mediaState: currentMediaState });
+    
+    if (N === 0) return;
+    
+    nodes.forEach((id, index) => {
+        const baseAngleRads = (2 * Math.PI * index) / N;
+        io.to(id).emit('media_action', {
+            action: action,
+            baseAngleRads: baseAngleRads,
+            targetSyncTime: targetTimeMs, // Absolute NTP execution time
+            url: currentMediaState.url
+        });
+    });
+}

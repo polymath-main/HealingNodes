@@ -1,0 +1,17 @@
+## 8. Sound Control & Admin Dashboard
+
+- **Separation**: Admin dashboard at `/admin.html`. Client node at `/` (index.html).
+- **REST Endpoints**:
+  - `POST /api/trajectory/start` — begin morph: `{ targetState, durationMs }`
+  - `POST /api/trajectory/stop` — freeze at current position
+  - `GET /api/state` — current vector + node count + active flag
+- **Socket Events**: Server emits `admin_state_update` (1Hz telemetry) and `audio_state_update` (per-node with geometry).
+- **Admin UI**:
+  - 8 preset buttons (Homeostasis, Flow State, Catharsis, Energetic, Deep Thinking, Transcendental Hybrid, Dawn Wake, Sleep Onset)
+  - Duration slider: 1–60 minutes
+  - 7 manual override sliders (all V dimensions, live label update)
+  - Live vector bar visualizer canvas (7 normalized bars, color-coded by hue)
+  - Real-time mesh status (node count + all 7 V values)
+
+---
+

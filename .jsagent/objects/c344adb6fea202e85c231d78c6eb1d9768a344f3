@@ -1,0 +1,16 @@
+## 7. Visual Engine Color System (Corrected)
+
+`phi_color` is a **HSL hue angle** $\phi \in [0°, 360°]$. The previous implementation used it as `Math.sin(angle + phi_color)` treating it as a radian offset, which produces arbitrary RGB values with no relationship to intended hue.
+
+Correct: Convert HSL → RGB at each frame:
+$$\text{hue}(t) = \phi_{color} + \frac{180°}{\pi} \cdot \theta(t) \cdot 0.3 \pmod{360}$$
+$$\text{saturation}(t) = 0.55 + 0.25 \cdot \text{breathNorm}(t)$$
+$$\text{lightness}(t) = 0.35 + 0.15 \cdot \text{breathNorm}(t)$$
+
+Then apply the standard HSL-to-RGB transform. Result: colors track the preset hue intent (blue for catharsis, green for focus, red for energy, purple for deep thinking).
+
+**Visual frequency aliasing fix**: Drawing `Math.sin(t · 2π · 33)` on a 60fps canvas produces a fully aliased (invisible) signal — 33 full cycles per second, sampled 60 times. Corrected to use a sub-harmonic:
+$$f_{visual} = \frac{f_{base}}{300} \approx 0.11\text{ Hz at 33 Hz}$$
+
+---
+

@@ -1,0 +1,6 @@
+### Why Binaural Bypasses PannerNode
+
+The binaural beat effect requires the left ear to hear exactly $f_L$ and the right ear to hear exactly $f_R = f_L + \Delta f$. The brain synthesizes the beat internally at $\Delta f$ Hz. If both channels pass through `PannerNode`, HRTF processing blends them spatially, destroying the precise inter-aural frequency difference. Using `ChannelMergerNode → masterGain` preserves the clean L/R separation.
+
+---
+

@@ -1,0 +1,5 @@
+### `GET /api/state`
+Response: `{ "nodeCount": 2, "state": {...V...}, "active": true }`
+
+---
+

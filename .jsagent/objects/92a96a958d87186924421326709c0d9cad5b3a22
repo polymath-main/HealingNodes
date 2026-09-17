@@ -1,0 +1,13 @@
+# Phase 3: Decentralized Spatial Theater & Hardware Protection
+
+/* __JAGE_REF_md_section_1__the_core_concept__ */
+/* __JAGE_REF_md_section_2__hardware_safety___physics_constraints__the_excursion_limiter___ */
+/* __JAGE_REF_md_section_the_topology__ */
+/* __JAGE_REF_md_section_3__mid_side__m_s__spatial_expansion_for_external_media__ */
+/* __JAGE_REF_md_section_4__psychoacoustic_environmental_overlays__ */
+## 5. Media Sync Architecture (NTP Buffer)
+To stream YouTube or Cloud audio without phasing/echoes between devices:
+1. Server buffers the stream.
+2. Server broadcasts a highly compressed AAC chunk to all nodes with a strictly calculated `executionTime = Date.now() + 3000ms`.
+3. Nodes load the chunk into an `AudioBufferSourceNode` and call `.start(executionTime)`. 
+4. The devices play the audio with microsecond precision, preventing the "stadium echo" effect common in amateur multi-device setups.

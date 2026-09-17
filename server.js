@@ -1,7 +1,19 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const cron = require('node-cron');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+
+// Ensure media directory exists
+const mediaDir = path.join(__dirname, 'public', 'media');
+if (!fs.existsSync(mediaDir)) fs.mkdirSync(mediaDir, { recursive: true });
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, mediaDir),
+    filename: (req, file, cb) => cb(null, 'theater_track.mp3') // Overwrite for simplicity in V1
+});
+const upload = multer({ storage: storage });
 
 const app = express();
 const server = http.createServer(app);
@@ -10,206 +22,158 @@ const io = new Server(server, { cors: { origin: '*' } });
 app.use(express.static('public'));
 app.use(express.json());
 
-// ---------------------------------------------------------------------------
-// TrajectoryManager — Environmental State Vector V
-//
-// V = [f_base, T_breath, alpha_noise, phi_color, harmonic_ratio, orbital_velocity, binaural_offset]
-//
-// FIX: The previous implementation called lerp(currentState[key], targetState[key], eased)
-// while mutating currentState in-place each tick. Because eased is recalculated from
-// startTime each tick the lerp argument `start` was never the original start value —
-// it was the already-moved value, causing the interpolation to asymptotically creep
-// and never cleanly reach the target.
-//
-// Correct approach: snapshot startState once at trajectory launch, then interpolate
-// startState → targetState with the time-based eased progress every tick.
-// ---------------------------------------------------------------------------
+let nodes = [];
+let activeCore = 'mode'; // 'mode' or 'media'
 
-const DEFAULT_STATE = {
-    f_base: 33,           // Hz — base binding frequency
-    T_breath: 10,         // seconds — LFO period (1/f = breath rate)
-    alpha_noise: 1.0,     // 1=pink  2=brown  3=red
-    phi_color: 200,       // degrees 0-360 HSL hue
-    harmonic_ratio: 1.5,  // frequency multiplier per node index
-    orbital_velocity: 0,  // rad/s — spatial orbit speed
-    binaural_offset: 0    // Hz — hemispheric sync beat frequency
-};
-
-// Real-world circadian presets — time-of-day automatic morphs
-const CIRCADIAN_SCHEDULE = [
-    // 06:00 — Dawn wake: alpha rise, gentle high-beta warm-up
-    { hour: 6,  state: { f_base: 40, T_breath: 8,  alpha_noise: 1.0, phi_color: 40,  harmonic_ratio: 1.618, orbital_velocity: 0.01, binaural_offset: 0 } },
-    // 09:00 — Focus block: 40Hz gamma binding, golden ratio
-    { hour: 9,  state: { f_base: 40, T_breath: 8,  alpha_noise: 1.0, phi_color: 120, harmonic_ratio: 1.618, orbital_velocity: 0,    binaural_offset: 0 } },
-    // 13:00 — Post-lunch dip: sub-delta anchor, slow breath
-    { hour: 13, state: { f_base: 33, T_breath: 12, alpha_noise: 1.5, phi_color: 200, harmonic_ratio: 1.5,   orbital_velocity: 0,    binaural_offset: 0 } },
-    // 17:00 — Late afternoon creative: beta / minor 3rd warmth
-    { hour: 17, state: { f_base: 38, T_breath: 9,  alpha_noise: 1.2, phi_color: 270, harmonic_ratio: 1.2,   orbital_velocity: 0.02, binaural_offset: 2 } },
-    // 21:00 — Evening wind-down: delta approach, brown noise
-    { hour: 21, state: { f_base: 30, T_breath: 14, alpha_noise: 2.0, phi_color: 240, harmonic_ratio: 1.2,   orbital_velocity: 0,    binaural_offset: 0 } },
-    // 23:00 — Sleep onset: sub-delta, red noise, slow breath
-    { hour: 23, state: { f_base: 20, T_breath: 18, alpha_noise: 2.8, phi_color: 260, harmonic_ratio: 1.0,   orbital_velocity: 0,    binaural_offset: 0 } },
-];
-
-function lerp(a, b, t) {
-    return a + (b - a) * t;
-}
-
-// Smoothstep S-curve: 3t² - 2t³
-function smoothstep(t) {
-    const c = Math.max(0, Math.min(1, t));
-    return c * c * (3 - 2 * c);
-}
-
+// --- CORE 1: Mode Engine (Trajectory Manager) ---
 class TrajectoryManager {
     constructor() {
-        this.currentState = { ...DEFAULT_STATE };
-        this.startState   = { ...DEFAULT_STATE }; // snapshot at trajectory launch
-        this.targetState  = { ...DEFAULT_STATE };
-        this.startTime    = 0;
-        this.duration     = 0;
-        this.active       = false;
-
-        // 1Hz broadcast loop — always running
+        this.currentState = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+        this.targetState = { ...this.currentState };
+        this.startState = { ...this.currentState };
+        this.startTime = 0;
+        this.duration = 0;
         this.intervalId = setInterval(() => this.tick(), 1000);
     }
 
     startTrajectory(target, durationMs) {
-        // Snapshot current interpolated position as the new start baseline
-        this.startState  = { ...this.currentState };
+        this.startState = { ...this.currentState }; // SNAPSHOT FIX: Prevent asymptotic lerp creep
         this.targetState = { ...this.currentState, ...target };
-        this.duration    = Math.max(durationMs || 1000, 100);
-        this.startTime   = Date.now();
-        this.active      = true;
-        console.log(`[Trajectory] start → target over ${(this.duration / 60000).toFixed(1)} min`);
-        console.log('  target:', JSON.stringify(this.targetState));
+        this.duration = durationMs || 1000;
+        this.startTime = Date.now();
+        console.log(`[Mode Engine] Trajectory started over ${this.duration}ms`);
     }
 
     stopTrajectory() {
-        this.active      = false;
-        this.startState  = { ...this.currentState };
         this.targetState = { ...this.currentState };
-        console.log('[Trajectory] stopped — state frozen at current position.');
+        this.duration = 0;
+        console.log(`[Mode Engine] Trajectory stopped.`);
     }
 
     tick() {
-        if (this.active) {
-            const elapsed  = Date.now() - this.startTime;
-            const progress = smoothstep(elapsed / this.duration);
+        if (activeCore !== 'mode') return; // Pause ticking if not in Mode Engine
+        const now = Date.now();
+        let progress = this.duration === 0 ? 1 : (now - this.startTime) / this.duration;
+        if (progress >= 1) progress = 1;
 
-            for (const key in this.startState) {
-                // Interpolate from the fixed snapshot, not from currentState
-                this.currentState[key] = lerp(this.startState[key], this.targetState[key], progress);
-            }
+        const eased = progress * progress * (3 - 2 * progress);
 
-            if (elapsed >= this.duration) {
-                // Clamp to exact target and deactivate
-                this.currentState = { ...this.targetState };
-                this.startState   = { ...this.targetState };
-                this.active       = false;
-                console.log('[Trajectory] complete — arrived at target.');
-            }
+        // Correct Lerp from startState -> targetState
+        for (const key in this.currentState) {
+            this.currentState[key] = this.lerp(this.startState[key], this.targetState[key], eased);
         }
 
         this.broadcastState();
     }
 
+    lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+    }
+
     broadcastState() {
         const N = nodes.length;
-
-        // Admin telemetry — full state regardless of client count
-        io.emit('admin_state_update', { nodeCount: N, state: this.currentState });
-
+        io.emit('admin_state_update', { nodeCount: N, activeCore, state: this.currentState });
         if (N === 0) return;
-
-        // 2.5s lookahead lets clients schedule Web Audio API events in advance
-        const targetSyncTime = Date.now() + 2500;
+        const targetSyncTime = Date.now() + 2500; 
 
         nodes.forEach((id, index) => {
-            // θᵢ = (2π · i) / N  — equal angular phase separation (per THEORY.md)
             const baseAngleRads = (2 * Math.PI * index) / N;
-
             io.to(id).emit('audio_state_update', {
-                nodeCount:     N,
-                myIndex:       index,
+                nodeCount: N,
+                myIndex: index,
                 baseAngleRads: baseAngleRads,
                 targetSyncTime: targetSyncTime,
-                v:             this.currentState
+                v: this.currentState
             });
         });
     }
 }
-
-let nodes = [];
 const trajectory = new TrajectoryManager();
 
-// ---------------------------------------------------------------------------
-// Circadian Automation — fires at each schedule hour on the dot
-// ---------------------------------------------------------------------------
-CIRCADIAN_SCHEDULE.forEach(({ hour, state }) => {
-    // Cron: "0 <hour> * * *"
-    cron.schedule(`0 ${hour} * * *`, () => {
-        const durationMs = 45 * 60 * 1000; // 45-minute morph
-        console.log(`[Circadian] ${hour}:00 — auto-morphing environment.`);
-        trajectory.startTrajectory(state, durationMs);
+// --- CORE 2: Media Engine (Spatial Theater) ---
+let currentMediaState = { isPlaying: false, url: '/media/theater_track.mp3' };
+
+function broadcastMediaState(action, targetTimeMs = null) {
+    const N = nodes.length;
+    io.emit('admin_state_update', { nodeCount: N, activeCore, mediaState: currentMediaState });
+    
+    if (N === 0) return;
+    
+    nodes.forEach((id, index) => {
+        const baseAngleRads = (2 * Math.PI * index) / N;
+        io.to(id).emit('media_action', {
+            action: action,
+            baseAngleRads: baseAngleRads,
+            targetSyncTime: targetTimeMs, // Absolute NTP execution time
+            url: currentMediaState.url
+        });
     });
+}
+
+// --- REST APIs ---
+app.post('/api/core/switch', (req, res) => {
+    activeCore = req.body.core;
+    console.log(`[Orchestrator] Core switched to: ${activeCore}`);
+    io.emit('core_switch', { activeCore });
+    res.json({ success: true, activeCore });
 });
 
-// ---------------------------------------------------------------------------
-// REST API
-// ---------------------------------------------------------------------------
+// Mode Engine APIs
 app.post('/api/trajectory/start', (req, res) => {
-    const { targetState, durationMs } = req.body;
-    if (!targetState || typeof targetState !== 'object') {
-        return res.status(400).json({ error: 'targetState object required.' });
-    }
-    trajectory.startTrajectory(targetState, durationMs);
-    res.json({ success: true, target: targetState, durationMs });
+    trajectory.startTrajectory(req.body.targetState, req.body.durationMs);
+    res.json({ success: true });
 });
-
 app.post('/api/trajectory/stop', (req, res) => {
     trajectory.stopTrajectory();
-    res.json({ success: true, frozenState: trajectory.currentState });
+    res.json({ success: true });
 });
 
-app.get('/api/state', (req, res) => {
-    res.json({ nodeCount: nodes.length, state: trajectory.currentState, active: trajectory.active });
+// Media Engine APIs
+app.post('/api/media/upload', upload.single('track'), (req, res) => {
+    console.log('[Media Engine] New track uploaded.');
+    res.json({ success: true, url: '/media/theater_track.mp3' });
 });
 
-// ---------------------------------------------------------------------------
-// WebSocket Events
-// ---------------------------------------------------------------------------
+app.post('/api/media/play', (req, res) => {
+    currentMediaState.isPlaying = true;
+    const executionTime = Date.now() + 3000; // 3 seconds for clients to fetch and buffer
+    console.log(`[Media Engine] PLAY broadcast. Execution time: ${executionTime}`);
+    broadcastMediaState('play', executionTime);
+    res.json({ success: true });
+});
+
+app.post('/api/media/pause', (req, res) => {
+    currentMediaState.isPlaying = false;
+    console.log(`[Media Engine] PAUSE broadcast.`);
+    broadcastMediaState('pause');
+    res.json({ success: true });
+});
+
+// --- Socket Events ---
 io.on('connection', (socket) => {
-    console.log(`[+] Socket connected: ${socket.id}`);
-
     socket.on('register', (role) => {
         if (role === 'client') {
             nodes.push(socket.id);
-            console.log(`[Mesh] client registered — N=${nodes.length}`);
-            trajectory.broadcastState(); // Immediate geometry recalc
+            socket.emit('core_switch', { activeCore }); // Tell them which engine to boot
+            if (activeCore === 'mode') trajectory.broadcastState();
+            else broadcastMediaState('sync'); // Resync new node to media
         }
-        // Admin role is just an observer; no mesh geometry slot needed
     });
 
-    // NTP-style round-trip latency measurement
     socket.on('sync_ping', (clientTime) => {
-        socket.emit('sync_pong', { clientTime, serverTime: Date.now() });
+        socket.emit('sync_pong', { clientTime: clientTime, serverTime: Date.now() });
     });
 
     socket.on('disconnect', () => {
         if (nodes.includes(socket.id)) {
             nodes = nodes.filter(id => id !== socket.id);
-            console.log(`[-] Client node left — N=${nodes.length}`);
-            trajectory.broadcastState(); // Recalculate 2π/N geometry
+            if (activeCore === 'mode') trajectory.broadcastState();
+            else broadcastMediaState('sync');
         }
     });
 });
 
-// ---------------------------------------------------------------------------
-// Boot
-// ---------------------------------------------------------------------------
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`[HealingNodes] Engine running on http://0.0.0.0:${PORT}`);
-    console.log(`[HealingNodes] Admin dashboard at http://0.0.0.0:${PORT}/admin.html`);
+    console.log(`[HealingNodes Dual-Core] Engine running on http://0.0.0.0:${PORT}`);
 });

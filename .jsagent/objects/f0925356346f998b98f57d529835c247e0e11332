@@ -1,0 +1,15 @@
+async function initEngine() {
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (activeCore === 'mode') await initModeEngine();
+        else await initMediaEngine();
+        
+        isAudioActive = true;
+        document.getElementById('ui-container').classList.add('fade-out');
+        if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e => console.warn(e));
+    } catch (err) {
+        console.error("Engine Crash:", err);
+        document.getElementById('status-text').innerText = `Crash: ${err.message}`;
+        stopEngine();
+    }
+}

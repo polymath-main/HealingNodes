@@ -1,0 +1,24 @@
+### The Topology
+Every node will now pass through a **Hardware Profiling Crossover** and a **Brickwall Limiter** before reaching `audioCtx.destination`.
+
+**Math & Routing:**
+```javascript
+// 1. Device Profiling (Determined by Admin UI or Screen Size heuristic)
+const isPhone = window.innerWidth < 768; 
+const cutoffFreq = isPhone ? 150 : 40; // Phones discard sub-bass, TVs/PCs keep it
+
+// 2. The Excursion Protection Filter
+const crossover = audioCtx.createBiquadFilter();
+crossover.type = "highpass";
+crossover.frequency.value = cutoffFreq; 
+crossover.Q.value = 0.707; // Butterworth slope (flat response, no resonance peak)
+
+// 3. Absolute Brickwall Limiter (Prevents Digital Clipping and Coil Damage)
+const safetyLimiter = audioCtx.createDynamicsCompressor();
+safetyLimiter.threshold.value = -1.0; // Hard limit at -1 dBFS
+safetyLimiter.knee.value = 0.0;       // Hard knee (immediate clamping)
+safetyLimiter.ratio.value = 20.0;     // Infinite ratio (brickwall)
+safetyLimiter.attack.value = 0.002;   // 2ms attack (catch transients instantly)
+safetyLimiter.release.value = 0.100;  // 100ms release (prevent pumping)
+```
+

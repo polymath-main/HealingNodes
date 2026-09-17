@@ -1,0 +1,8 @@
+### Brown Noise: Leaky Integrator
+
+$$y[n] = 0.99 \cdot y_{prev} + 0.01 \cdot w[n]$$
+
+Spectral density $S(f) \propto 1/f^2$ ($-6$ dB/octave).
+
+**Critical**: Brown state `this.brown` is fully independent of `b0`–`b6`. The previous implementation reused `b6` as the brown integrator, corrupting both signals.
+

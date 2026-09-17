@@ -1,0 +1,47 @@
+function drawDaydream() {
+    ctx.fillStyle = 'rgba(2, 2, 5, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (isAudioActive && audioCtx) {
+        const time = audioCtx.currentTime;
+        const baseRadius = Math.min(canvas.width, canvas.height) * 0.5;
+        
+        if (activeCore === 'mode') {
+            currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
+            if (panner3D) {
+                panner3D.positionX.setValueAtTime(2 * Math.cos(currentAngleRads), time);
+                panner3D.positionZ.setValueAtTime(2 * Math.sin(currentAngleRads), time);
+            }
+            
+            let breathHz = 1.0 / (currentV.T_breath || 10);
+            const breath = Math.sin(time * 2 * Math.PI * breathHz);
+            if(breathingFilter) breathingFilter.gain.setValueAtTime(0.75 + 0.25 * breath, time); // Amplitude mod fix
+
+            // Sub-harmonic aliasing fix
+            const visualVib = Math.sin(time * 2 * Math.PI * (currentV.f_base / 300)) * (1.5 + breath * 0.5);
+
+            ctx.save(); ctx.translate(canvas.width / 2, canvas.height / 2); ctx.rotate(currentAngleRads + time * 0.05);
+
+            // HSL to RGB fix
+            ctx.strokeStyle = `hsl(${currentV.phi_color}, 70%, 50%)`;
+            for (let layer = 0; layer < 3; layer++) {
+                ctx.beginPath();
+                for (let i = 0; i <= Math.PI * 2 + 0.1; i += 0.1) {
+                    const dist = Math.sin(i * (3 + layer) + time * 0.5) * (baseRadius * 0.15);
+                    const r = baseRadius + dist + visualVib;
+                    if (i === 0) ctx.moveTo(Math.cos(i) * r, Math.sin(i) * r); else ctx.lineTo(Math.cos(i) * r, Math.sin(i) * r);
+                }
+                ctx.closePath(); ctx.stroke();
+            }
+            ctx.restore();
+        } else if (activeCore === 'media') {
+            // Theater Visuals
+            ctx.save(); ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.beginPath();
+            ctx.arc(0, 0, baseRadius * 0.8 * (0.9 + 0.1 * Math.sin(time * 2)), 0, Math.PI * 2);
+            ctx.strokeStyle = '#43e8d8'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.restore();
+        }
+    }
+    requestAnimationFrame(drawDaydream);
+}

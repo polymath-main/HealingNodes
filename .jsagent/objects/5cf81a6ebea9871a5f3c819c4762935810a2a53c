@@ -1,0 +1,4 @@
+### `POST /api/trajectory/stop`
+Freezes `currentState` at its current interpolated position. Clears `active` flag.
+Response: `{ "success": true, "frozenState": {...} }`
+

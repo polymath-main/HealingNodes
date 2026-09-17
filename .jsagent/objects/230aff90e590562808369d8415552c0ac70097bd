@@ -1,0 +1,68 @@
+let socket;
+let isAudioActive = false;
+let activeCore = 'mode'; 
+let audioCtx;
+
+// --- Network & Sync ---
+let timeOffsets = [];
+let serverTimeOffset = 0;
+let baseNodeAngle = 0;
+
+// --- Mode Engine State ---
+let currentV = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+let currentAngleRads = 0;
+let baseOsc, binauralOsc, breathingFilter, noiseNode, panner3D;
+
+// --- Media Engine State ---
+let mediaBuffer = null;
+let mediaSource = null;
+let currentMediaUrl = '';
+
+const workletCode = `
+/* __JAGE_REF_js_block_SpectralNoiseProcessor__ */
+registerProcessor('spectral-noise', SpectralNoiseProcessor);
+`;
+
+/* __JAGE_REF_js_block_initNetwork__ */
+
+/* __JAGE_REF_js_block_loadMediaBuffer__ */
+
+/* __JAGE_REF_js_block_initEngine__ */
+
+/* __JAGE_REF_js_block_stopEngine__ */
+
+// ==========================================
+// CORE 1: MODE ENGINE (Phase 2 - Fixes applied)
+// ==========================================
+/* __JAGE_REF_js_block_initModeEngine__ */
+
+/* __JAGE_REF_js_block_scheduleModeUpdate__ */
+
+// ==========================================
+// CORE 2: MEDIA THEATER (Phase 3 - M/S & Limiters)
+// ==========================================
+/* __JAGE_REF_js_block_initMediaEngine__ */
+
+/* __JAGE_REF_js_block_scheduleMediaPlayback__ */
+
+// ==========================================
+// VISUAL ENGINE (Canvas)
+// ==========================================
+const canvas = document.getElementById('visual-engine');
+const ctx = canvas.getContext('2d');
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+document.body.addEventListener('dblclick', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+});
+
+/* __JAGE_REF_js_block_drawDaydream__ */
+
+document.getElementById('start-btn').addEventListener('click', () => {
+    if (isAudioActive) stopEngine();
+    else initEngine();
+});
+
+window.onload = () => { initNetwork(); drawDaydream(); };

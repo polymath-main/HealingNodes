@@ -1,0 +1,12 @@
+## 2. The Environmental State Vector V
+
+$$V = [f_{base},\; T_{breath},\; \alpha_{noise},\; \phi_{color},\; harmonic\_ratio,\; \omega_{orbit},\; \Delta f_{binaural}]$$
+
+| Dimension | Symbol | Unit | Range | Meaning |
+|-----------|--------|------|-------|---------|
+| Base frequency | $f_{base}$ | Hz | 10–200 | Acoustic mesh anchor. 33Hz = low-gamma binding / vagus resonance. |
+| Breath period | $T_{breath}$ | s | 2–30 | LFO period. $\omega_{breath} = 2\pi / T_{breath}$. |
+| Noise exponent | $\alpha_{noise}$ | — | 0–3 | 1=pink ($-3$ dB/oct), 2=brown ($-6$ dB/oct), 3=red. |
+| Color hue | $\phi_{color}$ | ° | 0–360 | HSL hue angle. Mapped via standard HSL→RGB. |
+| Harmonic ratio | $r_h$ | — | 1.0–3.0 | Node frequency multiplier. 1.618=golden, 1.333=P4, 1.5=P5. |
+| Orbital velocity | $\omega_{orbit}$ | rad/s | 0–0.2 | Spatial rotation speed in X

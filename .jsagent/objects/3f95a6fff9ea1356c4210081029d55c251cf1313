@@ -1,0 +1,22 @@
+### Broadcast Format
+
+```json
+{
+  "nodeCount": 3,
+  "myIndex": 1,
+  "baseAngleRads": 2.094395,
+  "targetSyncTime": 1726000002500,
+  "v": {
+    "f_base": 40.0,
+    "T_breath": 8.0,
+    "alpha_noise": 1.0,
+    "phi_color": 120.0,
+    "harmonic_ratio": 1.618,
+    "orbital_velocity": 0.0,
+    "binaural_offset": 0.0
+  }
+}
+```
+
+---
+
