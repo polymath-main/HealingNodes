@@ -216,83 +216,119 @@
       "type": "Variable",
       "startLine": 6
     },
+    "server.js:ModeEngine": {
+      "file": "server.js",
+      "name": "ModeEngine",
+      "type": "Variable",
+      "startLine": 9
+    },
+    "server.js:MediaEngine": {
+      "file": "server.js",
+      "name": "MediaEngine",
+      "type": "Variable",
+      "startLine": 10
+    },
+    "server.js:YouTubeProxy": {
+      "file": "server.js",
+      "name": "YouTubeProxy",
+      "type": "Variable",
+      "startLine": 11
+    },
     "server.js:mediaDir": {
       "file": "server.js",
       "name": "mediaDir",
       "type": "Variable",
-      "startLine": 9
+      "startLine": 14
     },
     "server.js:storage": {
       "file": "server.js",
       "name": "storage",
       "type": "Variable",
-      "startLine": 12
+      "startLine": 17
     },
     "server.js:upload": {
       "file": "server.js",
       "name": "upload",
       "type": "Variable",
-      "startLine": 16
+      "startLine": 21
     },
     "server.js:app": {
       "file": "server.js",
       "name": "app",
       "type": "Variable",
-      "startLine": 18
+      "startLine": 23
     },
     "server.js:server": {
       "file": "server.js",
       "name": "server",
       "type": "Variable",
-      "startLine": 19
+      "startLine": 24
     },
     "server.js:io": {
       "file": "server.js",
       "name": "io",
       "type": "Variable",
-      "startLine": 20
+      "startLine": 25
     },
     "server.js:nodes": {
       "file": "server.js",
       "name": "nodes",
       "type": "Variable",
-      "startLine": 25
+      "startLine": 31
     },
     "server.js:activeCore": {
       "file": "server.js",
       "name": "activeCore",
       "type": "Variable",
-      "startLine": 26
+      "startLine": 32
     },
-    "server.js:TrajectoryManager": {
+    "server.js:getNodes": {
       "file": "server.js",
-      "name": "TrajectoryManager",
-      "type": "Class",
-      "startLine": 29
-    },
-    "server.js:trajectory": {
-      "file": "server.js",
-      "name": "trajectory",
+      "name": "getNodes",
       "type": "Variable",
-      "startLine": 91
+      "startLine": 33
     },
-    "server.js:currentMediaState": {
+    "server.js:getActiveCore": {
       "file": "server.js",
-      "name": "currentMediaState",
+      "name": "getActiveCore",
       "type": "Variable",
-      "startLine": 94
+      "startLine": 34
     },
-    "server.js:broadcastMediaState": {
+    "server.js:modeEngine": {
       "file": "server.js",
-      "name": "broadcastMediaState",
-      "type": "Function",
-      "startLine": 96
+      "name": "modeEngine",
+      "type": "Variable",
+      "startLine": 37
+    },
+    "server.js:mediaEngine": {
+      "file": "server.js",
+      "name": "mediaEngine",
+      "type": "Variable",
+      "startLine": 38
     },
     "server.js:PORT": {
       "file": "server.js",
       "name": "PORT",
       "type": "Variable",
-      "startLine": 176
+      "startLine": 117
+    },
+    "src/core/MediaEngine.js:MediaEngine": {
+      "file": "src/core/MediaEngine.js",
+      "name": "MediaEngine",
+      "type": "Class",
+      "startLine": 1
+    },
+    "src/core/ModeEngine.js:ModeEngine": {
+      "file": "src/core/ModeEngine.js",
+      "name": "ModeEngine",
+      "type": "Class",
+      "startLine": 1
+    },
+    "src/services/YouTubeProxy.js:ytdl": {
+      "file": "src/services/YouTubeProxy.js",
+      "name": "ytdl",
+      "type": "Variable",
+      "startLine": 1
     }
   },
   "edges": []

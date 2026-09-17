@@ -62,18 +62,29 @@
     <!-- CORE 2: MEDIA ENGINE UI -->
     <div id="panel-media" class="panel hidden">
         <h2>Spatial Media Theater</h2>
-        <div class="box">
-            <h3>1. Upload Media</h3>
-            <form id="upload-form">
-                <input type="file" id="media-file" accept="audio/mp3, audio/wav">
-                <button type="submit" style="margin-top:10px;">Upload to Server Buffer</button>
-            </form>
-            <p id="upload-status"></p>
+        
+        <div class="flex-row">
+            <div class="box">
+                <h3>1A. Upload Local Media</h3>
+                <form id="upload-form">
+                    <input type="file" id="media-file" accept="audio/mp3, audio/wav">
+                    <button type="submit" style="margin-top:10px;">Upload & Sync</button>
+                </form>
+            </div>
+            <div class="box">
+                <h3>1B. Stream YouTube</h3>
+                <form id="youtube-form">
+                    <input type="text" id="youtube-url" placeholder="https://youtube.com/watch?v=..." style="width: 100%; padding: 8px; margin-top: 10px;">
+                    <button type="submit" style="margin-top:10px; background-color: #ff0000;">Sync YouTube Stream</button>
+                </form>
+            </div>
         </div>
-        <div class="box" style="margin-top: 20px;">
+
+        <div class="box" style="margin-top: 20px; text-align: center;">
+            <p id="media-status" class="stat-value">Awaiting Media Input...</p>
             <h3>2. Mesh Playback Sync</h3>
-            <button onclick="fetch('/api/media/play', {method:'POST'})" style="background: #28a745;">▶ PLAY (NTP Sync)</button>
-            <button onclick="fetch('/api/media/pause', {method:'POST'})" style="background: #dc3545;">⏸ PAUSE</button>
+            <button onclick="fetch('/api/media/play', {method:'POST'})" style="background: #28a745; font-size: 1.2em;">▶ PLAY (Global Sync)</button>
+            <button onclick="fetch('/api/media/pause', {method:'POST'})" style="background: #dc3545; font-size: 1.2em;">⏸ PAUSE</button>
         </div>
     </div>
 
@@ -91,13 +102,24 @@
 
         socket.on('connect', () => socket.emit('register', 'admin'));
 
+        // FIX: Listen to core_switch explicitly to update UI
+        socket.on('core_switch', (data) => {
+            updateCoreUI(data.activeCore);
+        });
+
         socket.on('admin_state_update', (data) => {
             document.getElementById('admin-nodes').innerText = data.nodeCount;
+            if(data.activeCore) updateCoreUI(data.activeCore);
+            
             if(data.activeCore === 'mode' && data.state) {
                 document.getElementById('v-freq').innerText = data.state.f_base.toFixed(2);
                 document.getElementById('v-ratio').innerText = data.state.harmonic_ratio.toFixed(3);
             }
-            if(data.activeCore) updateCoreUI(data.activeCore);
+            if(data.activeCore === 'media' && data.mediaState) {
+                if(data.mediaState.url) {
+                    document.getElementById('media-status').innerText = "Media Ready & Buffered Across Mesh";
+                }
+            }
         });
 
         document.getElementById('duration-slider').addEventListener('input', (e) => {
@@ -144,9 +166,23 @@
             const formData = new FormData();
             formData.append('track', file);
             
-            document.getElementById('upload-status').innerText = "Uploading to Swarm Buffer...";
+            document.getElementById('media-status').innerText = "Uploading to Server...";
             const res = await fetch('/api/media/upload', { method: 'POST', body: formData });
-            if (res.ok) document.getElementById('upload-status').innerText = "Upload Complete. Ready for Mesh Sync.";
+            if (res.ok) document.getElementById('media-status').innerText = "Upload Complete. Mesh is syncing buffer...";
+        });
+
+        document.getElementById('youtube-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('youtube-url').value;
+            if(!url) return alert("Enter YouTube URL");
+
+            document.getElementById('media-status').innerText = "Resolving YouTube Stream...";
+            const res = await fetch('/api/media/youtube', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url })
+            });
+            if (res.ok) document.getElementById('media-status').innerText = "Stream Resolved. Mesh is syncing buffer...";
         });
     </script>
 </body>

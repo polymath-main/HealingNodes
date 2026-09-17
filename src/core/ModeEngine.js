@@ -1,0 +1,68 @@
+class ModeEngine {
+    constructor(io, getNodesFunc, getActiveCoreFunc) {
+        this.io = io;
+        this.getNodes = getNodesFunc;
+        this.getActiveCore = getActiveCoreFunc;
+        
+        this.currentState = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+        this.targetState = { ...this.currentState };
+        this.startState = { ...this.currentState };
+        this.startTime = 0;
+        this.duration = 0;
+        this.intervalId = setInterval(() => this.tick(), 1000);
+    }
+
+    startTrajectory(target, durationMs) {
+        this.startState = { ...this.currentState }; 
+        this.targetState = { ...this.currentState, ...target };
+        this.duration = durationMs || 1000;
+        this.startTime = Date.now();
+        console.log(`[Mode Engine] Trajectory started over ${this.duration}ms`);
+    }
+
+    stopTrajectory() {
+        this.targetState = { ...this.currentState };
+        this.duration = 0;
+        console.log(`[Mode Engine] Trajectory stopped.`);
+    }
+
+    tick() {
+        if (this.getActiveCore() !== 'mode') return; 
+        const now = Date.now();
+        let progress = this.duration === 0 ? 1 : (now - this.startTime) / this.duration;
+        if (progress >= 1) progress = 1;
+
+        const eased = progress * progress * (3 - 2 * progress);
+        for (const key in this.currentState) {
+            this.currentState[key] = this.lerp(this.startState[key], this.targetState[key], eased);
+        }
+        this.broadcastState();
+    }
+
+    lerp(start, end, amt) {
+        return (1 - amt) * start + amt * end;
+    }
+
+    broadcastState() {
+        const nodes = this.getNodes();
+        const N = nodes.length;
+        
+        this.io.emit('admin_state_update', { nodeCount: N, activeCore: this.getActiveCore(), state: this.currentState });
+        
+        if (N === 0) return;
+        const targetSyncTime = Date.now() + 2500; 
+
+        nodes.forEach((id, index) => {
+            const baseAngleRads = (2 * Math.PI * index) / N;
+            this.io.to(id).emit('audio_state_update', {
+                nodeCount: N,
+                myIndex: index,
+                baseAngleRads: baseAngleRads,
+                targetSyncTime: targetSyncTime,
+                v: this.currentState
+            });
+        });
+    }
+}
+
+module.exports = ModeEngine;
