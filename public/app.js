@@ -5,18 +5,14 @@ let wakeLock = null;
 let audioCtx;
 let masterGain, panner3D, breathingFilter;
 let baseOsc, binauralOsc;
-let noiseNode; // The custom AudioWorkletNode
+let noiseNode; 
 
-// Global Vector State
 let currentV = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
 let currentAngleRads = 0;
 let baseNodeAngle = 0;
-
-// Synchronization
 let timeOffsets = [];
 let serverTimeOffset = 0;
 
-// --- 1. AudioWorklet Injector (Zero Dependency) ---
 const workletCode = `
 class SpectralNoiseProcessor extends AudioWorkletProcessor {
     constructor() {
@@ -28,14 +24,11 @@ class SpectralNoiseProcessor extends AudioWorkletProcessor {
     }
     process(inputs, outputs, parameters) {
         const output = outputs[0];
-        const alpha = parameters.alpha[0]; // k-rate
-        
+        const alpha = parameters.alpha[0]; 
         for (let channel = 0; channel < output.length; ++channel) {
             const outChannel = output[channel];
             for (let i = 0; i < outChannel.length; ++i) {
                 const white = Math.random() * 2 - 1;
-                
-                // Pink Noise (Voss-McCartney)
                 this.b0 = 0.99886 * this.b0 + white * 0.0555179;
                 this.b1 = 0.99332 * this.b1 + white * 0.0750759;
                 this.b2 = 0.96900 * this.b2 + white * 0.1538520;
@@ -44,11 +37,7 @@ class SpectralNoiseProcessor extends AudioWorkletProcessor {
                 this.b5 = -0.7616 * this.b5 - white * 0.0168980;
                 let pink = (this.b0 + this.b1 + this.b2 + this.b3 + this.b4 + this.b5 + this.b6 + white * 0.5362) * 0.11;
                 this.b6 = white * 0.115926;
-
-                // Brown Noise (Integrator)
-                let brown = (this.b6 * 3.5); // use b6 as state
-
-                // Lerp Pink (1) to Brown (2)
+                let brown = (this.b6 * 3.5); 
                 let blend = Math.max(0, Math.min(1, alpha - 1));
                 outChannel[i] = pink * (1 - blend) + brown * blend;
             }
@@ -59,7 +48,16 @@ class SpectralNoiseProcessor extends AudioWorkletProcessor {
 registerProcessor('spectral-noise', SpectralNoiseProcessor);
 `;
 
-// --- 2. Network ---
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+        }
+    } catch (err) {
+        console.warn(`Wake Lock error: ${err.name}, ${err.message}`);
+    }
+}
+
 function initNetwork() {
     socket = io();
     socket.on('connect', () => {
@@ -67,7 +65,6 @@ function initNetwork() {
         socket.emit('register', 'client');
         socket.emit('sync_ping', Date.now());
     });
-
     socket.on('sync_pong', (data) => {
         const latency = (Date.now() - data.clientTime) / 2;
         timeOffsets.push(data.serverTime - data.clientTime - latency);
@@ -79,22 +76,16 @@ function initNetwork() {
             document.getElementById('status-text').innerText = "Synchronized. Awaiting Initialization.";
         }
     });
-
     socket.on('audio_state_update', (state) => {
         baseNodeAngle = state.baseAngleRads;
-        currentV = state.v;
-        if (isAudioActive && audioCtx) {
-            scheduleAudioUpdate(state);
-        }
+        if(state.v) currentV = state.v;
+        if (isAudioActive && audioCtx) scheduleAudioUpdate(state);
     });
 }
 
-// --- 3. Pure Math Engine ---
 async function initAudio() {
     try {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) throw new Error("Web Audio API not supported on this browser.");
-        
         audioCtx = new AudioContextClass();
         
         masterGain = audioCtx.createGain();
@@ -106,9 +97,12 @@ async function initAudio() {
         panner3D.distanceModel = "inverse";
         panner3D.connect(masterGain);
         
-        // Oscillators
         baseOsc = audioCtx.createOscillator();
         binauralOsc = audioCtx.createOscillator();
+        
+        const initialFreq = currentV.f_base * currentV.harmonic_ratio;
+        baseOsc.frequency.value = initialFreq;
+        binauralOsc.frequency.value = initialFreq + currentV.binaural_offset;
         
         baseOsc.connect(panner3D);
         binauralOsc.connect(panner3D);
@@ -118,16 +112,17 @@ async function initAudio() {
         breathingFilter.frequency.value = 400; 
         breathingFilter.connect(panner3D);
 
-        // Feature detect AudioWorklet (Smart TVs often lack this)
-        if (audioCtx.audioWorklet) {
-            const blob = new Blob([workletCode], { type: "application/javascript" });
-            const url = URL.createObjectURL(blob);
-            await audioCtx.audioWorklet.addModule(url);
-            noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
-            noiseNode.connect(breathingFilter);
-        } else {
-            console.warn('AudioWorklet not supported on this device. Noise layer disabled for fallback compatibility.');
-            document.getElementById('status-text').innerText += " (Lite Mode: No Noise)";
+        try {
+            if (audioCtx.audioWorklet) {
+                const blob = new Blob([workletCode], { type: "application/javascript" });
+                const url = URL.createObjectURL(blob);
+                await audioCtx.audioWorklet.addModule(url);
+                noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+                noiseNode.connect(breathingFilter);
+            }
+        } catch (workletErr) {
+            console.warn('AudioWorklet failed/unsupported. Running Lite Mode.', workletErr);
+            noiseNode = null;
         }
 
         const startTime = audioCtx.currentTime;
@@ -137,13 +132,12 @@ async function initAudio() {
         isAudioActive = true;
         document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
         document.getElementById('start-btn').innerText = "Stop Engine";
+        
         requestWakeLock();
     } catch (err) {
-        console.error("Audio Initialization Error:", err);
-        document.getElementById('status-text').innerText = `Error: ${err.message}`;
+        console.error("Fatal Audio Error:", err);
+        document.getElementById('status-text').innerText = `Init Error: ${err.message}`;
         document.getElementById('ui-container').classList.remove('fade-out');
-        isAudioActive = false;
-        if (audioCtx) { audioCtx.close(); audioCtx = null; }
     }
 }
 
@@ -157,32 +151,23 @@ function stopAudio() {
 function scheduleAudioUpdate(state) {
     if (!audioCtx) return;
     const localTargetTimeMs = state.targetSyncTime - serverTimeOffset;
-    const timeUntilChangeMs = localTargetTimeMs - Date.now();
+    let timeUntilChangeMs = localTargetTimeMs - Date.now();
+    if (timeUntilChangeMs < 0) timeUntilChangeMs = 0; // Prevent skipped updates
     
-    if (timeUntilChangeMs > 0) {
-        const t = audioCtx.currentTime + (timeUntilChangeMs / 1000);
-        const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+    const t = audioCtx.currentTime + (timeUntilChangeMs / 1000) + 0.1;
+    const targetFreq = currentV.f_base * currentV.harmonic_ratio;
 
-        try {
-            // Exponential Glides
-            baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
-            binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
-            
-            // Dynamic Alpha Noise (if supported)
-            if(noiseNode) {
-                noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
-            }
-        } catch (err) {
-            console.warn("Glide scheduling skipped:", err.message);
+    try {
+        baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+        binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+        if(noiseNode) {
+            noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
         }
-    }
+    } catch(e) { console.warn("Audio glide skipped:", e); }
 }
 
-// --- 4. The Transcendental Canvas Engine ---
 const canvas = document.getElementById('visual-engine');
 const ctx = canvas.getContext('2d');
-let animationFrameId;
-
 window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
 
@@ -197,8 +182,6 @@ function drawDaydream() {
 
     if (isAudioActive && audioCtx) {
         const time = audioCtx.currentTime;
-        
-        // Orbital Spatial Update
         currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
         
         if (panner3D) {
@@ -207,13 +190,11 @@ function drawDaydream() {
             panner3D.positionZ.setValueAtTime(radius * Math.sin(currentAngleRads), time);
         }
 
-        // LFO Breathing (T_breath)
-        const breathHz = 1.0 / (currentV.T_breath || 10);
+        let breathHz = 1.0 / (currentV.T_breath || 10);
+        if(!isFinite(breathHz)) breathHz = 0.1;
         const breath = Math.sin(time * 2 * Math.PI * breathHz);
         
-        if(breathingFilter) {
-            breathingFilter.frequency.setValueAtTime(400 + breath * 200, time);
-        }
+        if(breathingFilter) breathingFilter.frequency.setValueAtTime(400 + breath * 200, time);
 
         const vibration = Math.sin(time * 2 * Math.PI * currentV.f_base) * (1.5 + breath * 0.5);
         const baseRadius = Math.min(canvas.width, canvas.height) * 0.5;
@@ -222,7 +203,6 @@ function drawDaydream() {
         ctx.translate(canvas.width / 2, canvas.height / 2);
         ctx.rotate(currentAngleRads + time * 0.05);
 
-        // Color Phase Shift
         const rVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color) * 50 + 100);
         const gVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI/2) * 200 + 55);
         const bVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI) * 200 + 100);
@@ -254,7 +234,7 @@ function drawDaydream() {
         }
         ctx.restore();
     }
-    animationFrameId = requestAnimationFrame(drawDaydream);
+    requestAnimationFrame(drawDaydream);
 }
 
 document.getElementById('start-btn').addEventListener('click', () => {

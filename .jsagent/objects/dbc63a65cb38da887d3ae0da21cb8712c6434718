@@ -1,0 +1,57 @@
+async function initAudio() {
+    try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.316;
+        masterGain.connect(audioCtx.destination);
+        
+        panner3D = audioCtx.createPanner();
+        panner3D.panningModel = "HRTF";
+        panner3D.distanceModel = "inverse";
+        panner3D.connect(masterGain);
+        
+        baseOsc = audioCtx.createOscillator();
+        binauralOsc = audioCtx.createOscillator();
+        
+        const initialFreq = currentV.f_base * currentV.harmonic_ratio;
+        baseOsc.frequency.value = initialFreq;
+        binauralOsc.frequency.value = initialFreq + currentV.binaural_offset;
+        
+        baseOsc.connect(panner3D);
+        binauralOsc.connect(panner3D);
+
+        breathingFilter = audioCtx.createBiquadFilter();
+        breathingFilter.type = "lowpass";
+        breathingFilter.frequency.value = 400; 
+        breathingFilter.connect(panner3D);
+
+        try {
+            if (audioCtx.audioWorklet) {
+                const blob = new Blob([workletCode], { type: "application/javascript" });
+                const url = URL.createObjectURL(blob);
+                await audioCtx.audioWorklet.addModule(url);
+                noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+                noiseNode.connect(breathingFilter);
+            }
+        } catch (workletErr) {
+            console.warn('AudioWorklet failed/unsupported. Running Lite Mode.', workletErr);
+            noiseNode = null;
+        }
+
+        const startTime = audioCtx.currentTime;
+        baseOsc.start(startTime);
+        binauralOsc.start(startTime);
+        
+        isAudioActive = true;
+        document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
+        document.getElementById('start-btn').innerText = "Stop Engine";
+        
+        requestWakeLock();
+    } catch (err) {
+        console.error("Fatal Audio Error:", err);
+        document.getElementById('status-text').innerText = `Init Error: ${err.message}`;
+        document.getElementById('ui-container').classList.remove('fade-out');
+    }
+}

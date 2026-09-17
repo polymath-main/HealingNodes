@@ -34,85 +34,91 @@
       "file": "public/app.js",
       "name": "currentV",
       "type": "Variable",
-      "startLine": 11
+      "startLine": 10
     },
     "public/app.js:currentAngleRads": {
       "file": "public/app.js",
       "name": "currentAngleRads",
       "type": "Variable",
-      "startLine": 12
+      "startLine": 11
     },
     "public/app.js:baseNodeAngle": {
       "file": "public/app.js",
       "name": "baseNodeAngle",
       "type": "Variable",
-      "startLine": 13
+      "startLine": 12
     },
     "public/app.js:timeOffsets": {
       "file": "public/app.js",
       "name": "timeOffsets",
       "type": "Variable",
-      "startLine": 16
+      "startLine": 13
     },
     "public/app.js:serverTimeOffset": {
       "file": "public/app.js",
       "name": "serverTimeOffset",
       "type": "Variable",
-      "startLine": 17
+      "startLine": 14
     },
     "public/app.js:workletCode": {
       "file": "public/app.js",
       "name": "workletCode",
       "type": "Variable",
-      "startLine": 20
+      "startLine": 16
     },
     "public/app.js:SpectralNoiseProcessor": {
       "file": "public/app.js",
       "name": "SpectralNoiseProcessor",
       "type": "Class",
-      "startLine": 21
+      "startLine": 17
+    },
+    "public/app.js:requestWakeLock": {
+      "file": "public/app.js",
+      "name": "requestWakeLock",
+      "type": "Function",
+      "startLine": 51
     },
     "public/app.js:initNetwork": {
       "file": "public/app.js",
       "name": "initNetwork",
       "type": "Function",
-      "startLine": 63
+      "startLine": 61
     },
     "public/app.js:initAudio": {
       "file": "public/app.js",
       "name": "initAudio",
       "type": "Function",
-      "startLine": 93
+      "startLine": 86
     },
     "public/app.js:stopAudio": {
       "file": "public/app.js",
       "name": "stopAudio",
       "type": "Function",
-      "startLine": 150
+      "startLine": 144
     },
     "public/app.js:scheduleAudioUpdate": {
       "file": "public/app.js",
       "name": "scheduleAudioUpdate",
       "type": "Function",
-      "startLine": 157
+      "startLine": 151
     },
     "public/app.js:canvas": {
       "file": "public/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 182
+      "startLine": 169
     },
     "public/app.js:ctx": {
       "file": "public/app.js",
       "name": "ctx",
       "type": "Variable",
-      "startLine": 183
+      "startLine": 170
     },
     "public/app.js:drawDaydream": {
       "file": "public/app.js",
       "name": "drawDaydream",
       "type": "Function",
-      "startLine": 194
+      "startLine": 179
     },
     "server.js:express": {
       "file": "server.js",
