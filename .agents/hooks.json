@@ -1,0 +1,25 @@
+{
+  "agy-nodeos-boot": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "pgrep -f 'nodeos -d' > /dev/null || (nohup nodeos -d > daemon.log 2>&1 &)",
+        "timeout": 5
+      }
+    ]
+  },
+  "nodeos-swarm-intent": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "nodeos -s intent_injector"
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "nodeos -s intent_stopper"
+      }
+    ]
+  }
+}

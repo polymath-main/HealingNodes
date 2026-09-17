@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealingNodes - Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a2e;
+            color: #e2e2e2;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        h1 { border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .panel {
+            background-color: #16213e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .stat-value { font-size: 2em; color: #43e8d8; font-weight: bold; }
+        
+        .control-group { margin-top: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #0f3460;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background-color: #e94560; }
+        
+        .test-trigger { margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>System Override Console</h1>
+
+    <div class="panel">
+        <h2>Global Mesh Status</h2>
+        <p>Active Client Nodes: <span id="admin-nodes" class="stat-value">0</span></p>
+        <p>Current Sync Frequency: <span id="admin-freq" class="stat-value">33</span> Hz</p>
+    </div>
+
+    <div class="panel">
+        <h2>Manual Override</h2>
+        <div class="control-group">
+            <label for="freq-slider">Base Frequency Override (<span id="freq-preview">33</span> Hz)</label>
+            <input type="range" id="freq-slider" min="1" max="100" value="33" step="1">
+            <button id="apply-freq-btn">Apply Global State Shift</button>
+        </div>
+    </div>
+
+    <div class="panel test-trigger">
+        <h2>API Testing (Bio-Feedback Engine)</h2>
+        <p>Simulate an external smartwatch payload hitting the REST endpoint.</p>
+        <button id="test-hr-spike">Simulate High HR Spike (>100 BPM)</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const nodesSpan = document.getElementById('admin-nodes');
+        const freqSpan = document.getElementById('admin-freq');
+        const freqSlider = document.getElementById('freq-slider');
+        const freqPreview = document.getElementById('freq-preview');
+        const applyBtn = document.getElementById('apply-freq-btn');
+        const testHrBtn = document.getElementById('test-hr-spike');
+
+        socket.on('connect', () => {
+            socket.emit('register', 'admin');
+            console.log('Connected to Orchestrator as Admin');
+        });
+
+        socket.on('admin_state_update', (state) => {
+            nodesSpan.innerText = state.nodeCount;
+            freqSpan.innerText = state.currentFrequency;
+            freqSlider.value = state.currentFrequency;
+            freqPreview.innerText = state.currentFrequency;
+        });
+
+        freqSlider.addEventListener('input', (e) => {
+            freqPreview.innerText = e.target.value;
+        });
+
+        applyBtn.addEventListener('click', () => {
+            socket.emit('admin_override', { frequency: parseFloat(freqSlider.value) });
+        });
+
+        testHrBtn.addEventListener('click', () => {
+            fetch('/api/bio-feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ heartRate: 115 })
+            }).then(res => res.json())
+              .then(data => alert(`Bio-feedback triggered. New freq: ${data.activeFrequency}Hz`))
+              .catch(err => console.error(err));
+        });
+    </script>
+</body>
+</html>
