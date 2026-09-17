@@ -1,0 +1,6 @@
+function stopAudio() {
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    isAudioActive = false;
+    document.getElementById('status-text').innerText = "Engine Stopped.";
+    document.getElementById('start-btn').innerText = "Enter Daydream";
+}

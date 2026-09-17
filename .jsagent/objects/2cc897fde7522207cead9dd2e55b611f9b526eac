@@ -1,0 +1,19 @@
+function scheduleAudioUpdate(state) {
+    if (!audioCtx) return;
+    const localTargetTimeMs = state.targetSyncTime - serverTimeOffset;
+    const timeUntilChangeMs = localTargetTimeMs - Date.now();
+    
+    if (timeUntilChangeMs > 0) {
+        const t = audioCtx.currentTime + (timeUntilChangeMs / 1000);
+        const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+
+        // Exponential Glides
+        baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+        binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+        
+        // Dynamic Alpha Noise
+        if(noiseNode) {
+            noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+        }
+    }
+}

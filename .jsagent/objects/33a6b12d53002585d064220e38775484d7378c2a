@@ -1,0 +1,7 @@
+## 1. Architectural Synthesis
+The Phase 2 directive merges automated circadian/PID modes with human emotional states and introduces the **Transcendental Hybrid**. This involves moving from a static acoustic mesh to a dynamic system governed by the **Environmental State Vector** and the **Emotional Trajectory Equation**. 
+
+The system relies on Node.js + Socket.io for decentralized state synchronization, and the raw HTML5 Web Audio API and Canvas API for client-side audio/visual rendering.
+
+---
+

@@ -1,0 +1,4 @@
+### Orbital Spatial Panning (The Rotating Room)
+In the Transcendental Hybrid mode, the spatial equation is modified so the angle is a function of time, physically orbiting the sound around the listener.
+$$\theta(t) = \frac{2\pi \cdot \text{NodeIndex}}{N} + (\text{orbital\_velocity} \cdot t)$$
+This is executed via a highly optimized 60fps `requestAnimationFrame` loop that continuously updates `panner3D.positionX` and `position

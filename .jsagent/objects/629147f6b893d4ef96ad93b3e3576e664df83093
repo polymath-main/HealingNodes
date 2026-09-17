@@ -1,0 +1,5 @@
+## 1. Browser Capabilities & Limitations (Web Audio API)
+- **Audio Rendering**: Client-side rendering using Tone.js over Web Audio API. Requires an initial user interaction (e.g., a "Connect" or "Start" button) to unlock the audio context due to browser Autoplay policies.
+- **Background Throttling**: Mobile browsers aggressively throttle JavaScript timers in background tabs, which can drift audio scheduling.
+  - *Solution*: Offload timing-critical tasks to Web Workers. Utilize the `WakeLock API` (`navigator.wakeLock.request('screen')`) to keep the screen active and prevent the device from entering deep sleep while operating as an active spatial node.
+

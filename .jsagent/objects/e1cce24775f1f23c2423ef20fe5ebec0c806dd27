@@ -1,0 +1,53 @@
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+app.use(express.static('public'));
+app.use(express.json());
+
+// --- Phase 2: Trajectory Manager & State Vector ---
+let nodes = [];
+
+/* __JAGE_REF_js_block_TrajectoryManager__ */
+
+const trajectory = new TrajectoryManager();
+
+// --- REST APIs ---
+app.post('/api/trajectory/start', (req, res) => {
+    const { targetState, durationMs } = req.body;
+    trajectory.startTrajectory(targetState, durationMs);
+    res.json({ success: true, target: targetState });
+});
+
+// --- Socket Events ---
+io.on('connection', (socket) => {
+    console.log(`[+] Node connected: ${socket.id}`);
+    
+    socket.on('register', (role) => {
+        if (role === 'client') {
+            nodes.push(socket.id);
+            trajectory.broadcastState();
+        }
+    });
+
+    socket.on('sync_ping', (clientTime) => {
+        socket.emit('sync_pong', { clientTime: clientTime, serverTime: Date.now() });
+    });
+
+    socket.on('disconnect', () => {
+        if (nodes.includes(socket.id)) {
+            console.log(`[-] Client Node disconnected: ${socket.id}`);
+            nodes = nodes.filter(id => id !== socket.id);
+            trajectory.broadcastState();
+        }
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`[HealingNodes Phase 2] Engine running on http://0.0.0.0:${PORT}`);
+});

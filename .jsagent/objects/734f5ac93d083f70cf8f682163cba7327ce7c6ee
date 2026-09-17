@@ -1,0 +1,27 @@
+# Healing Nodes: Platform Architecture & Implementation Blueprint
+
+/* __JAGE_REF_md_section_1__browser_capabilities___limitations__web_audio_api___ */
+/* __JAGE_REF_md_section_2__connectivity___synchronization__ */
+/* __JAGE_REF_md_section_3__sound_control___device_management__admin_dashboard___ */
+/* __JAGE_REF_md_section_4__automation__ */
+## 5. Data Flow / State Management
+- **State Model**: A Redux-like unidirectional global state is maintained on the central Server.
+- **Broadcast Strategy**: Clients do not mutate state directly; they send intents to the server. The server resolves these and broadcasts state updates (or diffs) to all clients via WebSockets.
+- **JSON Payload Example**:
+  ```json
+  {
+    "type": "STATE_UPDATE",
+    "timestamp": 1694947931000,
+    "payload": {
+      "globalVolume": 0.8,
+      "frequencies": {
+        "base": 33.0,
+        "noiseType": "pink"
+      },
+      "spatialContext": {
+        "center": [0, 0],
+        "radius": 10
+      }
+    }
+  }
+  ```

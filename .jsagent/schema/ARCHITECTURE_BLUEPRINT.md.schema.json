@@ -1,0 +1,11 @@
+{
+  "file": "ARCHITECTURE_BLUEPRINT.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__browser_capabilities___limitations__web_audio_api_": "629147f6b893d4ef96ad93b3e3576e664df83093",
+    "md_section_2__connectivity___synchronization": "06cbff573f381ae56e014ab71336243cb14032ca",
+    "md_section_3__sound_control___device_management__admin_dashboard_": "0dc15ad6198c9fa99090fae46be21b0494eeecc7",
+    "md_section_4__automation": "e0fc7de1f3a0b09c284a9f17287b5633fbf23ddb",
+    "__skeleton__": "734f5ac93d083f70cf8f682163cba7327ce7c6ee"
+  }
+}

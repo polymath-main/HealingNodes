@@ -1,0 +1,14 @@
+## 2. The Environmental State Vector
+The global environment at any point in time is defined by the expanded vector $V$:
+`V = [f_base, T_breath, alpha_noise, phi_color, harmonic_ratio, orbital_velocity, binaural_offset]`
+
+- `f_base`: Base frequency of the acoustic mesh (e.g., 33Hz).
+- `T_breath`: Breathing LFO period (e.g., 10s). Supports arrays for polyrhythmic breathing.
+- `alpha_noise`: Spectral noise exponent (1 for Pink, 2 for Brown, 3 for Red).
+- `phi_color`: Base hue angle for visual fluid rendering on Canvas.
+- `harmonic_ratio`: The ratio defining the interval for the local node (e.g., 1.2 for Minor Third, 1.618 for Golden Ratio).
+- `orbital_velocity`: The speed at which the spatial angle physically orbits/spins around the room.
+- `binaural_offset`: The frequency difference used to induce hemispheric brainwave synchronization (Hemi-Sync).
+
+---
+

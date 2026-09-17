@@ -1,0 +1,5 @@
+## 3. Sound Control & Device Management (Admin Dashboard)
+- **Separation of Concerns**: The Admin Dashboard is hosted on a restricted route or separate port (System Access IP), potentially requiring authentication, entirely distinct from the lightweight Client Node view.
+- **Global Control**: The Admin interface can broadcast global state overrides, such as master volume, target frequencies (e.g., 33 Hz), and noise profiles (1/f Pink Noise).
+- **Spatial Grid Management**: The Admin dictates the virtual acoustic space using a quadtree or pi-based spatial distribution model. Connected devices can be visually mapped on the dashboard, and the admin can manually reassign their spatial coordinates or let the system auto-assign them based on connection order.
+

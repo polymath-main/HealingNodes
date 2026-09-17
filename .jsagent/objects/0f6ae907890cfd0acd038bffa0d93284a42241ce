@@ -1,0 +1,4 @@
+## Architecture
+
+*   **Server (The Orchestrator):** Node.js + Socket.io. Tracks active devices, calculates the room's mesh geometry in real-time, and broadcasts the NTP-style clock sync offset.
+*   **Client (The Nodes):** Native Web Audio API (`AudioContext`) and HTML5 Canvas. 

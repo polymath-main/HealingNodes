@@ -1,0 +1,173 @@
+{
+  "nodes": {
+    "PHASE2_IMPLEMENTATION_PLAN.md:TrajectoryManager": {
+      "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+      "name": "TrajectoryManager",
+      "type": "Class",
+      "startLine": 31
+    },
+    "PHASE2_IMPLEMENTATION_PLAN.md:SpectralNoiseProcessor": {
+      "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+      "name": "SpectralNoiseProcessor",
+      "type": "Class",
+      "startLine": 88
+    },
+    "PHASE2_IMPLEMENTATION_PLAN.md:applyHarmonicUpdate": {
+      "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+      "name": "applyHarmonicUpdate",
+      "type": "Function",
+      "startLine": 143
+    },
+    "public/app.js:isAudioActive": {
+      "file": "public/app.js",
+      "name": "isAudioActive",
+      "type": "Variable",
+      "startLine": 2
+    },
+    "public/app.js:wakeLock": {
+      "file": "public/app.js",
+      "name": "wakeLock",
+      "type": "Variable",
+      "startLine": 3
+    },
+    "public/app.js:currentV": {
+      "file": "public/app.js",
+      "name": "currentV",
+      "type": "Variable",
+      "startLine": 11
+    },
+    "public/app.js:currentAngleRads": {
+      "file": "public/app.js",
+      "name": "currentAngleRads",
+      "type": "Variable",
+      "startLine": 12
+    },
+    "public/app.js:baseNodeAngle": {
+      "file": "public/app.js",
+      "name": "baseNodeAngle",
+      "type": "Variable",
+      "startLine": 13
+    },
+    "public/app.js:timeOffsets": {
+      "file": "public/app.js",
+      "name": "timeOffsets",
+      "type": "Variable",
+      "startLine": 16
+    },
+    "public/app.js:serverTimeOffset": {
+      "file": "public/app.js",
+      "name": "serverTimeOffset",
+      "type": "Variable",
+      "startLine": 17
+    },
+    "public/app.js:workletCode": {
+      "file": "public/app.js",
+      "name": "workletCode",
+      "type": "Variable",
+      "startLine": 20
+    },
+    "public/app.js:SpectralNoiseProcessor": {
+      "file": "public/app.js",
+      "name": "SpectralNoiseProcessor",
+      "type": "Class",
+      "startLine": 21
+    },
+    "public/app.js:initNetwork": {
+      "file": "public/app.js",
+      "name": "initNetwork",
+      "type": "Function",
+      "startLine": 63
+    },
+    "public/app.js:initAudio": {
+      "file": "public/app.js",
+      "name": "initAudio",
+      "type": "Function",
+      "startLine": 93
+    },
+    "public/app.js:stopAudio": {
+      "file": "public/app.js",
+      "name": "stopAudio",
+      "type": "Function",
+      "startLine": 137
+    },
+    "public/app.js:scheduleAudioUpdate": {
+      "file": "public/app.js",
+      "name": "scheduleAudioUpdate",
+      "type": "Function",
+      "startLine": 144
+    },
+    "public/app.js:canvas": {
+      "file": "public/app.js",
+      "name": "canvas",
+      "type": "Variable",
+      "startLine": 165
+    },
+    "public/app.js:ctx": {
+      "file": "public/app.js",
+      "name": "ctx",
+      "type": "Variable",
+      "startLine": 166
+    },
+    "public/app.js:drawDaydream": {
+      "file": "public/app.js",
+      "name": "drawDaydream",
+      "type": "Function",
+      "startLine": 177
+    },
+    "server.js:express": {
+      "file": "server.js",
+      "name": "express",
+      "type": "Variable",
+      "startLine": 1
+    },
+    "server.js:http": {
+      "file": "server.js",
+      "name": "http",
+      "type": "Variable",
+      "startLine": 2
+    },
+    "server.js:app": {
+      "file": "server.js",
+      "name": "app",
+      "type": "Variable",
+      "startLine": 5
+    },
+    "server.js:server": {
+      "file": "server.js",
+      "name": "server",
+      "type": "Variable",
+      "startLine": 6
+    },
+    "server.js:io": {
+      "file": "server.js",
+      "name": "io",
+      "type": "Variable",
+      "startLine": 7
+    },
+    "server.js:nodes": {
+      "file": "server.js",
+      "name": "nodes",
+      "type": "Variable",
+      "startLine": 13
+    },
+    "server.js:TrajectoryManager": {
+      "file": "server.js",
+      "name": "TrajectoryManager",
+      "type": "Class",
+      "startLine": 15
+    },
+    "server.js:trajectory": {
+      "file": "server.js",
+      "name": "trajectory",
+      "type": "Variable",
+      "startLine": 84
+    },
+    "server.js:PORT": {
+      "file": "server.js",
+      "name": "PORT",
+      "type": "Variable",
+      "startLine": 117
+    }
+  },
+  "edges": []
+}

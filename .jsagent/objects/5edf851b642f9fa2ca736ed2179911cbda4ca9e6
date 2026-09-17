@@ -1,0 +1,5 @@
+### API Endpoints
+- `POST /api/trajectory/start`
+  - Body: `{ targetState: { f_base, T_breath, alpha_noise, phi_color, harmonic_ratio, orbital_velocity, binaural_offset }, durationMs: 2700000 }`
+- `POST /api/trajectory/stop`
+

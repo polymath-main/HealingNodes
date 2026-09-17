@@ -1,0 +1,8 @@
+### Admin UI Presets
+1. **Sadness / Catharsis**: `[30Hz, 12s, 2.0 (Brown), 240 (Blue), 1.2 (Minor 3rd), 0 Orbit, 0 Sync]`
+2. **Focused / Flow**: `[40Hz, 8s, 1.0 (Pink), 120 (Green), 1.618 (Golden), 0 Orbit, 0 Sync]`
+3. **Energetic**: `[55Hz, 4s, 0.5 (White/Pink), 0 (Red), 1.5 (Perfect 5th), 0 Orbit, 0 Sync]`
+4. **Deep Thinking**: `[33Hz, 15s, 2.5 (Brown/Red), 280 (Purple), 1.333 (Perfect 4th), 0 Orbit, 0 Sync]`
+5. **Transcendental Hybrid (Mind-Blowing)**: `[108Hz Base, 6.18s/10s Polyrhythm, 1.5 Noise, 360 Phase, 1.618 Ratio, 0.05 Orbit Velocity, 4Hz Sync]`
+   *Combines polyrhythmic breathing, spatial orbiting, and hemispheric sync.*
+

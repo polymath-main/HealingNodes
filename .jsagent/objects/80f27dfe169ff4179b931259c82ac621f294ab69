@@ -1,0 +1,22 @@
+# Healing Nodes: Dynamic Distributed Spatial Audio Engine
+
+/* __JAGE_REF_md_section_core_concept__ */
+## The Triad of Mathematical Healing
+
+/* __JAGE_REF_md_section_1__quadtree_mathematics__the_spatial_architecture___ */
+/* __JAGE_REF_md_section_2__the_universal_connector____pi__and_spherical_radiation___ */
+/* __JAGE_REF_md_section_3__biological_resonance__33_hz____1_f__pink_noise___ */
+## Implementation Architecture
+The system relies on a central Node.js WebSocket server to conduct the mathematical rendering across connected devices. 
+
+1. **The Server (The Orchestrator):**
+   - Emits absolute sync-times (UNIX timestamps).
+   - Recalculates $\frac{2\pi}{N}$ geometry upon every node connection/disconnection.
+   - Distributes JSON metadata containing the phase, harmonic octave, and spatial coordinates.
+
+2. **The Client Nodes:**
+   - Instead of streaming audio, they synthesize it locally using the Web Audio API.
+   - Generate exact 33Hz Isochronic tones and $1/f$ filtering.
+   - Use `PannerNode` for spherical, $\pi$-based spatial mapping.
+
+*This document serves as the theoretical anchor for the Healing Nodes implementation.*

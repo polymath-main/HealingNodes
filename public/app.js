@@ -2,268 +2,228 @@ let socket;
 let isAudioActive = false;
 let wakeLock = null;
 
-// Pure Math Web Audio API Context
 let audioCtx;
+let masterGain, panner3D, breathingFilter;
+let baseOsc, binauralOsc;
+let noiseNode; // The custom AudioWorkletNode
 
-// Audio Graph Nodes
-let baseOsc;
-let panner3D;
-let pinkNoiseSource;
-let breathingFilter;
-let masterGain;
+// Global Vector State
+let currentV = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+let currentAngleRads = 0;
+let baseNodeAngle = 0;
 
-// Synchronization state
+// Synchronization
 let timeOffsets = [];
 let serverTimeOffset = 0;
-const SYNC_SAMPLES = 10;
 
-// UI Elements
-const statusText = document.getElementById('status-text');
-const startBtn = document.getElementById('start-btn');
-const hudNodes = document.getElementById('hud-nodes');
-const hudAngle = document.getElementById('hud-angle');
-const hudOffset = document.getElementById('hud-offset');
-const myMarker = document.getElementById('my-marker');
+// --- 1. AudioWorklet Injector (Zero Dependency) ---
+const workletCode = `
+class SpectralNoiseProcessor extends AudioWorkletProcessor {
+    constructor() {
+        super();
+        this.b0=0; this.b1=0; this.b2=0; this.b3=0; this.b4=0; this.b5=0; this.b6=0;
+    }
+    static get parameterDescriptors() {
+        return [{ name: 'alpha', defaultValue: 1, minValue: 0, maxValue: 3 }];
+    }
+    process(inputs, outputs, parameters) {
+        const output = outputs[0];
+        const alpha = parameters.alpha[0]; // k-rate
+        
+        for (let channel = 0; channel < output.length; ++channel) {
+            const outChannel = output[channel];
+            for (let i = 0; i < outChannel.length; ++i) {
+                const white = Math.random() * 2 - 1;
+                
+                // Pink Noise (Voss-McCartney)
+                this.b0 = 0.99886 * this.b0 + white * 0.0555179;
+                this.b1 = 0.99332 * this.b1 + white * 0.0750759;
+                this.b2 = 0.96900 * this.b2 + white * 0.1538520;
+                this.b3 = 0.86650 * this.b3 + white * 0.3104856;
+                this.b4 = 0.55000 * this.b4 + white * 0.5329522;
+                this.b5 = -0.7616 * this.b5 - white * 0.0168980;
+                let pink = (this.b0 + this.b1 + this.b2 + this.b3 + this.b4 + this.b5 + this.b6 + white * 0.5362) * 0.11;
+                this.b6 = white * 0.115926;
 
-// --- 1. Network & Synchronization ---
+                // Brown Noise (Integrator)
+                let brown = (this.b6 * 3.5); // use b6 as state
+
+                // Lerp Pink (1) to Brown (2)
+                let blend = Math.max(0, Math.min(1, alpha - 1));
+                outChannel[i] = pink * (1 - blend) + brown * blend;
+            }
+        }
+        return true;
+    }
+}
+registerProcessor('spectral-noise', SpectralNoiseProcessor);
+`;
+
+// --- 2. Network ---
 function initNetwork() {
     socket = io();
-
     socket.on('connect', () => {
-        statusText.innerText = "Connected. Synchronizing Clocks...";
+        document.getElementById('status-text').innerText = "Connected. Synchronizing...";
         socket.emit('register', 'client');
-        syncClock();
+        socket.emit('sync_ping', Date.now());
     });
 
     socket.on('sync_pong', (data) => {
-        const now = Date.now();
-        const rtt = now - data.clientTime;
-        const latency = rtt / 2;
-        const offset = (data.serverTime - data.clientTime - latency);
-        
-        timeOffsets.push(offset);
-
-        if (timeOffsets.length < SYNC_SAMPLES) {
+        const latency = (Date.now() - data.clientTime) / 2;
+        timeOffsets.push(data.serverTime - data.clientTime - latency);
+        if (timeOffsets.length < 10) {
             setTimeout(() => socket.emit('sync_ping', Date.now()), 100);
         } else {
             timeOffsets.sort((a,b) => a-b);
-            const mid = Math.floor(SYNC_SAMPLES/2);
-            serverTimeOffset = Math.round(timeOffsets[mid]);
-            hudOffset.innerText = serverTimeOffset;
-            statusText.innerText = "Synchronized. Awaiting Initialization.";
+            serverTimeOffset = timeOffsets[Math.floor(10/2)];
+            document.getElementById('status-text').innerText = "Synchronized. Awaiting Initialization.";
         }
     });
 
     socket.on('audio_state_update', (state) => {
-        hudNodes.innerText = state.nodeCount;
-        hudAngle.innerText = state.angleRads.toFixed(2);
-        
-        updateVisualizer(state.angleRads);
-
-        if (isAudioActive) {
+        baseNodeAngle = state.baseAngleRads;
+        currentV = state.v;
+        if (isAudioActive && audioCtx) {
             scheduleAudioUpdate(state);
         }
     });
 }
 
-function syncClock() {
-    timeOffsets = [];
-    socket.emit('sync_ping', Date.now());
-}
-
-// --- 2. Pure Mathematical Sound Synthesis (Native AudioContext) ---
-
-// Voss-McCartney Algorithm for 1/f Pink Noise
-// Converts linear white noise (entropy) into 1/f spectral density via cascaded filters
-function createPinkNoiseBuffer(ctx) {
-    const bufferSize = ctx.sampleRate * 4; // 4 seconds of looping entropy
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const output = buffer.getChannelData(0);
-    
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-    
-    for (let i = 0; i < bufferSize; i++) {
-        let white = Math.random() * 2 - 1; // Pure entropy (-1 to 1)
-        
-        // Mathematical integration to shift power spectrum
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        
-        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-        output[i] *= 0.11; // Amplitude Normalization
-        b6 = white * 0.115926;
-    }
-    return buffer;
-}
-
+// --- 3. Pure Math Engine ---
 async function initAudio() {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Master Volume (-10dB math equivalent: 10^(-10/20) ≈ 0.316)
+    // Load Worklet Blob
+    const blob = new Blob([workletCode], { type: "application/javascript" });
+    const url = URL.createObjectURL(blob);
+    await audioCtx.audioWorklet.addModule(url);
+
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 0.316;
     masterGain.connect(audioCtx.destination);
     
-    // True 3D Spherical Panner (HRTF)
     panner3D = audioCtx.createPanner();
     panner3D.panningModel = "HRTF";
     panner3D.distanceModel = "inverse";
-    panner3D.refDistance = 1;
-    panner3D.maxDistance = 10000;
-    panner3D.rolloffFactor = 1;
-    
-    // Position listener at true center (0,0,0)
-    audioCtx.listener.positionX.value = 0;
-    audioCtx.listener.positionY.value = 0;
-    audioCtx.listener.positionZ.value = 0;
-    
     panner3D.connect(masterGain);
     
-    // Mathematical Base Oscillator (33Hz Sine wave)
+    // Oscillators
     baseOsc = audioCtx.createOscillator();
-    baseOsc.type = "sine";
-    baseOsc.frequency.value = 33;
-    baseOsc.connect(panner3D);
-
-    // Generate Pink Noise mathematically
-    pinkNoiseSource = audioCtx.createBufferSource();
-    pinkNoiseSource.buffer = createPinkNoiseBuffer(audioCtx);
-    pinkNoiseSource.loop = true;
+    binauralOsc = audioCtx.createOscillator();
     
-    // Lowpass filter for Pink Noise to create "Warmth"
+    baseOsc.connect(panner3D);
+    binauralOsc.connect(panner3D); // In real Hemi-Sync, this would be hard-panned. We use 3D Panner for now.
+
+    // Spectral Noise Worklet
+    noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+    
     breathingFilter = audioCtx.createBiquadFilter();
     breathingFilter.type = "lowpass";
-    breathingFilter.frequency.value = 400; // Base cutoff
+    breathingFilter.frequency.value = 400; 
     
-    // LFO (Low Frequency Oscillator) to drive the Breathing Math
-    // Frequency: 0.1 Hz (10 seconds per cycle)
-    const lfo = audioCtx.createOscillator();
-    lfo.type = "sine";
-    lfo.frequency.value = 0.1;
-    
-    // Gain node to amplify LFO mathematically (amplitude mapping)
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 200; // Sweep cutoff frequency by 200 Hz
-    
-    // Connect LFO -> Gain -> Filter cutoff parameter
-    lfo.connect(lfoGain);
-    lfoGain.connect(breathingFilter.frequency);
-    
-    // Route Pink noise -> Filter -> Panner
-    pinkNoiseSource.connect(breathingFilter);
+    noiseNode.connect(breathingFilter);
     breathingFilter.connect(panner3D);
 
-    // Start all mathematical generators
     const startTime = audioCtx.currentTime;
     baseOsc.start(startTime);
-    pinkNoiseSource.start(startTime);
-    lfo.start(startTime);
+    binauralOsc.start(startTime);
     
     isAudioActive = true;
-    statusText.innerText = "Audio Active. Native Math & Spatial Resonance Engaged.";
-    startBtn.innerText = "Stop Engine";
-    startBtn.classList.add('active');
-
+    document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
+    document.getElementById('start-btn').innerText = "Stop Engine";
     requestWakeLock();
 }
 
 function stopAudio() {
-    if (audioCtx) {
-        audioCtx.close();
-        audioCtx = null;
-    }
-    
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
     isAudioActive = false;
-    statusText.innerText = "Engine Stopped.";
-    startBtn.innerText = "Initialize Math Engine";
-    startBtn.classList.remove('active');
+    document.getElementById('status-text').innerText = "Engine Stopped.";
+    document.getElementById('start-btn').innerText = "Enter Daydream";
+}
+
+function scheduleAudioUpdate(state) {
+    if (!audioCtx) return;
+    const localTargetTimeMs = state.targetSyncTime - serverTimeOffset;
+    const timeUntilChangeMs = localTargetTimeMs - Date.now();
     
-    if (wakeLock) {
-        wakeLock.release();
-        wakeLock = null;
+    if (timeUntilChangeMs > 0) {
+        const t = audioCtx.currentTime + (timeUntilChangeMs / 1000);
+        const targetFreq = currentV.f_base * currentV.harmonic_ratio;
+
+        // Exponential Glides
+        baseOsc.frequency.setTargetAtTime(targetFreq, t, 2.0);
+        binauralOsc.frequency.setTargetAtTime(targetFreq + currentV.binaural_offset, t, 2.0);
+        
+        // Dynamic Alpha Noise
+        if(noiseNode) {
+            noiseNode.parameters.get('alpha').setTargetAtTime(currentV.alpha_noise, t, 2.0);
+        }
     }
 }
 
-// --- 4. The Daydream Engine (Liquid Fluid Math) ---
+// --- 4. The Transcendental Canvas Engine ---
 const canvas = document.getElementById('visual-engine');
 const ctx = canvas.getContext('2d');
-let currentAngleRads = 0;
-let currentFreq = 33; 
 let animationFrameId;
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
 
-// Double-tap to enter true fullscreen
 document.body.addEventListener('dblclick', () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.log(`Error attempting to enable fullscreen: ${err.message}`);
-        });
-    } else {
-        document.exitFullscreen();
-    }
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
 });
 
 function drawDaydream() {
-    // Liquid fade effect (Motion Blur)
     ctx.fillStyle = 'rgba(2, 2, 5, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (isAudioActive && audioCtx) {
         const time = audioCtx.currentTime;
         
-        // 0.1 Hz Breathing Cycle (matches the Pink Noise LFO)
-        const breath = Math.sin(time * 2 * Math.PI * 0.1); 
+        // Orbital Spatial Update
+        currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
         
-        // 33 Hz (or current harmonic) vibration
-        const vibration = Math.sin(time * 2 * Math.PI * currentFreq) * (1.5 + breath * 0.5);
+        if (panner3D) {
+            const radius = 2;
+            panner3D.positionX.setValueAtTime(radius * Math.cos(currentAngleRads), time);
+            panner3D.positionZ.setValueAtTime(radius * Math.sin(currentAngleRads), time);
+        }
+
+        // LFO Breathing (T_breath)
+        const breathHz = 1.0 / (currentV.T_breath || 10);
+        const breath = Math.sin(time * 2 * Math.PI * breathHz);
         
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        
-        // Dynamically scale based on TV vs Phone screen size
-        const baseRadius = Math.min(cx, cy) * 0.5; // 50% of screen
+        if(breathingFilter) {
+            breathingFilter.frequency.setValueAtTime(400 + breath * 200, time);
+        }
+
+        const vibration = Math.sin(time * 2 * Math.PI * currentV.f_base) * (1.5 + breath * 0.5);
+        const baseRadius = Math.min(canvas.width, canvas.height) * 0.5;
 
         ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(currentAngleRads + time * 0.05); // Slow atmospheric rotation
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(currentAngleRads + time * 0.05);
 
-        // Dynamic $\pi$-based circadian coloring
-        const rVal = Math.floor(Math.sin(currentAngleRads) * 50 + 100);
-        const gVal = Math.floor(Math.sin(currentAngleRads + Math.PI/2) * 200 + 55);
-        const bVal = Math.floor(Math.sin(currentAngleRads + Math.PI) * 200 + 100);
+        // Color Phase Shift
+        const rVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color) * 50 + 100);
+        const gVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI/2) * 200 + 55);
+        const bVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI) * 200 + 100);
 
-        // Draw multiple overlapping liquid layers
         for (let layer = 0; layer < 3; layer++) {
             ctx.beginPath();
-            
             for (let i = 0; i <= Math.PI * 2 + 0.1; i += 0.1) {
-                // Fluid Math: Overlapping low-frequency sine waves acting like Perlin noise
                 const fluidDistortion = Math.sin(i * (3 + layer) + time * (0.5 + layer*0.2)) * (baseRadius * 0.15)
                                       + Math.cos(i * (2 + layer) - time * (0.3 + layer*0.1)) * (baseRadius * 0.1);
                 
-                // Radius = Base + Fluid Waves + Breathing Swell + Micro-vibration
                 const r = baseRadius + fluidDistortion + (breath * baseRadius * 0.1) + vibration;
-                
                 const x = Math.cos(i) * r;
                 const y = Math.sin(i) * r;
-                
                 if (i === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
-            
             ctx.closePath();
             
-            // Create a liquid glow gradient
             const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, baseRadius * 1.5);
             gradient.addColorStop(0, `rgba(${rVal}, ${gVal}, ${bVal}, 0.0)`);
             gradient.addColorStop(0.8, `rgba(${rVal}, ${gVal}, ${bVal}, ${0.1 - layer*0.02})`);
@@ -271,55 +231,22 @@ function drawDaydream() {
             
             ctx.fillStyle = gradient;
             ctx.fill();
-            
-            // Soft liquid edge
             ctx.strokeStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${0.4 - layer*0.1})`;
             ctx.lineWidth = 1.5;
             ctx.stroke();
         }
-
         ctx.restore();
     }
-
     animationFrameId = requestAnimationFrame(drawDaydream);
 }
 
-// Updating state dynamically
-function scheduleAudioUpdate(state) {
-    if (!audioCtx) return;
-
-    const localTargetTimeMs = state.targetSyncTime - serverTimeOffset;
-    const timeUntilChangeMs = localTargetTimeMs - Date.now();
-    
-    if (timeUntilChangeMs > 0) {
-        const audioCtxTargetTime = audioCtx.currentTime + (timeUntilChangeMs / 1000);
-        
-        const radius = 2;
-        const posX = radius * Math.cos(state.angleRads);
-        const posZ = radius * Math.sin(state.angleRads);
-        
-        const harmonicFreq = state.baseFreq * Math.pow(1.5, state.myIndex);
-
-        // Update visuals globally
-        currentAngleRads = state.angleRads;
-        currentFreq = harmonicFreq;
-
-        baseOsc.frequency.linearRampToValueAtTime(harmonicFreq, audioCtxTargetTime);
-        
-        panner3D.positionX.linearRampToValueAtTime(posX, audioCtxTargetTime);
-        panner3D.positionY.linearRampToValueAtTime(0, audioCtxTargetTime);
-        panner3D.positionZ.linearRampToValueAtTime(posZ, audioCtxTargetTime);
-    }
-}
-
-startBtn.addEventListener('click', () => {
+document.getElementById('start-btn').addEventListener('click', () => {
     if (isAudioActive) {
         stopAudio();
         document.getElementById('ui-container').classList.remove('fade-out');
     } else {
         initAudio();
         document.getElementById('ui-container').classList.add('fade-out');
-        if (!animationFrameId) drawDaydream();
     }
 });
 

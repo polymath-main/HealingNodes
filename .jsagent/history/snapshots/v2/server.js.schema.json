@@ -1,0 +1,8 @@
+{
+  "file": "server.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_TrajectoryManager": "c3afd3e67f389764cba1e6f63ca4cdb2665c8a5d",
+    "__skeleton__": "e1cce24775f1f23c2423ef20fe5ebec0c806dd27"
+  }
+}

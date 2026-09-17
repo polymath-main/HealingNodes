@@ -1,0 +1,4 @@
+## 4. Automation
+- **Autonomous Reactions**: The Node.js server exposes API endpoints to ingest external triggers, such as bio-feedback data (e.g., heart rate monitors or wearables). State rules can dynamically adjust frequencies or tempos based on this physiological input.
+- **Circadian Automation**: Implement a time-based scheduling system (e.g., `node-cron`) to automatically transition the environment's soundscape based on the time of day, aligning with circadian rhythms.
+

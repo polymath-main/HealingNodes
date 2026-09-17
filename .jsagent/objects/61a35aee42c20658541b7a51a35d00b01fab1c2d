@@ -1,0 +1,5 @@
+### Hemispheric Synchronization
+When `binaural_offset` > 0, the audio engine spawns a secondary oscillator (e.g., `targetFreq + 4Hz`) hard-panned to the opposite ear/node to force brainwave coherence via isochronic/binaural interference patterns.
+
+---
+

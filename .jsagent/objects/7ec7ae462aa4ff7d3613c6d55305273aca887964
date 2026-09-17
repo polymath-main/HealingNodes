@@ -1,0 +1,65 @@
+function drawDaydream() {
+    ctx.fillStyle = 'rgba(2, 2, 5, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (isAudioActive && audioCtx) {
+        const time = audioCtx.currentTime;
+        
+        // Orbital Spatial Update
+        currentAngleRads = baseNodeAngle + (currentV.orbital_velocity * time);
+        
+        if (panner3D) {
+            const radius = 2;
+            panner3D.positionX.setValueAtTime(radius * Math.cos(currentAngleRads), time);
+            panner3D.positionZ.setValueAtTime(radius * Math.sin(currentAngleRads), time);
+        }
+
+        // LFO Breathing (T_breath)
+        const breathHz = 1.0 / (currentV.T_breath || 10);
+        const breath = Math.sin(time * 2 * Math.PI * breathHz);
+        
+        if(breathingFilter) {
+            breathingFilter.frequency.setValueAtTime(400 + breath * 200, time);
+        }
+
+        const vibration = Math.sin(time * 2 * Math.PI * currentV.f_base) * (1.5 + breath * 0.5);
+        const baseRadius = Math.min(canvas.width, canvas.height) * 0.5;
+
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(currentAngleRads + time * 0.05);
+
+        // Color Phase Shift
+        const rVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color) * 50 + 100);
+        const gVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI/2) * 200 + 55);
+        const bVal = Math.floor(Math.sin(currentAngleRads + currentV.phi_color + Math.PI) * 200 + 100);
+
+        for (let layer = 0; layer < 3; layer++) {
+            ctx.beginPath();
+            for (let i = 0; i <= Math.PI * 2 + 0.1; i += 0.1) {
+                const fluidDistortion = Math.sin(i * (3 + layer) + time * (0.5 + layer*0.2)) * (baseRadius * 0.15)
+                                      + Math.cos(i * (2 + layer) - time * (0.3 + layer*0.1)) * (baseRadius * 0.1);
+                
+                const r = baseRadius + fluidDistortion + (breath * baseRadius * 0.1) + vibration;
+                const x = Math.cos(i) * r;
+                const y = Math.sin(i) * r;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            
+            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, baseRadius * 1.5);
+            gradient.addColorStop(0, `rgba(${rVal}, ${gVal}, ${bVal}, 0.0)`);
+            gradient.addColorStop(0.8, `rgba(${rVal}, ${gVal}, ${bVal}, ${0.1 - layer*0.02})`);
+            gradient.addColorStop(1, `rgba(${rVal}, ${gVal}, ${bVal}, 0.0)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.strokeStyle = `rgba(${rVal}, ${gVal}, ${bVal}, ${0.4 - layer*0.1})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    animationFrameId = requestAnimationFrame(drawDaydream);
+}

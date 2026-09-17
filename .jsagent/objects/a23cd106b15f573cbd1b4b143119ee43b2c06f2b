@@ -1,0 +1,11 @@
+## The Triad of Mathematical Healing
+
+1. **Liquid Fluid Daydream Engine (Visuals)**
+   A pure HTML5 Canvas WebGL-inspired engine. It generates overlapping, glowing liquid waveforms using multi-layered low-frequency sine algorithms that breathe and pulsate directly in sync with the audio hardware clock. The visuals map dynamically to the precise spatial $\pi$ angle assigned to each device.
+
+2. **Pure $1/f$ Pink Noise (Voss-McCartney Algorithm)**
+   Instead of using pre-recorded MP3s or wrapper libraries, HealingNodes generates perfect acoustic entropy natively on the browser's C++ audio thread using the Voss-McCartney cascading filter algorithm. A 0.1Hz algorithmic Low Frequency Oscillator (LFO) causes the pink noise to "breathe" exactly once every 10 seconds.
+
+3. **33 Hz Binding Frequency & Spatial Triangulation**
+   The base of the environment is anchored by a 33 Hz sine wave (the frequency associated with low-gamma cognitive binding and vagus nerve stimulation). When multiple nodes connect, the central Node.js Orchestrator calculates the spatial division ($\frac{2\pi}{N}$) and assigns each device a perfect geometric phase and harmonic frequency multiplier, surrounding the listener in a mathematically perfect chord.
+

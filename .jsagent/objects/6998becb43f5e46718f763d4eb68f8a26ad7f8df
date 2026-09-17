@@ -1,0 +1,31 @@
+/* __JAGE_REF_md_section_healingnodes__ */
+/* __JAGE_REF_md_section_the_triad_of_mathematical_healing__ */
+/* __JAGE_REF_md_section_architecture__ */
+Zero external audio frameworks. Receives the mathematical instructions and renders the physical audio/visual waves locally to prevent network jitter.
+*   **System Access IP (Admin Dashboard):** A dedicated control panel allowing manual override of the base frequency and simulation of Bio-Feedback (e.g., HRV/stress spikes) which dynamically inverts the room's acoustic state.
+
+## Installation & Usage
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/polymath-main/HealingNodes.git
+   cd HealingNodes
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Boot the environment:
+   ```bash
+   node server.js
+   ```
+
+4. Connect your nodes:
+   * **Root Node:** Open `http://localhost:3000` on your phone/PC and double-tap to enter the Fullscreen Daydream Engine.
+   * **Conductor Dashboard:** Open `http://localhost:3000/admin.html` to control the environment.
+   * **Spatial Expansion:** Open the local network IP (e.g., `http://192.168.x.x:3000`) on a Smart TV or second laptop to watch the spatial mesh mathematically divide in real-time.
+
+---
+*Built within the Polymath Ecosystem.*

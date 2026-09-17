@@ -3,108 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealingNodes - Admin Dashboard</title>
+    <title>HealingNodes - Trajectory Dashboard</title>
     <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background-color: #1a1a2e;
-            color: #e2e2e2;
-            font-family: 'Courier New', Courier, monospace;
-        }
+        body { margin: 0; padding: 20px; background-color: #1a1a2e; color: #e2e2e2; font-family: 'Courier New', Courier, monospace; }
         h1 { border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .panel {
-            background-color: #16213e;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .stat-value { font-size: 2em; color: #43e8d8; font-weight: bold; }
-        
-        .control-group { margin-top: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input[type="range"] {
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        button {
-            background-color: #0f3460;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-        }
+        .panel { background-color: #16213e; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .stat-value { font-size: 1.5em; color: #43e8d8; font-weight: bold; }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .box { flex: 1; min-width: 200px; background: #0f172a; padding: 15px; border-radius: 6px; }
+        button { background-color: #0f3460; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-family: inherit; margin: 5px; width: 100%; transition: 0.3s; }
         button:hover { background-color: #e94560; }
-        
-        .test-trigger { margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
+        input[type="range"] { width: 100%; }
+        .slider-group { margin-top: 15px; }
     </style>
 </head>
 <body>
     <h1>System Override Console</h1>
 
-    <div class="panel">
-        <h2>Global Mesh Status</h2>
-        <p>Active Client Nodes: <span id="admin-nodes" class="stat-value">0</span></p>
-        <p>Current Sync Frequency: <span id="admin-freq" class="stat-value">33</span> Hz</p>
-    </div>
-
-    <div class="panel">
-        <h2>Manual Override</h2>
-        <div class="control-group">
-            <label for="freq-slider">Base Frequency Override (<span id="freq-preview">33</span> Hz)</label>
-            <input type="range" id="freq-slider" min="1" max="100" value="33" step="1">
-            <button id="apply-freq-btn">Apply Global State Shift</button>
+    <div class="panel flex-row">
+        <div class="box">
+            <h2>Mesh Status</h2>
+            <p>Active Nodes: <span id="admin-nodes" class="stat-value">0</span></p>
+        </div>
+        <div class="box">
+            <h2>Current Vector</h2>
+            <p>Freq: <span id="v-freq" class="stat-value">0</span> Hz</p>
+            <p>Breath: <span id="v-breath" class="stat-value">0</span> s</p>
+            <p>Ratio: <span id="v-ratio" class="stat-value">0</span></p>
+            <p>Orbit Vel: <span id="v-orbit" class="stat-value">0</span></p>
         </div>
     </div>
 
-    <div class="panel test-trigger">
-        <h2>API Testing (Bio-Feedback Engine)</h2>
-        <p>Simulate an external smartwatch payload hitting the REST endpoint.</p>
-        <button id="test-hr-spike">Simulate High HR Spike (>100 BPM)</button>
+    <div class="panel">
+        <h2>Emotional Trajectory (Phase 2)</h2>
+        <div class="slider-group">
+            <label>Morph Duration: <span id="duration-val">5</span> Minutes</label>
+            <input type="range" id="duration-slider" min="1" max="60" value="5">
+        </div>
+        
+        <div class="flex-row" style="margin-top:20px;">
+            <div class="box">
+                <button onclick="triggerTrajectory('sadness')">Catharsis (Minor 3rd, Brown Noise)</button>
+                <button onclick="triggerTrajectory('focused')">Flow State (Golden Ratio, Pink Noise)</button>
+                <button onclick="triggerTrajectory('energetic')">Energetic (Perfect 5th, White Noise)</button>
+            </div>
+            <div class="box">
+                <button onclick="triggerTrajectory('thinking')">Deep Thinking (Sub-Bass, Red Noise)</button>
+                <button onclick="triggerTrajectory('hybrid')" style="background-color: #7928ca;">Transcendental Hybrid (Quantum)</button>
+                <button onclick="triggerTrajectory('homeostasis')">Homeostasis (Baseline)</button>
+            </div>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        const nodesSpan = document.getElementById('admin-nodes');
-        const freqSpan = document.getElementById('admin-freq');
-        const freqSlider = document.getElementById('freq-slider');
-        const freqPreview = document.getElementById('freq-preview');
-        const applyBtn = document.getElementById('apply-freq-btn');
-        const testHrBtn = document.getElementById('test-hr-spike');
+        
+        // Presets mapping
+        const PRESETS = {
+            'homeostasis': { f_base: 33, T_breath: 10, alpha_noise: 1.0, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 },
+            'sadness': { f_base: 30, T_breath: 12, alpha_noise: 2.0, phi_color: 240, harmonic_ratio: 1.2, orbital_velocity: 0, binaural_offset: 0 },
+            'focused': { f_base: 40, T_breath: 8, alpha_noise: 1.0, phi_color: 120, harmonic_ratio: 1.618, orbital_velocity: 0, binaural_offset: 0 },
+            'energetic': { f_base: 55, T_breath: 4, alpha_noise: 0.5, phi_color: 0, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 },
+            'thinking': { f_base: 33, T_breath: 15, alpha_noise: 2.5, phi_color: 280, harmonic_ratio: 1.333, orbital_velocity: 0, binaural_offset: 0 },
+            'hybrid': { f_base: 108, T_breath: 6.18, alpha_noise: 1.5, phi_color: 360, harmonic_ratio: 1.618, orbital_velocity: 0.05, binaural_offset: 4 }
+        };
 
-        socket.on('connect', () => {
-            socket.emit('register', 'admin');
-            console.log('Connected to Orchestrator as Admin');
+        socket.on('connect', () => socket.emit('register', 'admin'));
+
+        socket.on('admin_state_update', (data) => {
+            document.getElementById('admin-nodes').innerText = data.nodeCount;
+            if(data.state) {
+                document.getElementById('v-freq').innerText = data.state.f_base.toFixed(2);
+                document.getElementById('v-breath').innerText = data.state.T_breath.toFixed(2);
+                document.getElementById('v-ratio').innerText = data.state.harmonic_ratio.toFixed(3);
+                document.getElementById('v-orbit').innerText = data.state.orbital_velocity.toFixed(3);
+            }
         });
 
-        socket.on('admin_state_update', (state) => {
-            nodesSpan.innerText = state.nodeCount;
-            freqSpan.innerText = state.currentFrequency;
-            freqSlider.value = state.currentFrequency;
-            freqPreview.innerText = state.currentFrequency;
+        document.getElementById('duration-slider').addEventListener('input', (e) => {
+            document.getElementById('duration-val').innerText = e.target.value;
         });
 
-        freqSlider.addEventListener('input', (e) => {
-            freqPreview.innerText = e.target.value;
-        });
-
-        applyBtn.addEventListener('click', () => {
-            socket.emit('admin_override', { frequency: parseFloat(freqSlider.value) });
-        });
-
-        testHrBtn.addEventListener('click', () => {
-            fetch('/api/bio-feedback', {
+        function triggerTrajectory(presetKey) {
+            const mins = document.getElementById('duration-slider').value;
+            const ms = mins * 60 * 1000;
+            const target = PRESETS[presetKey];
+            
+            fetch('/api/trajectory/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ heartRate: 115 })
-            }).then(res => res.json())
-              .then(data => alert(`Bio-feedback triggered. New freq: ${data.activeFrequency}Hz`))
-              .catch(err => console.error(err));
-        });
+                body: JSON.stringify({ targetState: target, durationMs: ms })
+            }).then(() => alert(`Started Trajectory: ${presetKey} over ${mins} mins`));
+        }
     </script>
 </body>
 </html>

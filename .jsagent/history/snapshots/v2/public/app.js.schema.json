@@ -1,0 +1,13 @@
+{
+  "file": "app.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_SpectralNoiseProcessor": "7c39c92027cb7f8ce8dbe6be67035bcde893620d",
+    "js_block_initNetwork": "296fc39fb17905bbaf850e32f7f3ae9d679575e0",
+    "js_block_initAudio": "707da4d2651114ab3d9e5aafbef97d7d684ecb23",
+    "js_block_stopAudio": "87c80a71bd757b65308719893b947d2066075a56",
+    "js_block_scheduleAudioUpdate": "2cc897fde7522207cead9dd2e55b611f9b526eac",
+    "js_block_drawDaydream": "7ec7ae462aa4ff7d3613c6d55305273aca887964",
+    "__skeleton__": "a1423e12a521dbb98160ec7d5ad268b19005afe6"
+  }
+}

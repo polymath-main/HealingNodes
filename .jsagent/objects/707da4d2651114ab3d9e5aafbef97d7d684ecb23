@@ -1,0 +1,43 @@
+async function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Load Worklet Blob
+    const blob = new Blob([workletCode], { type: "application/javascript" });
+    const url = URL.createObjectURL(blob);
+    await audioCtx.audioWorklet.addModule(url);
+
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.316;
+    masterGain.connect(audioCtx.destination);
+    
+    panner3D = audioCtx.createPanner();
+    panner3D.panningModel = "HRTF";
+    panner3D.distanceModel = "inverse";
+    panner3D.connect(masterGain);
+    
+    // Oscillators
+    baseOsc = audioCtx.createOscillator();
+    binauralOsc = audioCtx.createOscillator();
+    
+    baseOsc.connect(panner3D);
+    binauralOsc.connect(panner3D); // In real Hemi-Sync, this would be hard-panned. We use 3D Panner for now.
+
+    // Spectral Noise Worklet
+    noiseNode = new AudioWorkletNode(audioCtx, 'spectral-noise');
+    
+    breathingFilter = audioCtx.createBiquadFilter();
+    breathingFilter.type = "lowpass";
+    breathingFilter.frequency.value = 400; 
+    
+    noiseNode.connect(breathingFilter);
+    breathingFilter.connect(panner3D);
+
+    const startTime = audioCtx.currentTime;
+    baseOsc.start(startTime);
+    binauralOsc.start(startTime);
+    
+    isAudioActive = true;
+    document.getElementById('status-text').innerText = "Audio Active. Phase 2 Vector Engine Engaged.";
+    document.getElementById('start-btn').innerText = "Stop Engine";
+    requestWakeLock();
+}

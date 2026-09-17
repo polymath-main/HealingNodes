@@ -1,0 +1,7 @@
+## 2. Connectivity & Synchronization
+- **Transport Layer**: WebSockets for low-latency, bidirectional real-time communication between the Node.js central server and client nodes.
+- **Latency & Sync**: Implement an NTP-like ping/pong mechanism to measure round-trip time and estimate clock offset, allowing synchronized start times for audio events across distributed devices.
+- **Jitter & Smoothing**: Apply jitter buffering and parameter interpolation (e.g., ramping Tone.js parameters) for incoming state events to ensure smooth audio transitions without clicking or popping.
+- **Resilience**: Built-in auto-reconnect logic on the client side with exponential backoff.
+- **Health Checks**: Regular heartbeat payloads to maintain active connections and allow the server to quickly prune disconnected/stale nodes from the spatial grid.
+

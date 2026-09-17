@@ -1,0 +1,51 @@
+### Interpolation Logic
+The server is responsible for interpolating between the current state vector $V_{current}$ and the target state vector $V_{target}$ over a specified duration $D$ (e.g., 45 minutes).
+
+**Data Structure:**
+```javascript
+class TrajectoryManager {
+  constructor() {
+    this.currentState = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+    this.targetState = null;
+    this.startTime = 0;
+    this.duration = 0;
+    this.intervalId = null;
+  }
+  
+  startTrajectory(target, durationMs) {
+    this.targetState = target;
+    this.duration = durationMs;
+    this.startTime = Date.now();
+    
+    if (this.intervalId) clearInterval(this.intervalId);
+    this.intervalId = setInterval(() => this.tick(), 1000); // 1Hz update rate
+  }
+
+  tick() {
+    const now = Date.now();
+    let progress = (now - this.startTime) / this.duration;
+    if (progress >= 1) {
+      progress = 1;
+      clearInterval(this.intervalId);
+    }
+    
+    // Apply easing (e.g., smoothstep)
+    const eased = progress * progress * (3 - 2 * progress);
+    
+    // Interpolate Vector V
+    for (const key in this.currentState) {
+       this.currentState[key] = this.lerp(this.currentState[key], this.targetState[key], eased);
+    }
+    
+    // Broadcast via Socket.io
+    io.emit('state_update', { state: this.currentState, timestamp: now });
+  }
+
+  lerp(start, end, amt) {
+    return (1 - amt) * start + amt * end;
+  }
+}
+```
+
+---
+

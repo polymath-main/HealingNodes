@@ -1,0 +1,14 @@
+### Continuous Frequency Gliding
+As the emotional trajectory evolves, the local frequency of a node smoothly glides.
+**Node Frequency Formula:**
+$$f_{local} = f_{base} \times harmonic\_ratio \times HRTF\_modifier$$
+
+```javascript
+function applyHarmonicUpdate(state) {
+  const targetFreq = state.f_base * state.harmonic_ratio;
+  const now = audioCtx.currentTime;
+  // Exponential glide prevents clicking and sounds natural perceptually
+  oscillator.frequency.setTargetAtTime(targetFreq, now, 2.0); 
+}
+```
+

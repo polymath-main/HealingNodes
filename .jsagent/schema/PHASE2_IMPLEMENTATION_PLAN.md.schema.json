@@ -1,0 +1,16 @@
+{
+  "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__architectural_synthesis": "33a6b12d53002585d064220e38775484d7378c2a",
+    "md_section_2__the_environmental_state_vector": "fb709abd46d4f7f3d8e1875d4d7aa9496de2565c",
+    "md_section_interpolation_logic": "3ae0d7773cfcc81a34b9d8b20636a9876b24d047",
+    "md_section_mathematical_implementation": "73715263825ada68b0a860ecfa15790f7ec91508",
+    "md_section_continuous_frequency_gliding": "46856df987e35bd8cf4138d04933506988d2b136",
+    "md_section_orbital_spatial_panning__the_rotating_room_": "2fd621013dc143f0fb4c88453c51694afefbb678",
+    "md_section_hemispheric_synchronization": "61a35aee42c20658541b7a51a35d00b01fab1c2d",
+    "md_section_api_endpoints": "5edf851b642f9fa2ca736ed2179911cbda4ca9e6",
+    "md_section_admin_ui_presets": "c9b24fa90ebc46025811d0e6795267b34fcfa27b",
+    "__skeleton__": "a3f466dcbe393628810597eb6d63d9962e495a4d"
+  }
+}

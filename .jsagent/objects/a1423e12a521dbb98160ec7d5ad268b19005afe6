@@ -1,0 +1,63 @@
+let socket;
+let isAudioActive = false;
+let wakeLock = null;
+
+let audioCtx;
+let masterGain, panner3D, breathingFilter;
+let baseOsc, binauralOsc;
+let noiseNode; // The custom AudioWorkletNode
+
+// Global Vector State
+let currentV = { f_base: 33, T_breath: 10, alpha_noise: 1, phi_color: 200, harmonic_ratio: 1.5, orbital_velocity: 0, binaural_offset: 0 };
+let currentAngleRads = 0;
+let baseNodeAngle = 0;
+
+// Synchronization
+let timeOffsets = [];
+let serverTimeOffset = 0;
+
+// --- 1. AudioWorklet Injector (Zero Dependency) ---
+const workletCode = `
+/* __JAGE_REF_js_block_SpectralNoiseProcessor__ */
+registerProcessor('spectral-noise', SpectralNoiseProcessor);
+`;
+
+// --- 2. Network ---
+/* __JAGE_REF_js_block_initNetwork__ */
+
+// --- 3. Pure Math Engine ---
+/* __JAGE_REF_js_block_initAudio__ */
+
+/* __JAGE_REF_js_block_stopAudio__ */
+
+/* __JAGE_REF_js_block_scheduleAudioUpdate__ */
+
+// --- 4. The Transcendental Canvas Engine ---
+const canvas = document.getElementById('visual-engine');
+const ctx = canvas.getContext('2d');
+let animationFrameId;
+
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+document.body.addEventListener('dblclick', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+});
+
+/* __JAGE_REF_js_block_drawDaydream__ */
+
+document.getElementById('start-btn').addEventListener('click', () => {
+    if (isAudioActive) {
+        stopAudio();
+        document.getElementById('ui-container').classList.remove('fade-out');
+    } else {
+        initAudio();
+        document.getElementById('ui-container').classList.add('fade-out');
+    }
+});
+
+window.onload = () => {
+    initNetwork();
+    drawDaydream();
+};
