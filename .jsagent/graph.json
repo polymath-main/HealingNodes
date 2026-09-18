@@ -154,115 +154,127 @@
       "file": "client/js/app.js",
       "name": "unlockAudio",
       "type": "Function",
-      "startLine": 85
+      "startLine": 87
     },
     "client/js/app.js:connectSignaling": {
       "file": "client/js/app.js",
       "name": "connectSignaling",
       "type": "Function",
-      "startLine": 95
+      "startLine": 97
     },
     "client/js/app.js:canvas": {
       "file": "client/js/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 199
+      "startLine": 201
     },
     "client/js/app.js:gl": {
       "file": "client/js/app.js",
       "name": "gl",
       "type": "Variable",
-      "startLine": 200
+      "startLine": 202
     },
     "client/js/app.js:vsSource": {
       "file": "client/js/app.js",
       "name": "vsSource",
       "type": "Variable",
-      "startLine": 213
+      "startLine": 215
     },
     "client/js/app.js:fsSource": {
       "file": "client/js/app.js",
       "name": "fsSource",
       "type": "Variable",
-      "startLine": 218
+      "startLine": 220
     },
     "client/js/app.js:createShader": {
       "file": "client/js/app.js",
       "name": "createShader",
       "type": "Function",
-      "startLine": 241
+      "startLine": 244
     },
     "client/js/app.js:vertexShader": {
       "file": "client/js/app.js",
       "name": "vertexShader",
       "type": "Variable",
-      "startLine": 248
+      "startLine": 251
     },
     "client/js/app.js:fragmentShader": {
       "file": "client/js/app.js",
       "name": "fragmentShader",
       "type": "Variable",
-      "startLine": 249
+      "startLine": 252
     },
     "client/js/app.js:shaderProgram": {
       "file": "client/js/app.js",
       "name": "shaderProgram",
       "type": "Variable",
-      "startLine": 250
+      "startLine": 253
     },
     "client/js/app.js:positionBuffer": {
       "file": "client/js/app.js",
       "name": "positionBuffer",
       "type": "Variable",
-      "startLine": 256
+      "startLine": 259
     },
     "client/js/app.js:positionLocation": {
       "file": "client/js/app.js",
       "name": "positionLocation",
       "type": "Variable",
-      "startLine": 259
+      "startLine": 262
     },
     "client/js/app.js:uTimeLoc": {
       "file": "client/js/app.js",
       "name": "uTimeLoc",
       "type": "Variable",
-      "startLine": 263
+      "startLine": 266
     },
     "client/js/app.js:uResolutionLoc": {
       "file": "client/js/app.js",
       "name": "uResolutionLoc",
       "type": "Variable",
-      "startLine": 264
+      "startLine": 267
     },
     "client/js/app.js:uAudioBassLoc": {
       "file": "client/js/app.js",
       "name": "uAudioBassLoc",
       "type": "Variable",
-      "startLine": 265
+      "startLine": 268
     },
     "client/js/app.js:uAudioMidLoc": {
       "file": "client/js/app.js",
       "name": "uAudioMidLoc",
       "type": "Variable",
-      "startLine": 266
+      "startLine": 269
+    },
+    "client/js/app.js:uIntensityLoc": {
+      "file": "client/js/app.js",
+      "name": "uIntensityLoc",
+      "type": "Variable",
+      "startLine": 270
     },
     "client/js/app.js:analyser": {
       "file": "client/js/app.js",
       "name": "analyser",
       "type": "Variable",
-      "startLine": 269
+      "startLine": 273
     },
     "client/js/app.js:dataArray": {
       "file": "client/js/app.js",
       "name": "dataArray",
       "type": "Variable",
-      "startLine": 270
+      "startLine": 274
+    },
+    "client/js/app.js:visualIntensity": {
+      "file": "client/js/app.js",
+      "name": "visualIntensity",
+      "type": "Variable",
+      "startLine": 275
     },
     "client/js/app.js:render": {
       "file": "client/js/app.js",
       "name": "render",
       "type": "Function",
-      "startLine": 272
+      "startLine": 277
     },
     "dsp-wasm/pkg/dsp_wasm.d.ts:BiquadFilter": {
       "file": "dsp-wasm/pkg/dsp_wasm.d.ts",

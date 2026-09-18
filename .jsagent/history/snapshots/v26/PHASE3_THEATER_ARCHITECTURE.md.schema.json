@@ -1,0 +1,12 @@
+{
+  "file": "PHASE3_THEATER_ARCHITECTURE.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__the_core_concept": "50beae6f8d299ac0d1a24b6c62ab638c622d4896",
+    "md_section_2__hardware_safety___physics_constraints__the_excursion_limiter_": "f8de3bec6b5bd2f8ac9600d1b5e084dc1f54c0d0",
+    "md_section_the_topology": "8cb12c92eb4c3f763511fa128de4e27434c56fa7",
+    "md_section_3__mid_side__m_s__spatial_expansion_for_external_media": "c90562d01a8113c324dfceb0c0b7ccae33d692a1",
+    "md_section_4__psychoacoustic_environmental_overlays": "40823575d85dc56a469cc2a5af10d6d3859f5fbb",
+    "__skeleton__": "92a96a958d87186924421326709c0d9cad5b3a22"
+  }
+}

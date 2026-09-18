@@ -1,0 +1,11 @@
+{
+  "file": "dsp_wasm.d.ts",
+  "extension": ".ts",
+  "pointers": {
+    "js_block_BiquadFilter": "9e1f9e58e42b5f4d1c1544807b0775c787ca2953",
+    "js_block_LinkwitzRiley4": "bfb81140cdcbce1d8b8c02ba766c5258a5d63f1c",
+    "js_block_initSync": "532e896925ca4677da7c17842b3a9a64bfa510a9",
+    "js_block___wbg_init": "27ab1980c287d4f9d93540572aa93bf6c527450d",
+    "__skeleton__": "4e48daba34f7d92014a9bfbd96bb5b662a86523c"
+  }
+}
