@@ -49,6 +49,11 @@ body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidde
     border-radius: 12px;
     font-family: sans-serif;
     cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+#fab-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 #autoplay-overlay {
@@ -62,3 +67,33 @@ body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidde
     z-index: 999;
 }
 .hidden { display: none !important; }
+
+/* Desktop / PC Enhancements */
+@media (min-width: 768px) {
+    #fab-container {
+        bottom: 50px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        align-items: center;
+        gap: 25px;
+    }
+
+    #fab-main {
+        width: 80px;
+        height: 80px;
+        font-size: 36px;
+    }
+
+    #fab-menu {
+        flex-direction: row;
+        transform-origin: bottom center;
+        gap: 20px;
+    }
+
+    #fab-menu button {
+        padding: 18px 36px;
+        font-size: 18px;
+        border-radius: 16px;
+    }
+}
