@@ -48,143 +48,233 @@
       "type": "Variable",
       "startLine": 25
     },
-    "public/app.js:isAudioActive": {
-      "file": "public/app.js",
-      "name": "isAudioActive",
+    "public/js/app.js:fabMain": {
+      "file": "public/js/app.js",
+      "name": "fabMain",
+      "type": "Variable",
+      "startLine": 1
+    },
+    "public/js/app.js:fabMenu": {
+      "file": "public/js/app.js",
+      "name": "fabMenu",
       "type": "Variable",
       "startLine": 2
     },
-    "public/app.js:activeCore": {
-      "file": "public/app.js",
-      "name": "activeCore",
+    "public/js/app.js:btnHost": {
+      "file": "public/js/app.js",
+      "name": "btnHost",
       "type": "Variable",
       "startLine": 3
     },
-    "public/app.js:timeOffsets": {
-      "file": "public/app.js",
-      "name": "timeOffsets",
+    "public/js/app.js:btnJoin": {
+      "file": "public/js/app.js",
+      "name": "btnJoin",
       "type": "Variable",
-      "startLine": 7
+      "startLine": 4
     },
-    "public/app.js:serverTimeOffset": {
-      "file": "public/app.js",
-      "name": "serverTimeOffset",
+    "public/js/app.js:autoplayOverlay": {
+      "file": "public/js/app.js",
+      "name": "autoplayOverlay",
+      "type": "Variable",
+      "startLine": 5
+    },
+    "public/js/app.js:webrtcAudio": {
+      "file": "public/js/app.js",
+      "name": "webrtcAudio",
+      "type": "Variable",
+      "startLine": 6
+    },
+    "public/js/app.js:audioCtx": {
+      "file": "public/js/app.js",
+      "name": "audioCtx",
       "type": "Variable",
       "startLine": 8
     },
-    "public/app.js:baseNodeAngle": {
-      "file": "public/app.js",
-      "name": "baseNodeAngle",
+    "public/js/app.js:peerConnection": {
+      "file": "public/js/app.js",
+      "name": "peerConnection",
       "type": "Variable",
       "startLine": 9
     },
-    "public/app.js:currentV": {
-      "file": "public/app.js",
-      "name": "currentV",
+    "public/js/app.js:signalingSocket": {
+      "file": "public/js/app.js",
+      "name": "signalingSocket",
+      "type": "Variable",
+      "startLine": 10
+    },
+    "public/js/app.js:masterOscillator": {
+      "file": "public/js/app.js",
+      "name": "masterOscillator",
+      "type": "Variable",
+      "startLine": 11
+    },
+    "public/js/app.js:pinkNoiseNode": {
+      "file": "public/js/app.js",
+      "name": "pinkNoiseNode",
       "type": "Variable",
       "startLine": 12
     },
-    "public/app.js:currentAngleRads": {
-      "file": "public/app.js",
-      "name": "currentAngleRads",
+    "public/js/app.js:currentMode": {
+      "file": "public/js/app.js",
+      "name": "currentMode",
       "type": "Variable",
       "startLine": 13
     },
-    "public/app.js:mediaBuffer": {
-      "file": "public/app.js",
-      "name": "mediaBuffer",
+    "public/js/app.js:btnMode": {
+      "file": "public/js/app.js",
+      "name": "btnMode",
+      "type": "Variable",
+      "startLine": 15
+    },
+    "public/js/app.js:modeOverlay": {
+      "file": "public/js/app.js",
+      "name": "modeOverlay",
+      "type": "Variable",
+      "startLine": 16
+    },
+    "public/js/app.js:closeModeBtn": {
+      "file": "public/js/app.js",
+      "name": "closeModeBtn",
       "type": "Variable",
       "startLine": 17
     },
-    "public/app.js:mediaSource": {
-      "file": "public/app.js",
-      "name": "mediaSource",
+    "public/js/app.js:modeSelectBtns": {
+      "file": "public/js/app.js",
+      "name": "modeSelectBtns",
       "type": "Variable",
       "startLine": 18
     },
-    "public/app.js:currentMediaUrl": {
-      "file": "public/app.js",
-      "name": "currentMediaUrl",
-      "type": "Variable",
-      "startLine": 19
-    },
-    "public/app.js:workletCode": {
-      "file": "public/app.js",
-      "name": "workletCode",
-      "type": "Variable",
-      "startLine": 21
-    },
-    "public/app.js:SpectralNoiseProcessor": {
-      "file": "public/app.js",
-      "name": "SpectralNoiseProcessor",
-      "type": "Class",
-      "startLine": 22
-    },
-    "public/app.js:initNetwork": {
-      "file": "public/app.js",
-      "name": "initNetwork",
+    "public/js/app.js:createPinkNoise": {
+      "file": "public/js/app.js",
+      "name": "createPinkNoise",
       "type": "Function",
-      "startLine": 50
+      "startLine": 25
     },
-    "public/app.js:loadMediaBuffer": {
-      "file": "public/app.js",
-      "name": "loadMediaBuffer",
+    "public/js/app.js:unlockAudio": {
+      "file": "public/js/app.js",
+      "name": "unlockAudio",
       "type": "Function",
-      "startLine": 98
+      "startLine": 87
     },
-    "public/app.js:initEngine": {
-      "file": "public/app.js",
-      "name": "initEngine",
+    "public/js/app.js:connectSignaling": {
+      "file": "public/js/app.js",
+      "name": "connectSignaling",
       "type": "Function",
-      "startLine": 107
+      "startLine": 97
     },
-    "public/app.js:stopEngine": {
-      "file": "public/app.js",
-      "name": "stopEngine",
-      "type": "Function",
-      "startLine": 123
-    },
-    "public/app.js:initModeEngine": {
-      "file": "public/app.js",
-      "name": "initModeEngine",
-      "type": "Function",
-      "startLine": 136
-    },
-    "public/app.js:scheduleModeUpdate": {
-      "file": "public/app.js",
-      "name": "scheduleModeUpdate",
-      "type": "Function",
-      "startLine": 169
-    },
-    "public/app.js:initMediaEngine": {
-      "file": "public/app.js",
-      "name": "initMediaEngine",
-      "type": "Function",
-      "startLine": 183
-    },
-    "public/app.js:scheduleMediaPlayback": {
-      "file": "public/app.js",
-      "name": "scheduleMediaPlayback",
-      "type": "Function",
-      "startLine": 210
-    },
-    "public/app.js:canvas": {
-      "file": "public/app.js",
+    "public/js/app.js:canvas": {
+      "file": "public/js/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 257
+      "startLine": 201
     },
-    "public/app.js:ctx": {
-      "file": "public/app.js",
-      "name": "ctx",
+    "public/js/app.js:gl": {
+      "file": "public/js/app.js",
+      "name": "gl",
       "type": "Variable",
-      "startLine": 258
+      "startLine": 202
     },
-    "public/app.js:drawDaydream": {
-      "file": "public/app.js",
-      "name": "drawDaydream",
+    "public/js/app.js:vsSource": {
+      "file": "public/js/app.js",
+      "name": "vsSource",
+      "type": "Variable",
+      "startLine": 215
+    },
+    "public/js/app.js:fsSource": {
+      "file": "public/js/app.js",
+      "name": "fsSource",
+      "type": "Variable",
+      "startLine": 220
+    },
+    "public/js/app.js:createShader": {
+      "file": "public/js/app.js",
+      "name": "createShader",
       "type": "Function",
+      "startLine": 244
+    },
+    "public/js/app.js:vertexShader": {
+      "file": "public/js/app.js",
+      "name": "vertexShader",
+      "type": "Variable",
+      "startLine": 251
+    },
+    "public/js/app.js:fragmentShader": {
+      "file": "public/js/app.js",
+      "name": "fragmentShader",
+      "type": "Variable",
+      "startLine": 252
+    },
+    "public/js/app.js:shaderProgram": {
+      "file": "public/js/app.js",
+      "name": "shaderProgram",
+      "type": "Variable",
+      "startLine": 253
+    },
+    "public/js/app.js:positionBuffer": {
+      "file": "public/js/app.js",
+      "name": "positionBuffer",
+      "type": "Variable",
+      "startLine": 259
+    },
+    "public/js/app.js:positionLocation": {
+      "file": "public/js/app.js",
+      "name": "positionLocation",
+      "type": "Variable",
+      "startLine": 262
+    },
+    "public/js/app.js:uTimeLoc": {
+      "file": "public/js/app.js",
+      "name": "uTimeLoc",
+      "type": "Variable",
+      "startLine": 266
+    },
+    "public/js/app.js:uResolutionLoc": {
+      "file": "public/js/app.js",
+      "name": "uResolutionLoc",
+      "type": "Variable",
       "startLine": 267
+    },
+    "public/js/app.js:uAudioBassLoc": {
+      "file": "public/js/app.js",
+      "name": "uAudioBassLoc",
+      "type": "Variable",
+      "startLine": 268
+    },
+    "public/js/app.js:uAudioMidLoc": {
+      "file": "public/js/app.js",
+      "name": "uAudioMidLoc",
+      "type": "Variable",
+      "startLine": 269
+    },
+    "public/js/app.js:uIntensityLoc": {
+      "file": "public/js/app.js",
+      "name": "uIntensityLoc",
+      "type": "Variable",
+      "startLine": 270
+    },
+    "public/js/app.js:analyser": {
+      "file": "public/js/app.js",
+      "name": "analyser",
+      "type": "Variable",
+      "startLine": 273
+    },
+    "public/js/app.js:dataArray": {
+      "file": "public/js/app.js",
+      "name": "dataArray",
+      "type": "Variable",
+      "startLine": 274
+    },
+    "public/js/app.js:visualIntensity": {
+      "file": "public/js/app.js",
+      "name": "visualIntensity",
+      "type": "Variable",
+      "startLine": 275
+    },
+    "public/js/app.js:render": {
+      "file": "public/js/app.js",
+      "name": "render",
+      "type": "Function",
+      "startLine": 277
     },
     "server.js:express": {
       "file": "server.js",

@@ -1,0 +1,12 @@
+{
+  "file": "app.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_createPinkNoise": "69c35c49f0e10af57363450b167ac449443af22f",
+    "js_block_unlockAudio": "2e70fe3127c9ab133b60b6845c601f9e434ce1d3",
+    "js_block_connectSignaling": "a104dd7501fe747eeba6df9814e9d5756defa078",
+    "js_block_createShader": "c6c3e580d1ff411da2ea0ecb23672ec5f1512672",
+    "js_block_render": "0cf2ac1722571a003a21737f1824eb94feb163f1",
+    "__skeleton__": "3dcca5c2f73a1a9b217749ccdda47b5399db6630"
+  }
+}
