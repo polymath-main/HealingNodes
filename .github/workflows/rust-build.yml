@@ -3,7 +3,9 @@ name: Phase 5 Rust & WASM Compiler
 on:
   push:
     paths:
-      - 'phase5-rust-rewrite/**'
+      - 'server/**'
+      - 'dsp-wasm/**'
+      - 'Cargo.toml'
   workflow_dispatch: # Allow manual triggering from GitHub UI
 
 jobs:
@@ -24,22 +26,22 @@ jobs:
 
       - name: Build WASM DSP Engine
         run: |
-          cd phase5-rust-rewrite/dsp-wasm
+          cd dsp-wasm
           wasm-pack build --target web --release
 
       - name: Build WebRTC SFU Server
         run: |
-          cd phase5-rust-rewrite/server
+          cd server
           cargo build --release
 
       - name: Upload WASM DSP Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dsp-wasm-pkg
-          path: phase5-rust-rewrite/dsp-wasm/pkg/
+          path: dsp-wasm/pkg/
 
       - name: Upload Server Binary (Linux x86_64)
         uses: actions/upload-artifact@v4
         with:
           name: webrtc-sfu-server
-          path: phase5-rust-rewrite/server/target/release/server
+          path: target/release/server
