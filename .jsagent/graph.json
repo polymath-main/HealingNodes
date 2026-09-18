@@ -108,149 +108,161 @@
       "type": "Variable",
       "startLine": 11
     },
-    "client/js/app.js:currentFreq": {
+    "client/js/app.js:pinkNoiseNode": {
       "file": "client/js/app.js",
-      "name": "currentFreq",
+      "name": "pinkNoiseNode",
       "type": "Variable",
       "startLine": 12
+    },
+    "client/js/app.js:currentMode": {
+      "file": "client/js/app.js",
+      "name": "currentMode",
+      "type": "Variable",
+      "startLine": 13
     },
     "client/js/app.js:btnMode": {
       "file": "client/js/app.js",
       "name": "btnMode",
       "type": "Variable",
-      "startLine": 14
+      "startLine": 15
     },
     "client/js/app.js:modeOverlay": {
       "file": "client/js/app.js",
       "name": "modeOverlay",
       "type": "Variable",
-      "startLine": 15
+      "startLine": 16
     },
     "client/js/app.js:closeModeBtn": {
       "file": "client/js/app.js",
       "name": "closeModeBtn",
       "type": "Variable",
-      "startLine": 16
+      "startLine": 17
     },
     "client/js/app.js:modeSelectBtns": {
       "file": "client/js/app.js",
       "name": "modeSelectBtns",
       "type": "Variable",
-      "startLine": 17
+      "startLine": 18
+    },
+    "client/js/app.js:createPinkNoise": {
+      "file": "client/js/app.js",
+      "name": "createPinkNoise",
+      "type": "Function",
+      "startLine": 25
     },
     "client/js/app.js:unlockAudio": {
       "file": "client/js/app.js",
       "name": "unlockAudio",
       "type": "Function",
-      "startLine": 44
+      "startLine": 85
     },
     "client/js/app.js:connectSignaling": {
       "file": "client/js/app.js",
       "name": "connectSignaling",
       "type": "Function",
-      "startLine": 54
+      "startLine": 95
     },
     "client/js/app.js:canvas": {
       "file": "client/js/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 149
+      "startLine": 199
     },
     "client/js/app.js:gl": {
       "file": "client/js/app.js",
       "name": "gl",
       "type": "Variable",
-      "startLine": 150
+      "startLine": 200
     },
     "client/js/app.js:vsSource": {
       "file": "client/js/app.js",
       "name": "vsSource",
       "type": "Variable",
-      "startLine": 163
+      "startLine": 213
     },
     "client/js/app.js:fsSource": {
       "file": "client/js/app.js",
       "name": "fsSource",
       "type": "Variable",
-      "startLine": 168
+      "startLine": 218
     },
     "client/js/app.js:createShader": {
       "file": "client/js/app.js",
       "name": "createShader",
       "type": "Function",
-      "startLine": 191
+      "startLine": 241
     },
     "client/js/app.js:vertexShader": {
       "file": "client/js/app.js",
       "name": "vertexShader",
       "type": "Variable",
-      "startLine": 198
+      "startLine": 248
     },
     "client/js/app.js:fragmentShader": {
       "file": "client/js/app.js",
       "name": "fragmentShader",
       "type": "Variable",
-      "startLine": 199
+      "startLine": 249
     },
     "client/js/app.js:shaderProgram": {
       "file": "client/js/app.js",
       "name": "shaderProgram",
       "type": "Variable",
-      "startLine": 200
+      "startLine": 250
     },
     "client/js/app.js:positionBuffer": {
       "file": "client/js/app.js",
       "name": "positionBuffer",
       "type": "Variable",
-      "startLine": 206
+      "startLine": 256
     },
     "client/js/app.js:positionLocation": {
       "file": "client/js/app.js",
       "name": "positionLocation",
       "type": "Variable",
-      "startLine": 209
+      "startLine": 259
     },
     "client/js/app.js:uTimeLoc": {
       "file": "client/js/app.js",
       "name": "uTimeLoc",
       "type": "Variable",
-      "startLine": 213
+      "startLine": 263
     },
     "client/js/app.js:uResolutionLoc": {
       "file": "client/js/app.js",
       "name": "uResolutionLoc",
       "type": "Variable",
-      "startLine": 214
+      "startLine": 264
     },
     "client/js/app.js:uAudioBassLoc": {
       "file": "client/js/app.js",
       "name": "uAudioBassLoc",
       "type": "Variable",
-      "startLine": 215
+      "startLine": 265
     },
     "client/js/app.js:uAudioMidLoc": {
       "file": "client/js/app.js",
       "name": "uAudioMidLoc",
       "type": "Variable",
-      "startLine": 216
+      "startLine": 266
     },
     "client/js/app.js:analyser": {
       "file": "client/js/app.js",
       "name": "analyser",
       "type": "Variable",
-      "startLine": 219
+      "startLine": 269
     },
     "client/js/app.js:dataArray": {
       "file": "client/js/app.js",
       "name": "dataArray",
       "type": "Variable",
-      "startLine": 220
+      "startLine": 270
     },
     "client/js/app.js:render": {
       "file": "client/js/app.js",
       "name": "render",
       "type": "Function",
-      "startLine": 222
+      "startLine": 272
     },
     "dsp-wasm/pkg/dsp_wasm.d.ts:BiquadFilter": {
       "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
