@@ -12,7 +12,6 @@ use webrtc::api::media_engine::MediaEngine;
 use webrtc::interceptor::registry::Registry;
 use webrtc::peer_connection::configuration::RTCConfiguration;
 use webrtc::track::track_local::track_local_static_rtp::TrackLocalStaticRTP;
-use webrtc::track::track_local::TrackLocal;
 
 type Clients = Arc<RwLock<HashMap<String, mpsc::UnboundedSender<Message>>>>;
 // Global broadcaster track that takes packets from Host and distributes to N Listeners
@@ -39,7 +38,7 @@ async fn main() {
     warp::serve(signaling_route).run(([0, 0, 0, 0], 3000)).await;
 }
 
-async fn handle_sfu_connection(ws: WebSocket, clients: Clients, broadcaster_track: BroadcasterTrack) {
+async fn handle_sfu_connection(ws: WebSocket, clients: Clients, _broadcaster_track: BroadcasterTrack) {
     let (mut client_ws_tx, mut client_ws_rx) = ws.split();
     let (tx, mut rx) = mpsc::unbounded_channel();
     
@@ -62,7 +61,7 @@ async fn handle_sfu_connection(ws: WebSocket, clients: Clients, broadcaster_trac
     let config = RTCConfiguration::default();
     
     // We instantiate the PeerConnection for this specific client (SFU model)
-    let peer_connection = Arc::new(api.new_peer_connection(config).await.expect("Failed to create PC"));
+    let _peer_connection = Arc::new(api.new_peer_connection(config).await.expect("Failed to create PC"));
 
     // Async task to push WS messages to client
     tokio::task::spawn(async move {
@@ -74,7 +73,7 @@ async fn handle_sfu_connection(ws: WebSocket, clients: Clients, broadcaster_trac
     // Listen for incoming WebSocket messages (SDPs and ICE candidates)
     while let Some(result) = client_ws_rx.next().await {
         if let Ok(msg) = result {
-            if let Ok(text) = msg.to_str() {
+            if let Ok(_text) = msg.to_str() {
                 // SFU Logic:
                 // If it's an Offer from the HOST, we set RemoteDescription, create an Answer, 
                 // and bind a closure to peer_connection.on_track() to intercept the incoming RTP packets.
