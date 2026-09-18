@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HealingNodes - Spatial Mesh</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
+        canvas { display: block; width: 100%; height: 100%; }
+        
+        #ui-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.6); color: #fff; z-index: 10;
+            transition: opacity 2s ease-in-out;
+        }
+        #ui-container.fade-out { opacity: 0; pointer-events: none; }
+        
+        /* The Mandatory Autoplay Overlay */
+        #autoplay-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: #111; color: #43e8d8; z-index: 20; cursor: pointer;
+        }
+        #autoplay-overlay h1 { font-size: 3em; margin: 0; animation: pulse 2s infinite; text-align: center; }
+        #autoplay-overlay p { font-size: 1.2em; color: #888; }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; text-shadow: 0 0 20px #43e8d8; }
+            100% { opacity: 0.5; }
+        }
+
+        h1 { font-size: 2em; letter-spacing: 2px; margin-bottom: 5px; }
+        #status-text { color: #aaa; margin-bottom: 30px; font-size: 1.2em; text-align: center; padding: 0 20px; }
+        
+        #start-btn {
+            padding: 15px 40px; font-size: 1.2em; border: 2px solid #43e8d8;
+            background: transparent; color: #43e8d8; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px;
+        }
+        #start-btn:hover { background: #43e8d8; color: #000; }
+    </style>
+</head>
+<body>
+    <div id="autoplay-overlay" onclick="unlockAudio()">
+        <h1>TAP TO JOIN MESH</h1>
+        <p>Unlock Spatial Audio</p>
+    </div>
+
+    <div id="ui-container">
+        <h1>HEALING NODES</h1>
+        <div id="status-text">Initializing Engine...</div>
+        <button id="start-btn">Enter Daydream</button>
+    </div>
+    
+    <canvas id="visual-engine"></canvas>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Bypass Autoplay Policy
+        function unlockAudio() {
+            document.getElementById('autoplay-overlay').style.display = 'none';
+            // audioCtx is created in app.js on start, but if it exists, resume it.
+            if (typeof audioCtx !== 'undefined' && audioCtx) {
+                audioCtx.resume();
+            }
+        }
+    </script>
+</body>
+</html>

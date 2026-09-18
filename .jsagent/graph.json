@@ -48,353 +48,287 @@
       "type": "Variable",
       "startLine": 25
     },
-    "client/js/app.js:fabMain": {
-      "file": "client/js/app.js",
-      "name": "fabMain",
-      "type": "Variable",
-      "startLine": 1
-    },
-    "client/js/app.js:fabMenu": {
-      "file": "client/js/app.js",
-      "name": "fabMenu",
+    "public/app.js:isAudioActive": {
+      "file": "public/app.js",
+      "name": "isAudioActive",
       "type": "Variable",
       "startLine": 2
     },
-    "client/js/app.js:btnHost": {
-      "file": "client/js/app.js",
-      "name": "btnHost",
+    "public/app.js:activeCore": {
+      "file": "public/app.js",
+      "name": "activeCore",
       "type": "Variable",
       "startLine": 3
     },
-    "client/js/app.js:btnJoin": {
-      "file": "client/js/app.js",
-      "name": "btnJoin",
+    "public/app.js:timeOffsets": {
+      "file": "public/app.js",
+      "name": "timeOffsets",
       "type": "Variable",
-      "startLine": 4
+      "startLine": 7
     },
-    "client/js/app.js:autoplayOverlay": {
-      "file": "client/js/app.js",
-      "name": "autoplayOverlay",
-      "type": "Variable",
-      "startLine": 5
-    },
-    "client/js/app.js:webrtcAudio": {
-      "file": "client/js/app.js",
-      "name": "webrtcAudio",
-      "type": "Variable",
-      "startLine": 6
-    },
-    "client/js/app.js:audioCtx": {
-      "file": "client/js/app.js",
-      "name": "audioCtx",
+    "public/app.js:serverTimeOffset": {
+      "file": "public/app.js",
+      "name": "serverTimeOffset",
       "type": "Variable",
       "startLine": 8
     },
-    "client/js/app.js:peerConnection": {
-      "file": "client/js/app.js",
-      "name": "peerConnection",
+    "public/app.js:baseNodeAngle": {
+      "file": "public/app.js",
+      "name": "baseNodeAngle",
       "type": "Variable",
       "startLine": 9
     },
-    "client/js/app.js:signalingSocket": {
-      "file": "client/js/app.js",
-      "name": "signalingSocket",
-      "type": "Variable",
-      "startLine": 10
-    },
-    "client/js/app.js:masterOscillator": {
-      "file": "client/js/app.js",
-      "name": "masterOscillator",
-      "type": "Variable",
-      "startLine": 11
-    },
-    "client/js/app.js:pinkNoiseNode": {
-      "file": "client/js/app.js",
-      "name": "pinkNoiseNode",
+    "public/app.js:currentV": {
+      "file": "public/app.js",
+      "name": "currentV",
       "type": "Variable",
       "startLine": 12
     },
-    "client/js/app.js:currentMode": {
-      "file": "client/js/app.js",
-      "name": "currentMode",
+    "public/app.js:currentAngleRads": {
+      "file": "public/app.js",
+      "name": "currentAngleRads",
       "type": "Variable",
       "startLine": 13
     },
-    "client/js/app.js:btnMode": {
-      "file": "client/js/app.js",
-      "name": "btnMode",
-      "type": "Variable",
-      "startLine": 15
-    },
-    "client/js/app.js:modeOverlay": {
-      "file": "client/js/app.js",
-      "name": "modeOverlay",
-      "type": "Variable",
-      "startLine": 16
-    },
-    "client/js/app.js:closeModeBtn": {
-      "file": "client/js/app.js",
-      "name": "closeModeBtn",
+    "public/app.js:mediaBuffer": {
+      "file": "public/app.js",
+      "name": "mediaBuffer",
       "type": "Variable",
       "startLine": 17
     },
-    "client/js/app.js:modeSelectBtns": {
-      "file": "client/js/app.js",
-      "name": "modeSelectBtns",
+    "public/app.js:mediaSource": {
+      "file": "public/app.js",
+      "name": "mediaSource",
       "type": "Variable",
       "startLine": 18
     },
-    "client/js/app.js:createPinkNoise": {
-      "file": "client/js/app.js",
-      "name": "createPinkNoise",
-      "type": "Function",
-      "startLine": 25
-    },
-    "client/js/app.js:unlockAudio": {
-      "file": "client/js/app.js",
-      "name": "unlockAudio",
-      "type": "Function",
-      "startLine": 87
-    },
-    "client/js/app.js:connectSignaling": {
-      "file": "client/js/app.js",
-      "name": "connectSignaling",
-      "type": "Function",
-      "startLine": 97
-    },
-    "client/js/app.js:canvas": {
-      "file": "client/js/app.js",
-      "name": "canvas",
+    "public/app.js:currentMediaUrl": {
+      "file": "public/app.js",
+      "name": "currentMediaUrl",
       "type": "Variable",
-      "startLine": 201
+      "startLine": 19
     },
-    "client/js/app.js:gl": {
-      "file": "client/js/app.js",
-      "name": "gl",
+    "public/app.js:workletCode": {
+      "file": "public/app.js",
+      "name": "workletCode",
       "type": "Variable",
-      "startLine": 202
+      "startLine": 21
     },
-    "client/js/app.js:vsSource": {
-      "file": "client/js/app.js",
-      "name": "vsSource",
-      "type": "Variable",
-      "startLine": 215
-    },
-    "client/js/app.js:fsSource": {
-      "file": "client/js/app.js",
-      "name": "fsSource",
-      "type": "Variable",
-      "startLine": 220
-    },
-    "client/js/app.js:createShader": {
-      "file": "client/js/app.js",
-      "name": "createShader",
-      "type": "Function",
-      "startLine": 244
-    },
-    "client/js/app.js:vertexShader": {
-      "file": "client/js/app.js",
-      "name": "vertexShader",
-      "type": "Variable",
-      "startLine": 251
-    },
-    "client/js/app.js:fragmentShader": {
-      "file": "client/js/app.js",
-      "name": "fragmentShader",
-      "type": "Variable",
-      "startLine": 252
-    },
-    "client/js/app.js:shaderProgram": {
-      "file": "client/js/app.js",
-      "name": "shaderProgram",
-      "type": "Variable",
-      "startLine": 253
-    },
-    "client/js/app.js:positionBuffer": {
-      "file": "client/js/app.js",
-      "name": "positionBuffer",
-      "type": "Variable",
-      "startLine": 259
-    },
-    "client/js/app.js:positionLocation": {
-      "file": "client/js/app.js",
-      "name": "positionLocation",
-      "type": "Variable",
-      "startLine": 262
-    },
-    "client/js/app.js:uTimeLoc": {
-      "file": "client/js/app.js",
-      "name": "uTimeLoc",
-      "type": "Variable",
-      "startLine": 266
-    },
-    "client/js/app.js:uResolutionLoc": {
-      "file": "client/js/app.js",
-      "name": "uResolutionLoc",
-      "type": "Variable",
-      "startLine": 267
-    },
-    "client/js/app.js:uAudioBassLoc": {
-      "file": "client/js/app.js",
-      "name": "uAudioBassLoc",
-      "type": "Variable",
-      "startLine": 268
-    },
-    "client/js/app.js:uAudioMidLoc": {
-      "file": "client/js/app.js",
-      "name": "uAudioMidLoc",
-      "type": "Variable",
-      "startLine": 269
-    },
-    "client/js/app.js:uIntensityLoc": {
-      "file": "client/js/app.js",
-      "name": "uIntensityLoc",
-      "type": "Variable",
-      "startLine": 270
-    },
-    "client/js/app.js:analyser": {
-      "file": "client/js/app.js",
-      "name": "analyser",
-      "type": "Variable",
-      "startLine": 273
-    },
-    "client/js/app.js:dataArray": {
-      "file": "client/js/app.js",
-      "name": "dataArray",
-      "type": "Variable",
-      "startLine": 274
-    },
-    "client/js/app.js:visualIntensity": {
-      "file": "client/js/app.js",
-      "name": "visualIntensity",
-      "type": "Variable",
-      "startLine": 275
-    },
-    "client/js/app.js:render": {
-      "file": "client/js/app.js",
-      "name": "render",
-      "type": "Function",
-      "startLine": 277
-    },
-    "dsp-wasm/pkg/dsp_wasm.d.ts:BiquadFilter": {
-      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
-      "name": "BiquadFilter",
+    "public/app.js:SpectralNoiseProcessor": {
+      "file": "public/app.js",
+      "name": "SpectralNoiseProcessor",
       "type": "Class",
-      "startLine": 4
+      "startLine": 22
     },
-    "dsp-wasm/pkg/dsp_wasm.d.ts:LinkwitzRiley4": {
-      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
-      "name": "LinkwitzRiley4",
-      "type": "Class",
-      "startLine": 12
-    },
-    "dsp-wasm/pkg/dsp_wasm.d.ts:initSync": {
-      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
-      "name": "initSync",
+    "public/app.js:initNetwork": {
+      "file": "public/app.js",
+      "name": "initNetwork",
       "type": "Function",
-      "startLine": 44
+      "startLine": 50
     },
-    "dsp-wasm/pkg/dsp_wasm.d.ts:__wbg_init": {
-      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
-      "name": "__wbg_init",
-      "type": "Function",
-      "startLine": 54
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:BiquadFilter": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "BiquadFilter",
-      "type": "Class",
-      "startLine": 3
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:LinkwitzRiley4": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "LinkwitzRiley4",
-      "type": "Class",
-      "startLine": 38
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:__wbg_get_imports": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "__wbg_get_imports",
-      "type": "Function",
-      "startLine": 69
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:BiquadFilterFinalization": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "BiquadFilterFinalization",
-      "type": "Variable",
-      "startLine": 91
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:LinkwitzRiley4Finalization": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "LinkwitzRiley4Finalization",
-      "type": "Variable",
-      "startLine": 94
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:getStringFromWasm0": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "getStringFromWasm0",
+    "public/app.js:loadMediaBuffer": {
+      "file": "public/app.js",
+      "name": "loadMediaBuffer",
       "type": "Function",
       "startLine": 98
     },
-    "dsp-wasm/pkg/dsp_wasm.js:cachedUint8ArrayMemory0": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "cachedUint8ArrayMemory0",
+    "public/app.js:initEngine": {
+      "file": "public/app.js",
+      "name": "initEngine",
+      "type": "Function",
+      "startLine": 107
+    },
+    "public/app.js:stopEngine": {
+      "file": "public/app.js",
+      "name": "stopEngine",
+      "type": "Function",
+      "startLine": 123
+    },
+    "public/app.js:initModeEngine": {
+      "file": "public/app.js",
+      "name": "initModeEngine",
+      "type": "Function",
+      "startLine": 136
+    },
+    "public/app.js:scheduleModeUpdate": {
+      "file": "public/app.js",
+      "name": "scheduleModeUpdate",
+      "type": "Function",
+      "startLine": 169
+    },
+    "public/app.js:initMediaEngine": {
+      "file": "public/app.js",
+      "name": "initMediaEngine",
+      "type": "Function",
+      "startLine": 183
+    },
+    "public/app.js:scheduleMediaPlayback": {
+      "file": "public/app.js",
+      "name": "scheduleMediaPlayback",
+      "type": "Function",
+      "startLine": 210
+    },
+    "public/app.js:canvas": {
+      "file": "public/app.js",
+      "name": "canvas",
       "type": "Variable",
-      "startLine": 102
+      "startLine": 257
     },
-    "dsp-wasm/pkg/dsp_wasm.js:getUint8ArrayMemory0": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "getUint8ArrayMemory0",
-      "type": "Function",
-      "startLine": 103
-    },
-    "dsp-wasm/pkg/dsp_wasm.js:cachedTextDecoder": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "cachedTextDecoder",
+    "public/app.js:ctx": {
+      "file": "public/app.js",
+      "name": "ctx",
       "type": "Variable",
-      "startLine": 110
+      "startLine": 258
     },
-    "dsp-wasm/pkg/dsp_wasm.js:MAX_SAFARI_DECODE_BYTES": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "MAX_SAFARI_DECODE_BYTES",
+    "public/app.js:drawDaydream": {
+      "file": "public/app.js",
+      "name": "drawDaydream",
+      "type": "Function",
+      "startLine": 267
+    },
+    "server.js:express": {
+      "file": "server.js",
+      "name": "express",
       "type": "Variable",
-      "startLine": 112
+      "startLine": 1
     },
-    "dsp-wasm/pkg/dsp_wasm.js:numBytesDecoded": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "numBytesDecoded",
+    "server.js:http": {
+      "file": "server.js",
+      "name": "http",
       "type": "Variable",
-      "startLine": 113
+      "startLine": 2
     },
-    "dsp-wasm/pkg/dsp_wasm.js:decodeText": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "decodeText",
-      "type": "Function",
-      "startLine": 114
+    "server.js:multer": {
+      "file": "server.js",
+      "name": "multer",
+      "type": "Variable",
+      "startLine": 4
     },
-    "dsp-wasm/pkg/dsp_wasm.js:__wbg_finalize_init": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "__wbg_finalize_init",
-      "type": "Function",
-      "startLine": 125
+    "server.js:fs": {
+      "file": "server.js",
+      "name": "fs",
+      "type": "Variable",
+      "startLine": 5
     },
-    "dsp-wasm/pkg/dsp_wasm.js:__wbg_load": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "__wbg_load",
-      "type": "Function",
-      "startLine": 134
+    "server.js:path": {
+      "file": "server.js",
+      "name": "path",
+      "type": "Variable",
+      "startLine": 6
     },
-    "dsp-wasm/pkg/dsp_wasm.js:initSync": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "initSync",
-      "type": "Function",
-      "startLine": 173
+    "server.js:ModeEngine": {
+      "file": "server.js",
+      "name": "ModeEngine",
+      "type": "Variable",
+      "startLine": 9
     },
-    "dsp-wasm/pkg/dsp_wasm.js:__wbg_init": {
-      "file": "dsp-wasm/pkg/dsp_wasm.js",
-      "name": "__wbg_init",
-      "type": "Function",
-      "startLine": 193
+    "server.js:MediaEngine": {
+      "file": "server.js",
+      "name": "MediaEngine",
+      "type": "Variable",
+      "startLine": 10
+    },
+    "server.js:YouTubeProxy": {
+      "file": "server.js",
+      "name": "YouTubeProxy",
+      "type": "Variable",
+      "startLine": 11
+    },
+    "server.js:mediaDir": {
+      "file": "server.js",
+      "name": "mediaDir",
+      "type": "Variable",
+      "startLine": 14
+    },
+    "server.js:storage": {
+      "file": "server.js",
+      "name": "storage",
+      "type": "Variable",
+      "startLine": 17
+    },
+    "server.js:upload": {
+      "file": "server.js",
+      "name": "upload",
+      "type": "Variable",
+      "startLine": 21
+    },
+    "server.js:app": {
+      "file": "server.js",
+      "name": "app",
+      "type": "Variable",
+      "startLine": 23
+    },
+    "server.js:server": {
+      "file": "server.js",
+      "name": "server",
+      "type": "Variable",
+      "startLine": 24
+    },
+    "server.js:io": {
+      "file": "server.js",
+      "name": "io",
+      "type": "Variable",
+      "startLine": 25
+    },
+    "server.js:nodes": {
+      "file": "server.js",
+      "name": "nodes",
+      "type": "Variable",
+      "startLine": 31
+    },
+    "server.js:activeCore": {
+      "file": "server.js",
+      "name": "activeCore",
+      "type": "Variable",
+      "startLine": 32
+    },
+    "server.js:getNodes": {
+      "file": "server.js",
+      "name": "getNodes",
+      "type": "Variable",
+      "startLine": 33
+    },
+    "server.js:getActiveCore": {
+      "file": "server.js",
+      "name": "getActiveCore",
+      "type": "Variable",
+      "startLine": 34
+    },
+    "server.js:modeEngine": {
+      "file": "server.js",
+      "name": "modeEngine",
+      "type": "Variable",
+      "startLine": 37
+    },
+    "server.js:mediaEngine": {
+      "file": "server.js",
+      "name": "mediaEngine",
+      "type": "Variable",
+      "startLine": 38
+    },
+    "server.js:PORT": {
+      "file": "server.js",
+      "name": "PORT",
+      "type": "Variable",
+      "startLine": 117
+    },
+    "src/core/MediaEngine.js:MediaEngine": {
+      "file": "src/core/MediaEngine.js",
+      "name": "MediaEngine",
+      "type": "Class",
+      "startLine": 1
+    },
+    "src/core/ModeEngine.js:ModeEngine": {
+      "file": "src/core/ModeEngine.js",
+      "name": "ModeEngine",
+      "type": "Class",
+      "startLine": 1
+    },
+    "src/services/YouTubeProxy.js:ytdl": {
+      "file": "src/services/YouTubeProxy.js",
+      "name": "ytdl",
+      "type": "Variable",
+      "startLine": 1
     }
   },
   "edges": []

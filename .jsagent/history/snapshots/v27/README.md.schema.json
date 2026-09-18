@@ -1,0 +1,10 @@
+{
+  "file": "README.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_healingnodes": "be1fc3bebab3adebb7422f35d97e20dcad4ccdce",
+    "md_section_the_triad_of_mathematical_healing": "a23cd106b15f573cbd1b4b143119ee43b2c06f2b",
+    "md_section_architecture": "0f6ae907890cfd0acd038bffa0d93284a42241ce",
+    "__skeleton__": "6998becb43f5e46718f763d4eb68f8a26ad7f8df"
+  }
+}

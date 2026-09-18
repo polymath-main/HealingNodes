@@ -1,0 +1,11 @@
+{
+  "file": "THEORY.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_core_concept": "fbb16a1dfa05b09a41c1f1538d3cf183e9a33618",
+    "md_section_1__quadtree_mathematics__the_spatial_architecture_": "40a9b94df9623532713ed75179da2d0d5f96287d",
+    "md_section_2__the_universal_connector____pi__and_spherical_radiation_": "75101ff8975ad2a782c241f005b3bd3627337c04",
+    "md_section_3__biological_resonance__33_hz____1_f__pink_noise_": "78e910d022405c632017784f8ed9719e5351e67f",
+    "__skeleton__": "80f27dfe169ff4179b931259c82ac621f294ab69"
+  }
+}

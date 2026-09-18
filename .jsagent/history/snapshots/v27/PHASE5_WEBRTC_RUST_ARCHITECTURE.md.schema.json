@@ -1,0 +1,16 @@
+{
+  "file": "PHASE5_WEBRTC_RUST_ARCHITECTURE.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__system_overview": "451d16dbd5b59884ad3e9330fd90114e552d4b49",
+    "md_section_2__network_topology__the__airpods__model": "2df86d706e7914612165d575d68c5d9bc1af9ae8",
+    "md_section_3__server___backend__rust_": "32d5c56cf5974d21260458e724e530744ea42309",
+    "md_section_4__audio_dsp__rust____wasm_audioworklet_": "e2271f681314039f86bcc97a4e39ecc945fb0ab0",
+    "md_section_5__visuals__webgl_fragment_shaders_": "15ce0fb7453d3b125d05578c699979691d6392d8",
+    "md_section_6__project_structure___migration_path": "960d2e5605a1f59684a8fb6a228d554cb00cf94f",
+    "md_section_7__unified_ux___floating_interface__phase_4_merge_": "78e82b67089fc1310cd5ec3fd6d25e4efb7ad389",
+    "md_section_8_1_the_asynchronous_autoplay_challenge": "63080ea040b92b5a5ee35e9960ea85841f606194",
+    "md_section_8_2_why_the__pre_warmed_src__anti_pattern_fails": "c114f1a21a2824bf7d86ad8cc5098465112cd828",
+    "__skeleton__": "4bced55cf48604b8ec33894811c180a6c77e8351"
+  }
+}
