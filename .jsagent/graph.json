@@ -90,191 +90,173 @@
       "type": "Variable",
       "startLine": 8
     },
-    "public/js/app.js:peerConnection": {
-      "file": "public/js/app.js",
-      "name": "peerConnection",
-      "type": "Variable",
-      "startLine": 9
-    },
-    "public/js/app.js:signalingSocket": {
-      "file": "public/js/app.js",
-      "name": "signalingSocket",
-      "type": "Variable",
-      "startLine": 10
-    },
     "public/js/app.js:masterOscillator": {
       "file": "public/js/app.js",
       "name": "masterOscillator",
       "type": "Variable",
-      "startLine": 11
+      "startLine": 9
     },
     "public/js/app.js:pinkNoiseNode": {
       "file": "public/js/app.js",
       "name": "pinkNoiseNode",
       "type": "Variable",
-      "startLine": 12
+      "startLine": 10
     },
     "public/js/app.js:currentMode": {
       "file": "public/js/app.js",
       "name": "currentMode",
       "type": "Variable",
-      "startLine": 13
+      "startLine": 11
     },
     "public/js/app.js:btnMode": {
       "file": "public/js/app.js",
       "name": "btnMode",
       "type": "Variable",
-      "startLine": 15
+      "startLine": 13
     },
     "public/js/app.js:modeOverlay": {
       "file": "public/js/app.js",
       "name": "modeOverlay",
       "type": "Variable",
-      "startLine": 16
+      "startLine": 14
     },
     "public/js/app.js:closeModeBtn": {
       "file": "public/js/app.js",
       "name": "closeModeBtn",
       "type": "Variable",
-      "startLine": 17
+      "startLine": 15
     },
     "public/js/app.js:modeSelectBtns": {
       "file": "public/js/app.js",
       "name": "modeSelectBtns",
       "type": "Variable",
-      "startLine": 18
+      "startLine": 16
     },
     "public/js/app.js:createPinkNoise": {
       "file": "public/js/app.js",
       "name": "createPinkNoise",
       "type": "Function",
-      "startLine": 25
+      "startLine": 23
     },
     "public/js/app.js:unlockAudio": {
       "file": "public/js/app.js",
       "name": "unlockAudio",
       "type": "Function",
-      "startLine": 87
-    },
-    "public/js/app.js:connectSignaling": {
-      "file": "public/js/app.js",
-      "name": "connectSignaling",
-      "type": "Function",
-      "startLine": 97
+      "startLine": 85
     },
     "public/js/app.js:canvas": {
       "file": "public/js/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 201
+      "startLine": 135
     },
     "public/js/app.js:gl": {
       "file": "public/js/app.js",
       "name": "gl",
       "type": "Variable",
-      "startLine": 202
+      "startLine": 136
     },
     "public/js/app.js:vsSource": {
       "file": "public/js/app.js",
       "name": "vsSource",
       "type": "Variable",
-      "startLine": 215
+      "startLine": 149
     },
     "public/js/app.js:fsSource": {
       "file": "public/js/app.js",
       "name": "fsSource",
       "type": "Variable",
-      "startLine": 220
+      "startLine": 154
     },
     "public/js/app.js:createShader": {
       "file": "public/js/app.js",
       "name": "createShader",
       "type": "Function",
-      "startLine": 244
+      "startLine": 178
     },
     "public/js/app.js:vertexShader": {
       "file": "public/js/app.js",
       "name": "vertexShader",
       "type": "Variable",
-      "startLine": 251
+      "startLine": 185
     },
     "public/js/app.js:fragmentShader": {
       "file": "public/js/app.js",
       "name": "fragmentShader",
       "type": "Variable",
-      "startLine": 252
+      "startLine": 186
     },
     "public/js/app.js:shaderProgram": {
       "file": "public/js/app.js",
       "name": "shaderProgram",
       "type": "Variable",
-      "startLine": 253
+      "startLine": 187
     },
     "public/js/app.js:positionBuffer": {
       "file": "public/js/app.js",
       "name": "positionBuffer",
       "type": "Variable",
-      "startLine": 259
+      "startLine": 193
     },
     "public/js/app.js:positionLocation": {
       "file": "public/js/app.js",
       "name": "positionLocation",
       "type": "Variable",
-      "startLine": 262
+      "startLine": 196
     },
     "public/js/app.js:uTimeLoc": {
       "file": "public/js/app.js",
       "name": "uTimeLoc",
       "type": "Variable",
-      "startLine": 266
+      "startLine": 200
     },
     "public/js/app.js:uResolutionLoc": {
       "file": "public/js/app.js",
       "name": "uResolutionLoc",
       "type": "Variable",
-      "startLine": 267
+      "startLine": 201
     },
     "public/js/app.js:uAudioBassLoc": {
       "file": "public/js/app.js",
       "name": "uAudioBassLoc",
       "type": "Variable",
-      "startLine": 268
+      "startLine": 202
     },
     "public/js/app.js:uAudioMidLoc": {
       "file": "public/js/app.js",
       "name": "uAudioMidLoc",
       "type": "Variable",
-      "startLine": 269
+      "startLine": 203
     },
     "public/js/app.js:uIntensityLoc": {
       "file": "public/js/app.js",
       "name": "uIntensityLoc",
       "type": "Variable",
-      "startLine": 270
+      "startLine": 204
     },
     "public/js/app.js:analyser": {
       "file": "public/js/app.js",
       "name": "analyser",
       "type": "Variable",
-      "startLine": 273
+      "startLine": 207
     },
     "public/js/app.js:dataArray": {
       "file": "public/js/app.js",
       "name": "dataArray",
       "type": "Variable",
-      "startLine": 274
+      "startLine": 208
     },
     "public/js/app.js:visualIntensity": {
       "file": "public/js/app.js",
       "name": "visualIntensity",
       "type": "Variable",
-      "startLine": 275
+      "startLine": 209
     },
     "public/js/app.js:render": {
       "file": "public/js/app.js",
       "name": "render",
       "type": "Function",
-      "startLine": 277
+      "startLine": 211
     },
     "server.js:express": {
       "file": "server.js",
@@ -282,143 +264,17 @@
       "type": "Variable",
       "startLine": 1
     },
-    "server.js:http": {
-      "file": "server.js",
-      "name": "http",
-      "type": "Variable",
-      "startLine": 2
-    },
-    "server.js:multer": {
-      "file": "server.js",
-      "name": "multer",
-      "type": "Variable",
-      "startLine": 4
-    },
-    "server.js:fs": {
-      "file": "server.js",
-      "name": "fs",
-      "type": "Variable",
-      "startLine": 5
-    },
-    "server.js:path": {
-      "file": "server.js",
-      "name": "path",
-      "type": "Variable",
-      "startLine": 6
-    },
-    "server.js:ModeEngine": {
-      "file": "server.js",
-      "name": "ModeEngine",
-      "type": "Variable",
-      "startLine": 9
-    },
-    "server.js:MediaEngine": {
-      "file": "server.js",
-      "name": "MediaEngine",
-      "type": "Variable",
-      "startLine": 10
-    },
-    "server.js:YouTubeProxy": {
-      "file": "server.js",
-      "name": "YouTubeProxy",
-      "type": "Variable",
-      "startLine": 11
-    },
-    "server.js:mediaDir": {
-      "file": "server.js",
-      "name": "mediaDir",
-      "type": "Variable",
-      "startLine": 14
-    },
-    "server.js:storage": {
-      "file": "server.js",
-      "name": "storage",
-      "type": "Variable",
-      "startLine": 17
-    },
-    "server.js:upload": {
-      "file": "server.js",
-      "name": "upload",
-      "type": "Variable",
-      "startLine": 21
-    },
     "server.js:app": {
       "file": "server.js",
       "name": "app",
       "type": "Variable",
-      "startLine": 23
-    },
-    "server.js:server": {
-      "file": "server.js",
-      "name": "server",
-      "type": "Variable",
-      "startLine": 24
-    },
-    "server.js:io": {
-      "file": "server.js",
-      "name": "io",
-      "type": "Variable",
-      "startLine": 25
-    },
-    "server.js:nodes": {
-      "file": "server.js",
-      "name": "nodes",
-      "type": "Variable",
-      "startLine": 31
-    },
-    "server.js:activeCore": {
-      "file": "server.js",
-      "name": "activeCore",
-      "type": "Variable",
-      "startLine": 32
-    },
-    "server.js:getNodes": {
-      "file": "server.js",
-      "name": "getNodes",
-      "type": "Variable",
-      "startLine": 33
-    },
-    "server.js:getActiveCore": {
-      "file": "server.js",
-      "name": "getActiveCore",
-      "type": "Variable",
-      "startLine": 34
-    },
-    "server.js:modeEngine": {
-      "file": "server.js",
-      "name": "modeEngine",
-      "type": "Variable",
-      "startLine": 37
-    },
-    "server.js:mediaEngine": {
-      "file": "server.js",
-      "name": "mediaEngine",
-      "type": "Variable",
-      "startLine": 38
+      "startLine": 2
     },
     "server.js:PORT": {
       "file": "server.js",
       "name": "PORT",
       "type": "Variable",
-      "startLine": 117
-    },
-    "src/core/MediaEngine.js:MediaEngine": {
-      "file": "src/core/MediaEngine.js",
-      "name": "MediaEngine",
-      "type": "Class",
-      "startLine": 1
-    },
-    "src/core/ModeEngine.js:ModeEngine": {
-      "file": "src/core/ModeEngine.js",
-      "name": "ModeEngine",
-      "type": "Class",
-      "startLine": 1
-    },
-    "src/services/YouTubeProxy.js:ytdl": {
-      "file": "src/services/YouTubeProxy.js",
-      "name": "ytdl",
-      "type": "Variable",
-      "startLine": 1
+      "startLine": 6
     }
   },
   "edges": []

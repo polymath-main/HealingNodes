@@ -20,28 +20,7 @@ fabMain.addEventListener('click', () => {
     fabMenu.classList.toggle('hidden');
 });
 
-function createPinkNoise() {
-    const bufferSize = audioCtx.sampleRate * 2; // 2 seconds of noise
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = buffer.getChannelData(0);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-    for (let i = 0; i < bufferSize; i++) {
-        let white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-        output[i] *= 0.11; // scale down
-        b6 = white * 0.115926;
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    noise.loop = true;
-    return noise;
-}
+/* __JAGE_REF_js_block_createPinkNoise__ */
 
 // Phase 4: Mathematical Environments UI Logic
 btnMode.addEventListener('click', () => {
@@ -82,15 +61,7 @@ modeSelectBtns.forEach(btn => {
 });
 
 // Phase 5: WebRTC Autoplay Bypass (Strategy B)
-async function unlockAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        await audioCtx.resume();
-        console.log("[Audio] AudioContext permanently unlocked via user gesture.");
-    }
-}
+/* __JAGE_REF_js_block_unlockAudio__ */
 
 btnHost.addEventListener('click', async () => {
     await unlockAudio();
@@ -175,12 +146,7 @@ const fsSource = `
     }
 `;
 
-function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    return shader;
-}
+/* __JAGE_REF_js_block_createShader__ */
 
 const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
 const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
@@ -208,27 +174,7 @@ let analyser = null;
 let dataArray = null;
 let visualIntensity = 1.0; // Controlled by Presets
 
-function render(time) {
-    gl.uniform1f(uTimeLoc, time * 0.001);
-    gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
-    gl.uniform1f(uIntensityLoc, visualIntensity);
-
-    let bassAvg = 0, midAvg = 0;
-    if (analyser && dataArray) {
-        analyser.getByteFrequencyData(dataArray);
-        // Extract Bass (0-100Hz approx) and Mids
-        for(let i=0; i<5; i++) bassAvg += dataArray[i];
-        for(let i=10; i<30; i++) midAvg += dataArray[i];
-        bassAvg = (bassAvg / 5) / 255.0;
-        midAvg = (midAvg / 20) / 255.0;
-    }
-
-    gl.uniform1f(uAudioBassLoc, bassAvg);
-    gl.uniform1f(uAudioMidLoc, midAvg);
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(render);
-}
+/* __JAGE_REF_js_block_render__ */
 requestAnimationFrame(render);
 
 // (Future) WASM DSP Import Stub
