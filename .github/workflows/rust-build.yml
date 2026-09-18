@@ -49,3 +49,24 @@ jobs:
         with:
           name: webrtc-sfu-server
           path: target/release/server
+
+  build-windows:
+    name: Build Windows Server
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build WebRTC SFU Server (Windows)
+        run: |
+          cd server
+          cargo build --release
+
+      - name: Upload Server Binary (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: webrtc-sfu-server-windows
+          path: target/release/server.exe
