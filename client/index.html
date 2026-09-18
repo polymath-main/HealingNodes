@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HealingNodes - Phase 5</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Phase 5 WebGL Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Phase 4 Unified UX: Floating Action Button -->
+    <div id="fab-container">
+        <button id="fab-main">⚙️</button>
+        <div id="fab-menu" class="hidden">
+            <button id="btn-host">Broadcast (Host)</button>
+            <button id="btn-join">Listen (AirPods Mode)</button>
+        </div>
+    </div>
+
+    <!-- WebRTC Autoplay Bypass Fallback -->
+    <div id="autoplay-overlay" class="hidden">
+        <h1>Tap to Unmute Stream</h1>
+    </div>
+
+    <!-- WebRTC Audio Element (Strategy B Hybrid) -->
+    <audio id="webrtc-audio" autoplay playsinline></audio>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

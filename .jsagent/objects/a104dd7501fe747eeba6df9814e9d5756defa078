@@ -1,0 +1,20 @@
+function connectSignaling() {
+    // Assuming the Rust server is running on the same host, port 3000
+    const wsUrl = `ws://${window.location.hostname}:3000/ws`;
+    signalingSocket = new WebSocket(wsUrl);
+    signalingSocket.onmessage = async (event) => {
+        const msg = JSON.parse(event.data);
+        if (!peerConnection) return;
+
+        if (msg.type === 'offer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            signalingSocket.send(JSON.stringify(peerConnection.localDescription));
+        } else if (msg.type === 'answer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
+        } else if (msg.candidate) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(msg));
+        }
+    };
+}

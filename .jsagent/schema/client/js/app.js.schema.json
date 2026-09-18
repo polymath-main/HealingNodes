@@ -1,0 +1,9 @@
+{
+  "file": "app.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_unlockAudio": "2e70fe3127c9ab133b60b6845c601f9e434ce1d3",
+    "js_block_connectSignaling": "a104dd7501fe747eeba6df9814e9d5756defa078",
+    "__skeleton__": "fb2e528b46099fcc8958a97782ab8ca42e05df2f"
+  }
+}

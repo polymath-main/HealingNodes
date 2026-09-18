@@ -1,0 +1,9 @@
+async function unlockAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        await audioCtx.resume();
+        console.log("[Audio] AudioContext permanently unlocked via user gesture.");
+    }
+}
