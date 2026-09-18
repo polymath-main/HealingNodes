@@ -1,0 +1,45 @@
+name: Phase 5 Rust & WASM Compiler
+
+on:
+  push:
+    paths:
+      - 'phase5-rust-rewrite/**'
+  workflow_dispatch: # Allow manual triggering from GitHub UI
+
+jobs:
+  build:
+    name: Build Phase 5 Architecture
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WASM DSP Engine
+        run: |
+          cd phase5-rust-rewrite/dsp-wasm
+          wasm-pack build --target web --release
+
+      - name: Build WebRTC SFU Server
+        run: |
+          cd phase5-rust-rewrite/server
+          cargo build --release
+
+      - name: Upload WASM DSP Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsp-wasm-pkg
+          path: phase5-rust-rewrite/dsp-wasm/pkg/
+
+      - name: Upload Server Binary (Linux x86_64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: webrtc-sfu-server
+          path: phase5-rust-rewrite/server/target/release/server

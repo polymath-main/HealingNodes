@@ -1,0 +1,11 @@
+{
+  "file": "ORIGINAL_REQUEST.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_teamwork_project_prompt___draft": "93d925bc4ffb6763006855aa291a82481bfb44b1",
+    "md_section_r1__audit_and_fix_the_web_audio_dsp_architecture": "aafd1e4915535eca331398e556c4a066e51b00a0",
+    "md_section_r2__audit_and_fix_the_network_synchronization_orchestration": "ccc895b1489ae766cecab04f21874942e5173a39",
+    "md_section_verification__automated_qa": "201778af0a8b14cb08f576a2079a4510d07650d5",
+    "__skeleton__": "561f8398651e51ae0e373d62828478e07b292749"
+  }
+}
