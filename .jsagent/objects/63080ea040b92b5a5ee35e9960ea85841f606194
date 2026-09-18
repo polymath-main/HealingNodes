@@ -1,0 +1,3 @@
+### 8.1 The Asynchronous Autoplay Challenge
+Modern mobile browsers (especially iOS Safari) enforce strict autoplay policies requiring a synchronous user gesture (like a `click`) to begin media playback. In a WebRTC pipeline, remote audio tracks arrive asynchronously via the `RTCPeerConnection.ontrack` event. If we attempt to attach this newly arrived stream to an `<audio>` element outside of the initial click handler's execution context, the browser typically blocks it with a `NotAllowedError`.
+

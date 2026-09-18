@@ -1,0 +1,3 @@
+### 8.2 Why the "Pre-Warmed src" Anti-Pattern Fails
+A common misconception is that playing a silent MP3 file via the `src` attribute during the user gesture will permanently "unlock" the `<audio>` element, allowing a later swap to `srcObject = stream`. **This is an anti-pattern on modern iOS Safari.** Swapping a media element's source from a file (`src`) to a real-time stream (`srcObject`) resets its internal state and re-triggers the autoplay policy evaluation, causing the asynchronous WebRTC stream to be blocked.
+

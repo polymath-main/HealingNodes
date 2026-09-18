@@ -1,0 +1,34 @@
+# Phase 5: WebRTC Rust Hybrid Architecture
+
+/* __JAGE_REF_md_section_1__system_overview__ */
+/* __JAGE_REF_md_section_2__network_topology__the__airpods__model__ */
+/* __JAGE_REF_md_section_3__server___backend__rust___ */
+/* __JAGE_REF_md_section_4__audio_dsp__rust____wasm_audioworklet___ */
+/* __JAGE_REF_md_section_5__visuals__webgl_fragment_shaders___ */
+/* __JAGE_REF_md_section_6__project_structure___migration_path__ */
+/* __JAGE_REF_md_section_7__unified_ux___floating_interface__phase_4_merge___ */
+## 8. WebRTC Autoplay Bypass Strategy
+
+/* __JAGE_REF_md_section_8_1_the_asynchronous_autoplay_challenge__ */
+/* __JAGE_REF_md_section_8_2_why_the__pre_warmed_src__anti_pattern_fails__ */
+### 8.3 Bulletproof Implementation Strategies
+
+To reliably bypass or handle this block, implement one (or a combination) of the following proven patterns:
+
+#### Strategy A: The `getUserMedia` Active Session Unlock (Recommended for 2-Way Calls)
+If your architecture involves the user speaking (2-way audio), the most robust solution is to request microphone access during the initial "Join" click.
+1. **Synchronous Capture:** On the initial user click, call `navigator.mediaDevices.getUserMedia({ audio: true })`.
+2. **Policy Relaxation:** iOS Safari recognizes this as an active, user-approved media capture session. This globally relaxes the autoplay policies for the domain.
+3. **Seamless Autoplay:** When the asynchronous `ontrack` event fires later, assigning `audio.srcObject = stream` and calling `.play()` will succeed without a secondary user gesture.
+
+#### Strategy B: The `AudioContext` Routing Bypass (Recommended for 1-Way / Receive-Only)
+If the application is receive-only and prompting for microphone permissions is poor UX, we can bypass the HTMLMediaElement entirely using the Web Audio API.
+1. **Synchronous Unlock:** On the initial "Join" click, create an `AudioContext` and synchronously call `audioContext.resume()`. This permanently unlocks the audio context.
+2. **Asynchronous Routing:** When the `ontrack` event fires, wrap the track in a `MediaStream`, create a source node, and connect it to the destination.
+*(Warning: This bypasses the browser's hardware Acoustic Echo Cancellation (AEC), so it should strictly be used for receive-only scenarios or when users wear headphones).*
+
+#### Strategy C: The "Catch and Tap" Fallback (Mandatory Safety Net)
+Regardless of the strategy used, edge cases like **iOS Low Power Mode** enforce strict autoplay blocks that cannot be bypassed. You must always implement a state-driven fallback.
+1. When assigning `srcObject` in `ontrack`, always call `.play()` and catch the promise rejection.
+2. If a `NotAllowedError` is caught, render a "Tap to Unmute/Play" UI overlay.
+3. When the user taps the overlay, call `.play()` inside that specific click handler to definitively satisfy the policy.

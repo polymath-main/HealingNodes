@@ -1,0 +1,17 @@
+{
+  "file": "app.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_SpectralNoiseProcessor": "e8c52a75549a2f838b474be81332de023f2eebee",
+    "js_block_initNetwork": "1f997e71663be1b7be0ede69fb892c584270c277",
+    "js_block_loadMediaBuffer": "de42391a99e45f21e0182b09b4c2565880cb690d",
+    "js_block_initEngine": "f0925356346f998b98f57d529835c247e0e11332",
+    "js_block_stopEngine": "d325fc557f6af6b29446bc5a2890303213416fdb",
+    "js_block_initModeEngine": "45823fe7c08116d27d6b45d5dfb7707b1992a96e",
+    "js_block_scheduleModeUpdate": "e4e8834922688df43a0b340e5112cdbfabd0d012",
+    "js_block_initMediaEngine": "f695c8c1651dbf8390a2c348a675bf9627ba2641",
+    "js_block_scheduleMediaPlayback": "001a339362728228406edcd34c3136327b99126a",
+    "js_block_drawDaydream": "636489e5b56b019cf3c5b7bfd741cb69bfc9a982",
+    "__skeleton__": "230aff90e590562808369d8415552c0ac70097bd"
+  }
+}

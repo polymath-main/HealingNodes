@@ -40,3 +40,33 @@ Phase 5 incorporates the UX/UI overhaul defined in Phase 4:
 - **Audio-Reactive Symbiosis:** The FAB UI rests transparently on top of the raw WebGL liquid shaders, ensuring the user never has to leave the immersive environment to change settings.
 
 *Note: Phase 5 replaces the Phase 3 Node.js server entirely. Backwards compatibility is not maintained; this is a clean rewrite of the networking and DSP layers while preserving the theoretical spatial concepts outlined in previous phases.*
+
+## 8. WebRTC Autoplay Bypass Strategy
+
+### 8.1 The Asynchronous Autoplay Challenge
+Modern mobile browsers (especially iOS Safari) enforce strict autoplay policies requiring a synchronous user gesture (like a `click`) to begin media playback. In a WebRTC pipeline, remote audio tracks arrive asynchronously via the `RTCPeerConnection.ontrack` event. If we attempt to attach this newly arrived stream to an `<audio>` element outside of the initial click handler's execution context, the browser typically blocks it with a `NotAllowedError`.
+
+### 8.2 Why the "Pre-Warmed src" Anti-Pattern Fails
+A common misconception is that playing a silent MP3 file via the `src` attribute during the user gesture will permanently "unlock" the `<audio>` element, allowing a later swap to `srcObject = stream`. **This is an anti-pattern on modern iOS Safari.** Swapping a media element's source from a file (`src`) to a real-time stream (`srcObject`) resets its internal state and re-triggers the autoplay policy evaluation, causing the asynchronous WebRTC stream to be blocked.
+
+### 8.3 Bulletproof Implementation Strategies
+
+To reliably bypass or handle this block, implement one (or a combination) of the following proven patterns:
+
+#### Strategy A: The `getUserMedia` Active Session Unlock (Recommended for 2-Way Calls)
+If your architecture involves the user speaking (2-way audio), the most robust solution is to request microphone access during the initial "Join" click.
+1. **Synchronous Capture:** On the initial user click, call `navigator.mediaDevices.getUserMedia({ audio: true })`.
+2. **Policy Relaxation:** iOS Safari recognizes this as an active, user-approved media capture session. This globally relaxes the autoplay policies for the domain.
+3. **Seamless Autoplay:** When the asynchronous `ontrack` event fires later, assigning `audio.srcObject = stream` and calling `.play()` will succeed without a secondary user gesture.
+
+#### Strategy B: The `AudioContext` Routing Bypass (Recommended for 1-Way / Receive-Only)
+If the application is receive-only and prompting for microphone permissions is poor UX, we can bypass the HTMLMediaElement entirely using the Web Audio API.
+1. **Synchronous Unlock:** On the initial "Join" click, create an `AudioContext` and synchronously call `audioContext.resume()`. This permanently unlocks the audio context.
+2. **Asynchronous Routing:** When the `ontrack` event fires, wrap the track in a `MediaStream`, create a source node, and connect it to the destination.
+*(Warning: This bypasses the browser's hardware Acoustic Echo Cancellation (AEC), so it should strictly be used for receive-only scenarios or when users wear headphones).*
+
+#### Strategy C: The "Catch and Tap" Fallback (Mandatory Safety Net)
+Regardless of the strategy used, edge cases like **iOS Low Power Mode** enforce strict autoplay blocks that cannot be bypassed. You must always implement a state-driven fallback.
+1. When assigning `srcObject` in `ontrack`, always call `.play()` and catch the promise rejection.
+2. If a `NotAllowedError` is caught, render a "Tap to Unmute/Play" UI overlay.
+3. When the user taps the overlay, call `.play()` inside that specific click handler to definitively satisfy the policy.
