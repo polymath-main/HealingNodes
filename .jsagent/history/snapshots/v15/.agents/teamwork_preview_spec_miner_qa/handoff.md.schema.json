@@ -1,0 +1,12 @@
+{
+  "file": "handoff.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_handoff_report___qa___specification_mining": "2e78ea1a37286ab3dc397e413ea03c17754bb9af",
+    "md_section_1__observation": "decd1d10ad8cf37011c202adab39212742385b47",
+    "md_section_2__logic_chain": "cc4ccb8449d7bb2ed12091f8cdc51e0e13ae02df",
+    "md_section_3__caveats": "c239369d3ce1696af1a8dba95ae11d94622454c1",
+    "md_section_4__conclusion": "d2589a532657d6589273e3a7291b22081929ce8a",
+    "__skeleton__": "654a8bed1adecd396c2b34ee1f0467542b3b1214"
+  }
+}
