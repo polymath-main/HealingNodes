@@ -41,36 +41,9 @@ modeSelectBtns.forEach(btn => {
 });
 
 // Phase 5: WebRTC Autoplay Bypass (Strategy B)
-async function unlockAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        await audioCtx.resume();
-        console.log("[Audio] AudioContext permanently unlocked via user gesture.");
-    }
-}
+/* __JAGE_REF_js_block_unlockAudio__ */
 
-function connectSignaling() {
-    // Assuming the Rust server is running on the same host, port 3000
-    const wsUrl = `ws://${window.location.hostname}:3000/ws`;
-    signalingSocket = new WebSocket(wsUrl);
-    signalingSocket.onmessage = async (event) => {
-        const msg = JSON.parse(event.data);
-        if (!peerConnection) return;
-
-        if (msg.type === 'offer') {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            signalingSocket.send(JSON.stringify(peerConnection.localDescription));
-        } else if (msg.type === 'answer') {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(msg));
-        } else if (msg.candidate) {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(msg));
-        }
-    };
-}
+/* __JAGE_REF_js_block_connectSignaling__ */
 
 btnHost.addEventListener('click', async () => {
     await unlockAudio();
@@ -188,12 +161,7 @@ const fsSource = `
     }
 `;
 
-function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    return shader;
-}
+/* __JAGE_REF_js_block_createShader__ */
 
 const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
 const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
@@ -219,26 +187,7 @@ const uAudioMidLoc = gl.getUniformLocation(shaderProgram, "uAudioMid");
 let analyser = null;
 let dataArray = null;
 
-function render(time) {
-    gl.uniform1f(uTimeLoc, time * 0.001);
-    gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
-
-    let bassAvg = 0, midAvg = 0;
-    if (analyser && dataArray) {
-        analyser.getByteFrequencyData(dataArray);
-        // Extract Bass (0-100Hz approx) and Mids
-        for(let i=0; i<5; i++) bassAvg += dataArray[i];
-        for(let i=10; i<30; i++) midAvg += dataArray[i];
-        bassAvg = (bassAvg / 5) / 255.0;
-        midAvg = (midAvg / 20) / 255.0;
-    }
-
-    gl.uniform1f(uAudioBassLoc, bassAvg);
-    gl.uniform1f(uAudioMidLoc, midAvg);
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(render);
-}
+/* __JAGE_REF_js_block_render__ */
 requestAnimationFrame(render);
 
 // (Future) WASM DSP Import Stub
