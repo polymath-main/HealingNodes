@@ -12,6 +12,8 @@ jobs:
   build:
     name: Build Phase 5 Architecture
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -34,11 +36,13 @@ jobs:
           cd server
           cargo build --release
 
-      - name: Upload WASM DSP Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dsp-wasm-pkg
-          path: dsp-wasm/pkg/
+      - name: Commit Compiled WASM back to Repository
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add dsp-wasm/pkg/ -f
+          git commit -m "chore: Auto-compile WASM DSP module [skip ci]" || echo "No changes to commit"
+          git push
 
       - name: Upload Server Binary (Linux x86_64)
         uses: actions/upload-artifact@v4
