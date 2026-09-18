@@ -1,0 +1,6 @@
+## 6. Project Structure & Migration Path
+**Proposed Rust Workspace Layout:**
+- `/server/` (Rust Cargo Workspace: Tokio WebSockets, WebRTC SFU)
+- `/dsp-wasm/` (Rust Library: `wasm-bindgen` crossover logic, compiled to `pkg/`)
+- `/client/` (Frontend JS/GLSL: WebRTC client, AudioWorklet wrappers, WebGL shaders)
+

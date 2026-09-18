@@ -1,0 +1,27 @@
+{
+  "file": "PHASE2_IMPLEMENTATION_PLAN.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__architectural_synthesis": "175e07f85b56fdc7867c098f3d32167e61ce2af6",
+    "md_section_2__the_environmental_state_vector_v": "6d1e6b30eab500d406330442f1ac05e3430cf283",
+    "md_section_the_lerp_bug__fixed_": "228fd5b780379b6627af74d885a48c4937b33b82",
+    "md_section_smoothstep_easing": "765cae6a07b0803b045355f65ac264fba46546cb",
+    "md_section_broadcast_format": "3f95a6fff9ea1356c4210081029d55c251cf1313",
+    "md_section_pink_noise__voss_mccartney_iir_cascade": "164e11c8369d768e8cef638612ad59d66decc47b",
+    "md_section_brown_noise__leaky_integrator": "4985c66c7b3529f6993a4eb6890ea6c348f865c6",
+    "md_section_blend_formula": "c5a90ffb05e9e061b368591ecbda4a40af40f841",
+    "md_section_5__audio_signal_graph": "ccf135a69a0d976c345e445c0d0c42870e47d696",
+    "md_section_why_binaural_bypasses_pannernode": "aeaa8c97e1d7f38e3b8725d5fdbe7a4211156102",
+    "md_section_node_frequency__per_node_": "d70ce9b253b94d2f05157a09ab3b76b063df8625",
+    "md_section_orbital_spatial_panning": "0a7a5d12b990c9b068b80784e020a21bfb1a06b7",
+    "md_section_7__breathing_lfo": "6a270b8bc07af5cc51d3ad44a6bee2742b48465f",
+    "md_section_color___hsl_from_phi_color": "998fbbaddfc25ba3e559b6992fc651b8c2dd696f",
+    "md_section_visual_pulsation___sub_harmonic": "88afc1b6c6eb9dfe8c463a0bc30f6b60219f57fa",
+    "md_section_layer_geometry": "2f19e8ad43194163e4f5502b8d56ed540f37ea4b",
+    "md_section_9__admin_presets___real_world_sensed_values": "7914f1da22f958deac1725558fe1d7b7b56cfc17",
+    "md_section__post__api_trajectory_start_": "8daeaf15f9e563bfd2e9a803bedaa9273e445c5a",
+    "md_section__post__api_trajectory_stop_": "5cf81a6ebea9871a5f3c819c4762935810a2a53c",
+    "md_section__get__api_state_": "c8238a68d64c58cdd58c4df3253b59bc559c536c",
+    "__skeleton__": "9631ad656b7f4bd15cb19237577dba835921d11b"
+  }
+}

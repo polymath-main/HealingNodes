@@ -1,0 +1,5 @@
+## 3. Server & Backend (Rust)
+- **Framework:** Rust using `tokio` for async I/O and `tokio-tungstenite` for WebSocket signaling.
+- **WebRTC SFU:** Utilizing `webrtc-rs` (or a similar Rust WebRTC stack) to act as a Selective Forwarding Unit.
+- **Role:** Handles room state, ICE candidate routing, and efficient multi-cast packet forwarding from the Host PC to N clients without server-side audio transcoding.
+

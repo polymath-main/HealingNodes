@@ -1,0 +1,5 @@
+## 4. Audio DSP (Rust -> WASM AudioWorklet)
+- **Elimination of JS Garbage Collection:** JavaScript `AudioNode`s and raw JS DSP suffer from V8 garbage collection pauses which disrupt spatial coherence.
+- **WASM Implementation:** The Linkwitz-Riley crossovers and Mode Engine math are rewritten in `no_std` Rust and compiled to WebAssembly using `wasm-bindgen`.
+- **AudioWorklet Integration:** The compiled `.wasm` binary is loaded into a browser `AudioWorkletProcessor`. The incoming WebRTC audio track is piped into this Worklet, where the zero-GC Rust DSP applies mathematically flawless filtering and hardware protection (excursion limiting) on a per-sample basis before routing to the physical speaker.
+

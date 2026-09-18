@@ -1,0 +1,13 @@
+{
+  "file": "PHASE5_WEBRTC_RUST_ARCHITECTURE.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__system_overview": "451d16dbd5b59884ad3e9330fd90114e552d4b49",
+    "md_section_2__network_topology__the__airpods__model": "2df86d706e7914612165d575d68c5d9bc1af9ae8",
+    "md_section_3__server___backend__rust_": "32d5c56cf5974d21260458e724e530744ea42309",
+    "md_section_4__audio_dsp__rust____wasm_audioworklet_": "e2271f681314039f86bcc97a4e39ecc945fb0ab0",
+    "md_section_5__visuals__webgl_fragment_shaders_": "15ce0fb7453d3b125d05578c699979691d6392d8",
+    "md_section_6__project_structure___migration_path": "960d2e5605a1f59684a8fb6a228d554cb00cf94f",
+    "__skeleton__": "f05bb66a54ed961c37fda55f42dc23dc505a8f19"
+  }
+}

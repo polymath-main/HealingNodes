@@ -1,0 +1,14 @@
+# Phase 5: WebRTC Rust Hybrid Architecture
+
+/* __JAGE_REF_md_section_1__system_overview__ */
+/* __JAGE_REF_md_section_2__network_topology__the__airpods__model__ */
+/* __JAGE_REF_md_section_3__server___backend__rust___ */
+/* __JAGE_REF_md_section_4__audio_dsp__rust____wasm_audioworklet___ */
+/* __JAGE_REF_md_section_5__visuals__webgl_fragment_shaders___ */
+## 6. Project Structure & Migration Path
+**Proposed Rust Workspace Layout:**
+- `/server/` (Rust Cargo Workspace: Tokio WebSockets, WebRTC SFU)
+- `/dsp-wasm/` (Rust Library: `wasm-bindgen` crossover logic, compiled to `pkg/`)
+- `/client/` (Frontend JS/GLSL: WebRTC client, AudioWorklet wrappers, WebGL shaders)
+
+*Note: Phase 5 replaces the Phase 3 Node.js server entirely. Backwards compatibility is not maintained; this is a clean rewrite of the networking and DSP layers while preserving the theoretical spatial concepts outlined in previous phases.*

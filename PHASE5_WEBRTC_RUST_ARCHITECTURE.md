@@ -29,4 +29,14 @@ Phase 5 transforms HealingNodes from a Node.js/Socket.io chunk-buffered system i
 - `/dsp-wasm/` (Rust Library: `wasm-bindgen` crossover logic, compiled to `pkg/`)
 - `/client/` (Frontend JS/GLSL: WebRTC client, AudioWorklet wrappers, WebGL shaders)
 
+## 7. Unified UX & Floating Interface (Phase 4 Merge)
+Phase 5 incorporates the UX/UI overhaul defined in Phase 4:
+- **Deprecation of Admin Panel:** `admin.html` is completely deleted. The control system is seamlessly integrated into the unified `index.html` Daydream environment.
+- **Floating Action Button (FAB):** A sleek, animated circular button anchored to the bottom-right of the canvas.
+- **Glassmorphic Navigation:** Clicking the FAB expands a hardware-accelerated CSS navigation bar containing:
+  1. The Core Toggle (Mode vs. Media).
+  2. The Mode Preset Selector (Scrolling list of frequencies).
+  3. The Config Panel (Media upload and volume controls).
+- **Audio-Reactive Symbiosis:** The FAB UI rests transparently on top of the raw WebGL liquid shaders, ensuring the user never has to leave the immersive environment to change settings.
+
 *Note: Phase 5 replaces the Phase 3 Node.js server entirely. Backwards compatibility is not maintained; this is a clean rewrite of the networking and DSP layers while preserving the theoretical spatial concepts outlined in previous phases.*

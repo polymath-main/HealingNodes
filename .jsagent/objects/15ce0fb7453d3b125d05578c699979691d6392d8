@@ -1,0 +1,5 @@
+## 5. Visuals (WebGL Fragment Shaders)
+- **Current State:** 2D Canvas rendering, CPU-heavy.
+- **Phase 5 State:** Pure WebGL (GLSL) Fragment Shaders (`webgl2`).
+- **GPU Integration:** The WASM AudioWorklet (or a parallel `AnalyserNode`) extracts frequency domain data (FFT) and passes it to the main thread via `MessagePort`. The main thread pushes this data to the GPU via Uniform Arrays or a 1D Data Texture. The fluid/liquid visuals are computed entirely on the GPU, fully decoupling the visual frame rate from DSP performance.
+

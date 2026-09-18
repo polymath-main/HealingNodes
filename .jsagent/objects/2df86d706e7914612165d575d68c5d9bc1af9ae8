@@ -1,0 +1,5 @@
+## 2. Network Topology: The "AirPods" Model
+- **Host PC (The Broadcaster):** Computes and captures audio locally using `audioCtx.createMediaStreamDestination()` or screen capture (`navigator.mediaDevices.getDisplayMedia`). It processes the master spatialization and sends a single, low-latency WebRTC Opus stream to the SFU.
+- **Phones (Dumb Receivers):** Act merely as playback endpoints (like AirPods). They connect via WebRTC, receive the raw stream, and pass it immediately to the local AudioContext without downloading chunks or maintaining complex Node.js sync buffers.
+- **Signaling & SFU (Rust Backend):** A lightweight Rust server negotiates WebRTC connections (SDP offers/answers) and relays the Opus packets from the Host PC to all connected receiver phones simultaneously.
+
