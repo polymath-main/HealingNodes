@@ -118,13 +118,103 @@
       "file": "client/js/app.js",
       "name": "canvas",
       "type": "Variable",
-      "startLine": 114
+      "startLine": 122
     },
     "client/js/app.js:gl": {
       "file": "client/js/app.js",
       "name": "gl",
       "type": "Variable",
-      "startLine": 115
+      "startLine": 123
+    },
+    "client/js/app.js:vsSource": {
+      "file": "client/js/app.js",
+      "name": "vsSource",
+      "type": "Variable",
+      "startLine": 134
+    },
+    "client/js/app.js:fsSource": {
+      "file": "client/js/app.js",
+      "name": "fsSource",
+      "type": "Variable",
+      "startLine": 139
+    },
+    "client/js/app.js:createShader": {
+      "file": "client/js/app.js",
+      "name": "createShader",
+      "type": "Function",
+      "startLine": 162
+    },
+    "client/js/app.js:vertexShader": {
+      "file": "client/js/app.js",
+      "name": "vertexShader",
+      "type": "Variable",
+      "startLine": 169
+    },
+    "client/js/app.js:fragmentShader": {
+      "file": "client/js/app.js",
+      "name": "fragmentShader",
+      "type": "Variable",
+      "startLine": 170
+    },
+    "client/js/app.js:shaderProgram": {
+      "file": "client/js/app.js",
+      "name": "shaderProgram",
+      "type": "Variable",
+      "startLine": 171
+    },
+    "client/js/app.js:positionBuffer": {
+      "file": "client/js/app.js",
+      "name": "positionBuffer",
+      "type": "Variable",
+      "startLine": 177
+    },
+    "client/js/app.js:positionLocation": {
+      "file": "client/js/app.js",
+      "name": "positionLocation",
+      "type": "Variable",
+      "startLine": 180
+    },
+    "client/js/app.js:uTimeLoc": {
+      "file": "client/js/app.js",
+      "name": "uTimeLoc",
+      "type": "Variable",
+      "startLine": 184
+    },
+    "client/js/app.js:uResolutionLoc": {
+      "file": "client/js/app.js",
+      "name": "uResolutionLoc",
+      "type": "Variable",
+      "startLine": 185
+    },
+    "client/js/app.js:uAudioBassLoc": {
+      "file": "client/js/app.js",
+      "name": "uAudioBassLoc",
+      "type": "Variable",
+      "startLine": 186
+    },
+    "client/js/app.js:uAudioMidLoc": {
+      "file": "client/js/app.js",
+      "name": "uAudioMidLoc",
+      "type": "Variable",
+      "startLine": 187
+    },
+    "client/js/app.js:analyser": {
+      "file": "client/js/app.js",
+      "name": "analyser",
+      "type": "Variable",
+      "startLine": 190
+    },
+    "client/js/app.js:dataArray": {
+      "file": "client/js/app.js",
+      "name": "dataArray",
+      "type": "Variable",
+      "startLine": 191
+    },
+    "client/js/app.js:render": {
+      "file": "client/js/app.js",
+      "name": "render",
+      "type": "Function",
+      "startLine": 193
     }
   },
   "edges": []

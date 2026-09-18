@@ -1,0 +1,11 @@
+{
+  "file": "probe_dsp_math.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_testMidSide": "38655e18da7c06cf710e02b2fd809d9de1039a9e",
+    "js_block_smoothstep": "f202f721bace37ad29413314151d6e60e2e68f52",
+    "js_block_lerp": "c3cd53633c31a5c9a311e69820edf8c8cb6fd9c7",
+    "js_block_computeNtpOffset": "70c0641c31d699e28772a9d59b763c0821762062",
+    "__skeleton__": "56fadc54ffa7199ba83f1dd4c96ee2aa0ec78694"
+  }
+}

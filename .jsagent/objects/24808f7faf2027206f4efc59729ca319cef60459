@@ -1,0 +1,20 @@
+function render(time) {
+    gl.uniform1f(uTimeLoc, time * 0.001);
+    gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+
+    let bassAvg = 0, midAvg = 0;
+    if (analyser && dataArray) {
+        analyser.getByteFrequencyData(dataArray);
+        // Extract Bass (0-100Hz approx) and Mids
+        for(let i=0; i<5; i++) bassAvg += dataArray[i];
+        for(let i=10; i<30; i++) midAvg += dataArray[i];
+        bassAvg = (bassAvg / 5) / 255.0;
+        midAvg = (midAvg / 20) / 255.0;
+    }
+
+    gl.uniform1f(uAudioBassLoc, bassAvg);
+    gl.uniform1f(uAudioMidLoc, midAvg);
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+}

@@ -1,0 +1,33 @@
+{
+  "file": "spec_qa_report.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_specification___qa_mining_report__healingnodes_dual_core_architecture": "fe6623891e2c516606f52bb491fbd617e47288f3",
+    "md_section_1__executive_summary___qa_status": "456c46d170fead3dacb7ed6172dc4c9f23983112",
+    "md_section_1_1_universal_offline_qa_analyzer_run": "e7042a5c133a99d85ac91e6a938168d5def96fac",
+    "md_section_1_2_health___audit_assessment": "cb573d8fb7fa9a16d179d109feed59293a2a9abf",
+    "md_section_2_1_package_manifest___package_json__": "c3c2f5696a9f713f5627c8f265b26ed809c0758d",
+    "md_section_2_2_git_status_and_recent_commit_log": "851145d98804602ec5d05d51714a04d184b9fdf5",
+    "md_section_2_3_directory_and_source_file_map": "62d888aac2f0a52498385b58d58989dacaa6a568",
+    "md_section_3_1_mathematical_theory___theory_md__": "a246d80d3e671fc19acb8a23e7b6c2d0b1cd0990",
+    "md_section_3_2_mode_engine_architecture__core_1_": "6d5da4f2b7934349630363028649ebb1a318efec",
+    "md_section_3_3_media_theater_architecture__core_2_": "7444883229e1d0634c7a2c121350c7b719792f9b",
+    "md_section_4__features_discovered": "17dc51f92b57e2072c9aeb15d4bd09bde9202991",
+    "md_section_5__edge_cases___observed_behavior": "889b8809d0b263b442507b1b7f05bf90b36ef47e",
+    "md_section_defect_1__mid_side_acoustic_matrix_flaw_in__public_app_js_": "3f9f1724115e4b3bed229e31cfd7685eda7fd9db",
+    "md_section_defect_2__crossover_filter_deviation_in__public_app_js_": "43ae0b3e82da248078d7df816995fbf90dcc36c2",
+    "md_section_defect_3__limiter_and_crossover_missing_in_mode_engine": "44a4838f4d48ebd550812c96037d303bffbe3adc",
+    "md_section_defect_4__signal_graph_discrepancies_in__initmodeengine___": "cfde70457d311c16bc93f34d569774af08ae8480",
+    "md_section_defect_5__missing__get__api_state__endpoint": "eddb94abca4241077fe768e500148861f9197cff",
+    "md_section_defect_6__missing_circadian_scheduler": "02b607127aa64c71f69709b8e75c752226ad1ea5",
+    "md_section_defect_7__late_joining_media_sync___position_tracking": "a6260d519d95b3fc512cde453ebe7f9281829030",
+    "md_section_defect_8__audionode_accumulation_leak_in__schedulemediaplayback_": "665c2274e2a74dbdbf089fb7499624e26ffc5d08",
+    "md_section_defect_9__ntp_reconnect_stale_state": "177e3b351821a15ff585f6a9fb7cc558ce242849",
+    "md_section_7__4_tier_e2e_test_suite_architecture___design_plan": "9f36da944258372522135e1797df280549d6c690",
+    "md_section_7_1_tier_1__unit___dsp_math_verification": "38ec5df6c380326fb0bfebf3c71d90e0ba0bcd2c",
+    "md_section_7_2_tier_2__component___mock_web_audio_integration_tests": "8430465b1a08db4bf6fff64666750027e4f4ac2f",
+    "md_section_7_3_tier_3__network_synchronization___socket_io_simulation": "51d9b0ccd35d4c0378fa316658b53910fe26da88",
+    "md_section_7_4_tier_4__end_to_end_system___cross_core_scenarios": "3fe9a5224a6c28f86293b2fcf345da8fd44c84e2",
+    "__skeleton__": "cc78811d60ef760e23bd9d6dd4fd552905efcb89"
+  }
+}
