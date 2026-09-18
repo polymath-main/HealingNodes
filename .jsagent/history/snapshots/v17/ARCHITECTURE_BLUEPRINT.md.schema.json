@@ -1,0 +1,16 @@
+{
+  "file": "ARCHITECTURE_BLUEPRINT.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_1__browser_capabilities___limitations__web_audio_api_": "0077c5782cebc8f0815cf5cab9f1ecbf95bcc387",
+    "md_section_2__signal_graph__corrected_": "bba2c0a67d311dc6bcf060aff091a445e6807306",
+    "md_section_3__connectivity___synchronization": "480b7def6a08f308b9db85e9c0b85284ce1a50d9",
+    "md_section_4__spatial_geometry__quadtree___circle_": "77e1b46513b60be13a1fc88d16c4a5c19771129b",
+    "md_section_5__spectral_noise_engine__corrected_": "11adf812e48bb6cf8b5622c3302bed8b660acbb8",
+    "md_section_6__breathing_lfo__corrected_": "ed2875bd10da828e78c3a5451ba769304f1d0f5b",
+    "md_section_7__visual_engine_color_system__corrected_": "c344adb6fea202e85c231d78c6eb1d9768a344f3",
+    "md_section_8__sound_control___admin_dashboard": "3f799a353e0e734a52e4fd2b76b08b0cc04ea88e",
+    "md_section_9__automation___circadian_scheduling": "9285d80b86113b955454f038fed2924c8e3bb068",
+    "__skeleton__": "a8f473e06cad33ca2e4078d770aa8550082b9d3e"
+  }
+}

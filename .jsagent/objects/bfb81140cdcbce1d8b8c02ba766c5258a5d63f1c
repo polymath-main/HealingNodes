@@ -1,0 +1,6 @@
+export class LinkwitzRiley4 {
+    free(): void;
+    [Symbol.dispose](): void;
+    constructor(freq: number, sample_rate: number);
+    process(input: number): number;
+}

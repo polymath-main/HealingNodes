@@ -1,0 +1,29 @@
+{
+  "file": "network_sync_report.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_comprehensive_audit_report__network_synchronization_orchestration": "8479ecea51e6354ec6753100375b862e2e0794a3",
+    "md_section_executive_summary": "d7ae9facdbf31aad2a77bec241efabb13402ab0e",
+    "md_section_1_1_mathematical_formulation_of_clock_offset_and_rtt": "110a7470871b0dd4af306c18b77e41f797272e79",
+    "md_section_1_2_sensitivity_to_network_jitter_and_packet_delay_variation__pdv_": "d7a41360f1b824f36081a0943c797d239fc4e462",
+    "md_section_1_3_absence_of_continuous_clock_skew___drift_tracking": "41ff1c55713e27df024ec07abccc7e15683e9ec0",
+    "md_section_1_4_socket_reconnection_corruption": "11b97b5c2c64e76d749c613010859a6d961f64b4",
+    "md_section_2_1_server_side_vector_interpolation___src_core_modeengine_js__": "dd037e43df4a3f4bd8d1b7f161524c558b4e772e",
+    "md_section_2_2_circular_angular_interpolation_flaw___phi_color__": "11ae1fdce04d5444f9b250df97d174d9e2e7bcea",
+    "md_section_2_3_spatial_orbit_rotation_desynchronization___public_app_js__": "6c744fa30253aa66b0e0c6657ff394904a3aa8a0",
+    "md_section_2_4_missing_harmonic_index_implementation___myindex__": "3d8760bae2134baaf0e3cf6a74a11d6559d51404",
+    "md_section_3_1_media_theater_core_late_join_breakdown__fatal_flaw_": "d031607fa288a14a869bfc9f8b559f7f6b98337f",
+    "md_section_3_2_playback_head_desynchronization_on_negative_delta___tdelta___0__": "4ec89495832e2375e69611f144fde80f535e2c5b",
+    "md_section_3_3_mid_side_gain_locking_on_dynamic_mesh_resizing": "99e79dbb82e4c4f7bc5bae140822e81310096add",
+    "md_section_4_1_duplicate_socket_registrations___mesh_angle_corruption": "dd4b209b543e7d571dce8cdf16c0ba3cfbe34207",
+    "md_section_4_2_un_cleared_interval_leak_in__modeengine_": "70f510bf70cf379be4bc6f325ccbd4a0dbc8a0ac",
+    "md_section_4_3_redundant_upstream_streams_in__youtubeproxy_js_": "82520a707236fdc0b4d7b5811062487549ee18a2",
+    "md_section_5__comprehensive_summary_matrix_of_issues": "7bff135f56ba10724c2da43b84639ac7ddec2299",
+    "md_section_6__implementation_architecture___code_remediation_specifications": "1e4741fc9ed4cc29c473c6cb147c88de6c918616",
+    "md_section_6_1_robust_ntp_synchronization_architecture": "dfb6c98a84aa1a7cd6dffbc676f941b45a908b8b",
+    "md_section_6_2_correct_trajectory_math___epoch_based_orbit": "b97d89d38735bac95b6f796144e7d11e3e3ee77e",
+    "md_section_6_3_media_theater_state_machine___late_join_playback_seeking": "5e99b693d46f128a8ae6d6d266c405752e8dca54",
+    "md_section_6_4_concurrency_and_registration_hardening___server_js__": "4f4793e67ba47db9f9eab02fe98598570ec7ed79",
+    "__skeleton__": "6e76119d4c470d8e4d769630e2cf75a7aa1defd5"
+  }
+}

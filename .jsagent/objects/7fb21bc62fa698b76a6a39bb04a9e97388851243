@@ -1,0 +1,37 @@
+/* @ts-self-types="./dsp_wasm.d.ts" */
+
+/* __JAGE_REF_js_block_BiquadFilter__ */
+if (Symbol.dispose) BiquadFilter.prototype[Symbol.dispose] = BiquadFilter.prototype.free;
+
+/* __JAGE_REF_js_block_LinkwitzRiley4__ */
+if (Symbol.dispose) LinkwitzRiley4.prototype[Symbol.dispose] = LinkwitzRiley4.prototype.free;
+/* __JAGE_REF_js_block___wbg_get_imports__ */
+
+const BiquadFilterFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_biquadfilter_free(ptr, 1));
+const LinkwitzRiley4Finalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_linkwitzriley4_free(ptr, 1));
+
+/* __JAGE_REF_js_block_getStringFromWasm0__ */
+
+let cachedUint8ArrayMemory0 = null;
+/* __JAGE_REF_js_block_getUint8ArrayMemory0__ */
+
+let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+cachedTextDecoder.decode();
+const MAX_SAFARI_DECODE_BYTES = 2146435072;
+let numBytesDecoded = 0;
+/* __JAGE_REF_js_block_decodeText__ */
+
+let wasmModule, wasmInstance, wasm;
+/* __JAGE_REF_js_block___wbg_finalize_init__ */
+
+/* __JAGE_REF_js_block___wbg_load__ */
+
+/* __JAGE_REF_js_block_initSync__ */
+
+/* __JAGE_REF_js_block___wbg_init__ */
+
+export { initSync, __wbg_init as default };

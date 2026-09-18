@@ -1,5 +1,5 @@
 body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; background: #000; }
-#webgl-canvas { width: 100%; height: 100%; display: block; }
+#webgl-canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: block; z-index: 1; }
 
 #fab-container {
     position: absolute;

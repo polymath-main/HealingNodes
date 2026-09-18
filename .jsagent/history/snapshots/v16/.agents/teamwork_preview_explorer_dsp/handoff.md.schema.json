@@ -1,0 +1,12 @@
+{
+  "file": "handoff.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_handoff_report___web_audio_dsp_architecture_audit": "16d7e7b2c56297e45da1609bf64e47394f2d5745",
+    "md_section_1__observation": "2305758eb444b4b456539eebf5f0a0d4947021e0",
+    "md_section_2__logic_chain": "d375913899a9099c7b13222cf32766c9ad9e94d7",
+    "md_section_3__caveats": "30ea8419dab84bebc2f61d4839aba6c2b505fe83",
+    "md_section_4__conclusion": "a9d3067f7cb6af23f7dc8fed5408ff155029ea3c",
+    "__skeleton__": "e2d42b249cb34112f61a8521de9edbe10fd3194a"
+  }
+}

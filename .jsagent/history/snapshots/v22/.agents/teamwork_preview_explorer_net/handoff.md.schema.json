@@ -1,0 +1,12 @@
+{
+  "file": "handoff.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_handoff_report__network_synchronization___trajectory_interpolation_audit": "1fc80152d90e816134ab7a408f7b3140a07b0137",
+    "md_section_1__observation": "ac251b99a46d10fe1e37b03b2ffc7d366a421ca5",
+    "md_section_2__logic_chain": "8379163e4f35a30612f7b5ee85f3fc6cd3880027",
+    "md_section_3__caveats": "6905e9a2be364fba8d9b9440347cc9d2878a5743",
+    "md_section_4__conclusion": "96c97b34a76de34f11b5f628c3f305f8f265e906",
+    "__skeleton__": "59e68196d60f29dc5fa6f9b6ffc3a1f4061e1eef"
+  }
+}

@@ -1,0 +1,3 @@
+function getStringFromWasm0(ptr, len) {
+    return decodeText(ptr >>> 0, len);
+}

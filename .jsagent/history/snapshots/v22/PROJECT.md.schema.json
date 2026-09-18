@@ -1,0 +1,13 @@
+{
+  "file": "PROJECT.md",
+  "extension": ".md",
+  "pointers": {
+    "md_section_architecture": "92cf26936c640506bf6dc491c6bb365e878099d3",
+    "md_section_code_layout": "0c5e81ff315e16c6193c9b03692d5c8dd32c9489",
+    "md_section_feature_inventory": "b70da4307f6ee81b5e6ef3dc33902078014e496e",
+    "md_section_milestones": "73214369164a95a265fe1a8e8f7d83f88a68df07",
+    "md_section_client___server_ntp_sync": "028d18b4959e76834a157daee1f520b5b76e5be0",
+    "md_section_mediaengine___client_playhead_synchronization": "c468b90a12719357c9c57e928c3de7f3f35f8e90",
+    "__skeleton__": "5ce02ccd84c6edf75d33698ccc37aef623f6b76a"
+  }
+}

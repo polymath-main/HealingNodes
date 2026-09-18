@@ -124,6 +124,8 @@ const gl = canvas.getContext('webgl2');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+gl.viewport(0, 0, canvas.width, canvas.height); // INITIALIZE VIEWPORT
+
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;

@@ -1,0 +1,33 @@
+export class BiquadFilter {
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        BiquadFilterFinalization.unregister(this);
+        return ptr;
+    }
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_biquadfilter_free(ptr, 0);
+    }
+    constructor() {
+        const ret = wasm.biquadfilter_new();
+        this.__wbg_ptr = ret;
+        BiquadFilterFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    /**
+     * @param {number} input
+     * @returns {number}
+     */
+    process(input) {
+        const ret = wasm.biquadfilter_process(this.__wbg_ptr, input);
+        return ret;
+    }
+    /**
+     * @param {number} freq
+     * @param {number} sample_rate
+     */
+    set_highpass(freq, sample_rate) {
+        wasm.biquadfilter_set_highpass(this.__wbg_ptr, freq, sample_rate);
+    }
+}

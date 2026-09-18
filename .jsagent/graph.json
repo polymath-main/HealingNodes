@@ -130,89 +130,209 @@
       "file": "client/js/app.js",
       "name": "vsSource",
       "type": "Variable",
-      "startLine": 134
+      "startLine": 136
     },
     "client/js/app.js:fsSource": {
       "file": "client/js/app.js",
       "name": "fsSource",
       "type": "Variable",
-      "startLine": 139
+      "startLine": 141
     },
     "client/js/app.js:createShader": {
       "file": "client/js/app.js",
       "name": "createShader",
       "type": "Function",
-      "startLine": 162
+      "startLine": 164
     },
     "client/js/app.js:vertexShader": {
       "file": "client/js/app.js",
       "name": "vertexShader",
       "type": "Variable",
-      "startLine": 169
+      "startLine": 171
     },
     "client/js/app.js:fragmentShader": {
       "file": "client/js/app.js",
       "name": "fragmentShader",
       "type": "Variable",
-      "startLine": 170
+      "startLine": 172
     },
     "client/js/app.js:shaderProgram": {
       "file": "client/js/app.js",
       "name": "shaderProgram",
       "type": "Variable",
-      "startLine": 171
+      "startLine": 173
     },
     "client/js/app.js:positionBuffer": {
       "file": "client/js/app.js",
       "name": "positionBuffer",
       "type": "Variable",
-      "startLine": 177
+      "startLine": 179
     },
     "client/js/app.js:positionLocation": {
       "file": "client/js/app.js",
       "name": "positionLocation",
       "type": "Variable",
-      "startLine": 180
+      "startLine": 182
     },
     "client/js/app.js:uTimeLoc": {
       "file": "client/js/app.js",
       "name": "uTimeLoc",
       "type": "Variable",
-      "startLine": 184
+      "startLine": 186
     },
     "client/js/app.js:uResolutionLoc": {
       "file": "client/js/app.js",
       "name": "uResolutionLoc",
       "type": "Variable",
-      "startLine": 185
+      "startLine": 187
     },
     "client/js/app.js:uAudioBassLoc": {
       "file": "client/js/app.js",
       "name": "uAudioBassLoc",
       "type": "Variable",
-      "startLine": 186
+      "startLine": 188
     },
     "client/js/app.js:uAudioMidLoc": {
       "file": "client/js/app.js",
       "name": "uAudioMidLoc",
       "type": "Variable",
-      "startLine": 187
+      "startLine": 189
     },
     "client/js/app.js:analyser": {
       "file": "client/js/app.js",
       "name": "analyser",
       "type": "Variable",
-      "startLine": 190
+      "startLine": 192
     },
     "client/js/app.js:dataArray": {
       "file": "client/js/app.js",
       "name": "dataArray",
       "type": "Variable",
-      "startLine": 191
+      "startLine": 193
     },
     "client/js/app.js:render": {
       "file": "client/js/app.js",
       "name": "render",
+      "type": "Function",
+      "startLine": 195
+    },
+    "dsp-wasm/pkg/dsp_wasm.d.ts:BiquadFilter": {
+      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
+      "name": "BiquadFilter",
+      "type": "Class",
+      "startLine": 4
+    },
+    "dsp-wasm/pkg/dsp_wasm.d.ts:LinkwitzRiley4": {
+      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
+      "name": "LinkwitzRiley4",
+      "type": "Class",
+      "startLine": 12
+    },
+    "dsp-wasm/pkg/dsp_wasm.d.ts:initSync": {
+      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
+      "name": "initSync",
+      "type": "Function",
+      "startLine": 44
+    },
+    "dsp-wasm/pkg/dsp_wasm.d.ts:__wbg_init": {
+      "file": "dsp-wasm/pkg/dsp_wasm.d.ts",
+      "name": "__wbg_init",
+      "type": "Function",
+      "startLine": 54
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:BiquadFilter": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "BiquadFilter",
+      "type": "Class",
+      "startLine": 3
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:LinkwitzRiley4": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "LinkwitzRiley4",
+      "type": "Class",
+      "startLine": 38
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:__wbg_get_imports": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "__wbg_get_imports",
+      "type": "Function",
+      "startLine": 69
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:BiquadFilterFinalization": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "BiquadFilterFinalization",
+      "type": "Variable",
+      "startLine": 91
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:LinkwitzRiley4Finalization": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "LinkwitzRiley4Finalization",
+      "type": "Variable",
+      "startLine": 94
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:getStringFromWasm0": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "getStringFromWasm0",
+      "type": "Function",
+      "startLine": 98
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:cachedUint8ArrayMemory0": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "cachedUint8ArrayMemory0",
+      "type": "Variable",
+      "startLine": 102
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:getUint8ArrayMemory0": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "getUint8ArrayMemory0",
+      "type": "Function",
+      "startLine": 103
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:cachedTextDecoder": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "cachedTextDecoder",
+      "type": "Variable",
+      "startLine": 110
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:MAX_SAFARI_DECODE_BYTES": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "MAX_SAFARI_DECODE_BYTES",
+      "type": "Variable",
+      "startLine": 112
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:numBytesDecoded": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "numBytesDecoded",
+      "type": "Variable",
+      "startLine": 113
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:decodeText": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "decodeText",
+      "type": "Function",
+      "startLine": 114
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:__wbg_finalize_init": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "__wbg_finalize_init",
+      "type": "Function",
+      "startLine": 125
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:__wbg_load": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "__wbg_load",
+      "type": "Function",
+      "startLine": 134
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:initSync": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "initSync",
+      "type": "Function",
+      "startLine": 173
+    },
+    "dsp-wasm/pkg/dsp_wasm.js:__wbg_init": {
+      "file": "dsp-wasm/pkg/dsp_wasm.js",
+      "name": "__wbg_init",
       "type": "Function",
       "startLine": 193
     }

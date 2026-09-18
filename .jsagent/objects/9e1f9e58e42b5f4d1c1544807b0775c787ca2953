@@ -1,0 +1,7 @@
+export class BiquadFilter {
+    free(): void;
+    [Symbol.dispose](): void;
+    constructor();
+    process(input: number): number;
+    set_highpass(freq: number, sample_rate: number): void;
+}

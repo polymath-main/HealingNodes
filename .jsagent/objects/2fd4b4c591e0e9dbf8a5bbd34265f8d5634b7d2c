@@ -1,0 +1,169 @@
+const fabMain = document.getElementById('fab-main');
+const fabMenu = document.getElementById('fab-menu');
+const btnHost = document.getElementById('btn-host');
+const btnJoin = document.getElementById('btn-join');
+const autoplayOverlay = document.getElementById('autoplay-overlay');
+const webrtcAudio = document.getElementById('webrtc-audio');
+
+let audioCtx = null;
+let peerConnection = null;
+let signalingSocket = null;
+
+// Phase 4: FAB Toggle
+fabMain.addEventListener('click', () => {
+    fabMenu.classList.toggle('hidden');
+});
+
+// Phase 5: WebRTC Autoplay Bypass (Strategy B)
+/* __JAGE_REF_js_block_unlockAudio__ */
+
+/* __JAGE_REF_js_block_connectSignaling__ */
+
+btnHost.addEventListener('click', async () => {
+    await unlockAudio();
+    connectSignaling();
+    
+    peerConnection = new RTCPeerConnection();
+    peerConnection.onicecandidate = (e) => {
+        if (e.candidate && signalingSocket.readyState === WebSocket.OPEN) {
+            signalingSocket.send(JSON.stringify(e.candidate));
+        }
+    };
+
+    // Phase 5: Host generates Master Audio Stream
+    const dest = audioCtx.createMediaStreamDestination();
+    
+    // Wire up the Analyser for the GPU Shaders
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    const osc = audioCtx.createOscillator();
+    osc.frequency.value = 432; // Mode Engine Example
+    
+    osc.connect(analyser);
+    analyser.connect(dest);
+    osc.start();
+
+    // Broadcast the stream
+    dest.stream.getTracks().forEach(track => peerConnection.addTrack(track, dest.stream));
+    
+    // Create offer
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    
+    // Send offer once socket opens
+    signalingSocket.onopen = () => signalingSocket.send(JSON.stringify(peerConnection.localDescription));
+    
+    fabMenu.classList.add('hidden');
+    console.log("[WebRTC] Hosting Mode Engine Stream.");
+});
+
+btnJoin.addEventListener('click', async () => {
+    await unlockAudio();
+    connectSignaling();
+
+    peerConnection = new RTCPeerConnection();
+    peerConnection.onicecandidate = (e) => {
+        if (e.candidate && signalingSocket.readyState === WebSocket.OPEN) {
+            signalingSocket.send(JSON.stringify(e.candidate));
+        }
+    };
+
+    // Phase 5: AirPods Topology (Dumb Receiver)
+    peerConnection.ontrack = (event) => {
+        console.log("[WebRTC] Track received.");
+        webrtcAudio.srcObject = event.streams[0];
+        webrtcAudio.play().catch(err => {
+            if (err.name === 'NotAllowedError') {
+                console.warn("[Autoplay] Blocked by Low Power Mode. Showing UI.");
+                autoplayOverlay.classList.remove('hidden');
+            }
+        });
+    };
+
+    fabMenu.classList.add('hidden');
+    console.log("[WebRTC] Listening for Host Stream.");
+});
+
+autoplayOverlay.addEventListener('click', () => {
+    webrtcAudio.play();
+    autoplayOverlay.classList.add('hidden');
+});
+
+// Phase 5: WebGL Fluid Boilerplate & Audio Reactive Uniforms
+const canvas = document.getElementById('webgl-canvas');
+const gl = canvas.getContext('webgl2');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+gl.viewport(0, 0, canvas.width, canvas.height); // INITIALIZE VIEWPORT
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+});
+
+// GLSL Shaders
+const vsSource = `
+    attribute vec4 aVertexPosition;
+    void main() { gl_Position = aVertexPosition; }
+`;
+
+const fsSource = `
+    precision highp float;
+    uniform float uTime;
+    uniform float uAudioBass;
+    uniform float uAudioMid;
+    uniform vec2 uResolution;
+
+    void main() {
+        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+        uv = uv * 2.0 - 1.0;
+        uv.x *= uResolution.x / uResolution.y;
+
+        float d = length(uv);
+        
+        // Liquid fluid math modulated by audio frequencies
+        float liquid = sin(d * (8.0 - uAudioBass*2.0) - uTime * 2.0 + uAudioBass * 5.0) * 0.5 + 0.5;
+        float ring = smoothstep(0.4, 0.45, liquid) - smoothstep(0.45, 0.5, liquid);
+        
+        vec3 color = vec3(0.05, 0.3, 0.6) * liquid + vec3(0.2, 0.9, 0.8) * ring * (uAudioMid + 0.2);
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+/* __JAGE_REF_js_block_createShader__ */
+
+const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+const shaderProgram = gl.createProgram();
+gl.attachShader(shaderProgram, vertexShader);
+gl.attachShader(shaderProgram, fragmentShader);
+gl.linkProgram(shaderProgram);
+gl.useProgram(shaderProgram);
+
+const positionBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+const positionLocation = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+gl.enableVertexAttribArray(positionLocation);
+gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+const uTimeLoc = gl.getUniformLocation(shaderProgram, "uTime");
+const uResolutionLoc = gl.getUniformLocation(shaderProgram, "uResolution");
+const uAudioBassLoc = gl.getUniformLocation(shaderProgram, "uAudioBass");
+const uAudioMidLoc = gl.getUniformLocation(shaderProgram, "uAudioMid");
+
+// Global Audio Analyser
+let analyser = null;
+let dataArray = null;
+
+/* __JAGE_REF_js_block_render__ */
+requestAnimationFrame(render);
+
+// (Future) WASM DSP Import Stub
+// import init, { LinkwitzRiley4 } from '../dsp-wasm/pkg/dsp_wasm.js';
+// async function initWasm() { await init(); console.log("WASM DSP Loaded"); }
+

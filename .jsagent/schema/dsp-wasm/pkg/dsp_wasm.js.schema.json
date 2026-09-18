@@ -1,0 +1,17 @@
+{
+  "file": "dsp_wasm.js",
+  "extension": ".js",
+  "pointers": {
+    "js_block_BiquadFilter": "2355cf4523e8fa7838d5517b2ac1e927948ecd6b",
+    "js_block_LinkwitzRiley4": "0a8ad4ceeefff9d0fb374d77cd4cd329cb231577",
+    "js_block___wbg_get_imports": "698e20d765a9254b0255753d46a2455d264a9763",
+    "js_block_getStringFromWasm0": "bc23aaf7de31e8b5a02914dfca4b4e752f2ccb72",
+    "js_block_getUint8ArrayMemory0": "d38241488d8e671a80c3e9f875febad96b075c86",
+    "js_block_decodeText": "ec689ce381b3e7531bd566da51dc8447d3781567",
+    "js_block___wbg_finalize_init": "2bc8bc2dc7a0acf12b7de7e0363e664347a7bd99",
+    "js_block___wbg_load": "b6994261419745998b7111514a9d0aede8349f6e",
+    "js_block_initSync": "09bb9ef7b2ba586950e9babf3889d8a1c4917a09",
+    "js_block___wbg_init": "ae61fb25658aaa89a7d6c9158b887f48de41849f",
+    "__skeleton__": "7fb21bc62fa698b76a6a39bb04a9e97388851243"
+  }
+}
