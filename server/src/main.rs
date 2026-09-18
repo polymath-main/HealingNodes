@@ -35,7 +35,17 @@ async fn main() {
             ws.on_upgrade(move |socket| handle_sfu_connection(socket, clients, track))
         });
 
-    warp::serve(signaling_route).run(([0, 0, 0, 0], 3000)).await;
+    // Serve the frontend UI (HTML/CSS/JS)
+    let client_route = warp::fs::dir("../client");
+    
+    // Serve the WASM module
+    let wasm_route = warp::path("dsp-wasm").and(warp::fs::dir("../dsp-wasm"));
+
+    // Combine all routes
+    let routes = client_route.or(wasm_route).or(signaling_route);
+
+    println!("[HTTP] Serving UI on http://localhost:3000");
+    warp::serve(routes).run(([0, 0, 0, 0], 3000)).await;
 }
 
 async fn handle_sfu_connection(ws: WebSocket, clients: Clients, _broadcaster_track: BroadcasterTrack) {
