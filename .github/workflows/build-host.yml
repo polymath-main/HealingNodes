@@ -1,0 +1,46 @@
+name: Build Host Binaries
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        working-directory: ./host
+        run: npm install
+
+      - name: Install pkg globally
+        run: npm install -g pkg
+
+      - name: Build Windows Binary
+        working-directory: ./host
+        run: pkg src/index.js --targets node20-win-x64 --output dist/HealingNodes-Host.exe
+
+      - name: Build Linux Binary
+        working-directory: ./host
+        run: pkg src/index.js --targets node20-linux-x64 --output dist/HealingNodes-Host-Linux
+
+      - name: Build macOS Binary
+        working-directory: ./host
+        run: pkg src/index.js --targets node20-macos-x64 --output dist/HealingNodes-Host-macOS
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: HealingNodes-Executables
+          path: host/dist/

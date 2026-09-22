@@ -1,46 +1,59 @@
-# HealingNodes
+# HealingNodes - Phase 7 Media Streaming
 
-HealingNodes is a distributed spatial audio engine built on pure mathematics. It turns connected devices (Smart TVs, PCs, and Phones) into a dynamic acoustic mesh network designed to regulate the human autonomic nervous system through biophysical resonance.
+HealingNodes is a distributed spatial audio engine designed to broadcast arbitrary media (movies, Spotify, desktop audio) from a central Host computer to multiple secondary Nodes (phones, TVs, laptops) over your local Wi-Fi.
 
-## The Triad of Mathematical Healing
-
-1. **Liquid Fluid Daydream Engine (Visuals)**
-   A pure HTML5 Canvas WebGL-inspired engine. It generates overlapping, glowing liquid waveforms using multi-layered low-frequency sine algorithms that breathe and pulsate directly in sync with the audio hardware clock. The visuals map dynamically to the precise spatial $\pi$ angle assigned to each device.
-
-2. **Pure $1/f$ Pink Noise (Voss-McCartney Algorithm)**
-   Instead of using pre-recorded MP3s or wrapper libraries, HealingNodes generates perfect acoustic entropy natively on the browser's C++ audio thread using the Voss-McCartney cascading filter algorithm. A 0.1Hz algorithmic Low Frequency Oscillator (LFO) causes the pink noise to "breathe" exactly once every 10 seconds.
-
-3. **33 Hz Binding Frequency & Spatial Triangulation**
-   The base of the environment is anchored by a 33 Hz sine wave (the frequency associated with low-gamma cognitive binding and vagus nerve stimulation). When multiple nodes connect, the central Node.js Orchestrator calculates the spatial division ($\frac{2\pi}{N}$) and assigns each device a perfect geometric phase and harmonic frequency multiplier, surrounding the listener in a mathematically perfect chord.
+Unlike standard screen-sharing or Bluetooth, HealingNodes utilizes a highly advanced **Jitter Buffer** and **Sub-Millisecond Clock Synchronization (NTP)** to guarantee that every speaker in your room fires at the exact same microsecond, producing a perfect, echo-free acoustic mesh.
 
 ## Architecture
 
-*   **Server (The Orchestrator):** Node.js + Socket.io. Tracks active devices, calculates the room's mesh geometry in real-time, and broadcasts the NTP-style clock sync offset.
-*   **Client (The Nodes):** Native Web Audio API (`AudioContext`) and HTML5 Canvas. Zero external audio frameworks. Receives the mathematical instructions and renders the physical audio/visual waves locally to prevent network jitter.
-*   **System Access IP (Admin Dashboard):** A dedicated control panel allowing manual override of the base frequency and simulation of Bio-Feedback (e.g., HRV/stress spikes) which dynamically inverts the room's acoustic state.
+*   **The Host (Desktop App):** A native OS executable that captures your system audio (via Virtual Audio Cable), slices it into Opus chunks using the modern WebCodecs API, and blasts it over a local WebSocket server (`ws://192.168.x.x:8080`).
+*   **The Nodes (Static Web App):** Phones and TVs simply scan a QR code to open the static Web App. The app connects to the Host's WebSocket, decodes the Opus chunks, and schedules playback precisely at `Capture Time + 500ms` to eliminate all network jitter.
+
+## How to Build the Executable (Cross-Platform)
+
+The Host application can be compiled into a standalone, double-clickable binary for **Windows (`.exe`)**, **macOS**, and **Linux** using the Vercel `pkg` compiler.
+
+### Option 1: Automated Build (GitHub Actions)
+1. Fork or push this repository to GitHub.
+2. Navigate to the **Actions** tab in your repository.
+3. Select the **Build Host Binaries** workflow and click **Run workflow**.
+4. Once completed, download the `HealingNodes-Executables.zip` artifact containing the `.exe`, macOS, and Linux binaries.
+
+### Option 2: Local Manual Build
+To build the executable manually on your own machine:
+
+1. **Install Node.js** (v20+ recommended).
+2. **Install `pkg` globally**:
+   ```bash
+   npm install -g pkg
+   ```
+3. **Navigate to the Host directory & install dependencies**:
+   ```bash
+   cd host
+   npm install
+   ```
+4. **Compile for your specific platform**:
+   - **For Windows**:
+     ```bash
+     pkg src/index.js --targets node20-win-x64 --output dist/HealingNodes-Host.exe
+     ```
+   - **For macOS**:
+     ```bash
+     pkg src/index.js --targets node20-macos-x64 --output dist/HealingNodes-Host-macOS
+     ```
+   - **For Linux**:
+     ```bash
+     pkg src/index.js --targets node20-linux-x64 --output dist/HealingNodes-Host-Linux
+     ```
 
 ## Installation & Usage
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/polymath-main/HealingNodes.git
-   cd HealingNodes
-   ```
+### 1. Start the Host (Laptop/PC)
+Double-click the generated `HealingNodes-Host.exe` (Windows) or execute the binary on Mac/Linux. 
+*Ensure your OS sound output is routed to a Virtual Audio Cable if you wish to mute the physical laptop speakers.*
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Boot the environment:
-   ```bash
-   node server.js
-   ```
-
-4. Connect your nodes:
-   * **Root Node:** Open `http://localhost:3000` on your phone/PC and double-tap to enter the Fullscreen Daydream Engine.
-   * **Conductor Dashboard:** Open `http://localhost:3000/admin.html` to control the environment.
-   * **Spatial Expansion:** Open the local network IP (e.g., `http://192.168.x.x:3000`) on a Smart TV or second laptop to watch the spatial mesh mathematically divide in real-time.
-
----
-*Built within the Polymath Ecosystem.*
+### 2. Connect the Nodes (Phones/TVs)
+The Host will print a local WebSocket IP address (e.g., `192.168.1.100:8080`) and a QR code to the terminal.
+* Open the `client/index.html` (or your GitHub Pages deployment) on your phone.
+* Enter the IP address to connect.
+* The phone will instantly begin playing the host's audio in perfect phase-aligned sync!
