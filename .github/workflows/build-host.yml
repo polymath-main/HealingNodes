@@ -24,6 +24,9 @@ jobs:
         working-directory: ./host
         run: npm install
 
+      - name: Copy Client directory for packaging
+        run: cp -r client host/client_dist
+
       - name: Install pkg globally
         run: npm install -g pkg
 

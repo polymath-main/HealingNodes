@@ -19,7 +19,7 @@ class NtpWebSocketServer extends EventEmitter {
         case '.css': contentType = 'text/css'; break;
       }
       
-      const fullPath = path.join(__dirname, '../../client', filePath);
+      const fullPath = path.join(__dirname, '../client_dist', filePath);
       
       fs.readFile(fullPath, (err, content) => {
         if (err) {
