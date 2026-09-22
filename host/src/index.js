@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, desktopCapturer, session } = require('electron');
 const path = require('path');
 const { NtpWebSocketServer } = require('./ntpWebSocketServer');
 
@@ -7,6 +7,15 @@ let server;
 let mainWindow;
 
 app.whenReady().then(() => {
+  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+    desktopCapturer.getSources({ types: ['screen'] }).then((sources) => {
+      // Auto-select the first screen and inject the loopback audio source (Windows System Audio)
+      callback({ video: sources[0], audio: 'loopback' });
+    }).catch(err => {
+      console.error('[Host] desktopCapturer error:', err);
+    });
+  });
+
   server = new NtpWebSocketServer(PORT);
 
   mainWindow = new BrowserWindow({
