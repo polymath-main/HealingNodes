@@ -1,8 +1,0 @@
-/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/icu_normalizer-8ac7c67250c0a5dd.d: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/properties.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/provider.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/uts46.rs
-
-/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/libicu_normalizer-8ac7c67250c0a5dd.rmeta: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/properties.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/provider.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/uts46.rs
-
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/lib.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/properties.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/provider.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.3.0/src/uts46.rs:

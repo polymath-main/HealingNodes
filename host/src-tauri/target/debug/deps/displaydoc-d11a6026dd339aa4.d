@@ -1,8 +1,0 @@
-/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/displaydoc-d11a6026dd339aa4.d: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/attr.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/expand.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/fmt.rs
-
-/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/libdisplaydoc-d11a6026dd339aa4.so: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/attr.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/expand.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/fmt.rs
-
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/lib.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/attr.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/expand.rs:
-/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/displaydoc-0.2.7/src/fmt.rs:
