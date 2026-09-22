@@ -27,20 +27,17 @@ jobs:
       - name: Copy Client directory for packaging
         run: cp -r client host/client_dist
 
-      - name: Install pkg globally
-        run: npm install -g pkg
-
       - name: Build Windows Binary
         working-directory: ./host
-        run: pkg . --targets node18-win-x64 --output dist/HealingNodes-Host.exe
+        run: npm run build:win
 
       - name: Build Linux Binary
         working-directory: ./host
-        run: pkg . --targets node18-linux-x64 --output dist/HealingNodes-Host-Linux
+        run: npm run build:linux
 
       - name: Build macOS Binary
         working-directory: ./host
-        run: pkg . --targets node18-macos-x64 --output dist/HealingNodes-Host-macOS
+        run: npm run build:mac
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
