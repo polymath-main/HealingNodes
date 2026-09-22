@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
@@ -23,29 +24,23 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install Dependencies
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Ubuntu dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libasound2-dev
+
+      - name: Install npm dependencies
         working-directory: ./host
         run: npm install
 
-      - name: Copy Client directory for packaging (Unix)
-        run: cp -r client host/client_dist
-        if: runner.os != 'Windows'
-
-      - name: Copy Client directory for packaging (Windows)
-        run: xcopy client host\client_dist /E /I /Y
-        if: runner.os == 'Windows'
-
-      - name: Build Binary
-        working-directory: ./host
-        run: npx electron-builder
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Build Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: HealingNodes-Executables-${{ matrix.os }}
-          path: |
-            host/dist/*.exe
-            host/dist/*.AppImage
-            host/dist/*.dmg
-            host/dist/*.zip
-            host/dist/*.tar.gz
+          projectPath: ./host
+          tauriScript: npm run tauri

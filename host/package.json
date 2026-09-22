@@ -1,32 +1,13 @@
 {
-  "name": "healingnodes-host",
+  "name": "host",
   "version": "1.0.0",
-  "description": "HealingNodes Native Host Broadcaster",
-  "main": "src/index.js",
   "scripts": {
-    "start": "electron .",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
+    "tauri": "tauri"
   },
   "dependencies": {
-    "ws": "^8.21.3"
+    "@tauri-apps/api": "^1.4.0"
   },
   "devDependencies": {
-    "electron": "^29.1.0",
-    "electron-builder": "^24.13.3"
-  },
-  "build": {
-    "appId": "com.polymath.healingnodes",
-    "productName": "HealingNodes Host",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "src/**/*",
-      "package.json",
-      "node_modules/**/*",
-      "client_dist/**/*"
-    ]
+    "@tauri-apps/cli": "^1.4.0"
   }
 }
