@@ -42,6 +42,13 @@ jobs:
         working-directory: ./host
         run: npm install
 
+      - name: Fetch Cargo dependencies and patch CMakeLists
+        working-directory: ./host/src-tauri
+        run: |
+          cargo fetch
+          find ~/.cargo/registry/src -path "*/audiopus_sys-*/opus/CMakeLists.txt" -exec perl -pi -e 's/cmake_minimum_required\s*\(\s*VERSION\s+[0-9\.]+\s*\)/cmake_minimum_required(VERSION 3.5)/g' {} +
+        shell: bash
+
       - name: Build Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
