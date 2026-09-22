@@ -158,6 +158,15 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      const audioSelect = document.getElementById('audioDevice');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const connStringEl = document.getElementById('connString');
+      const nodeList = document.getElementById('nodeList');
+      const qrcodeEl = document.getElementById('qrcode');
+
       // Check if Tauri is available
       if (!window.__TAURI__) {
         console.error("Tauri is not injected. Make sure withGlobalTauri is true.");
@@ -167,15 +176,6 @@
       
       const { invoke } = window.__TAURI__.tauri;
       const { listen } = window.__TAURI__.event;
-
-      const audioSelect = document.getElementById('audioDevice');
-      const startBtn = document.getElementById('startBtn');
-      const stopBtn = document.getElementById('stopBtn');
-      const statusDot = document.getElementById('statusDot');
-      const statusText = document.getElementById('statusText');
-      const connStringEl = document.getElementById('connString');
-      const nodeList = document.getElementById('nodeList');
-      const qrcodeEl = document.getElementById('qrcode');
 
       // 1. Init engine
       try {
