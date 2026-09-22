@@ -1,11 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HealingNodes Host</title>
-  </head>
-  <body>
-    <h1>HealingNodes Host</h1>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>HealingNodes Host</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --panel-bg: #1e1e1e;
+      --text-color: #ffffff;
+      --primary: #bb86fc;
+      --primary-hover: #9965f4;
+      --border: #333333;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+    .panel {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+    select, button {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background-color: #2c2c2c;
+      color: #fff;
+      font-size: 1rem;
+    }
+    button {
+      background-color: var(--primary);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .connection-string {
+      text-align: center;
+      margin-top: 10px;
+      font-family: monospace;
+      color: var(--primary);
+      word-break: break-all;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: gray;
+      margin-right: 5px;
+    }
+    .status-streaming { background-color: #03dac6; }
+    .status-error { background-color: #cf6679; }
+    .status-idle { background-color: gray; }
+    
+    #nodeList {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    #nodeList li {
+      background: #2c2c2c;
+      margin-bottom: 5px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>HealingNodes Host</h1>
+  
+  <div class="dashboard">
+    <div class="panel">
+      <h2>Control Panel</h2>
+      
+      <div class="form-group">
+        <label for="audioDevice">Select Audio Device</label>
+        <select id="audioDevice">
+          <option value="">Loading devices...</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Engine Status</label>
+        <div>
+          <span id="statusDot" class="status-indicator status-idle"></span>
+          <span id="statusText">Idle</span>
+        </div>
+      </div>
+      
+      <button id="startBtn">Start Stream</button>
+      <button id="stopBtn" style="margin-top: 10px; background-color: #cf6679; color: #fff; display: none;">Stop Stream</button>
+    </div>
+    
+    <div class="panel">
+      <h2>Network Connection</h2>
+      <div id="qrcode"></div>
+      <div class="connection-string" id="connString">Initializing...</div>
+      
+      <h3 style="margin-top: 20px; font-size: 1rem;">Connected Nodes</h3>
+      <ul id="nodeList">
+        <!-- IPs will be added here -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Check if Tauri is available
+      if (!window.__TAURI__) {
+        console.error("Tauri is not injected. Make sure withGlobalTauri is true.");
+        connStringEl.textContent = "Error: Tauri API not found";
+        return;
+      }
+      
+      const { invoke } = window.__TAURI__.tauri;
+      const { listen } = window.__TAURI__.event;
+
+      const audioSelect = document.getElementById('audioDevice');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const connStringEl = document.getElementById('connString');
+      const nodeList = document.getElementById('nodeList');
+      const qrcodeEl = document.getElementById('qrcode');
+
+      // 1. Init engine
+      try {
+        await invoke('engine_init');
+      } catch (err) {
+        console.error("Failed to init engine:", err);
+      }
+
+      // 2. Get network info and generate QR code
+      try {
+        const netInfo = await invoke('get_network_info');
+        const connectionString = `http://${netInfo.ip}:${netInfo.port}`;
+        connStringEl.textContent = connectionString;
+        
+        new QRCode(qrcodeEl, {
+          text: connectionString,
+          width: 128,
+          height: 128,
+          colorDark : "#000000",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      } catch (err) {
+        console.error("Failed to get network info:", err);
+        connStringEl.textContent = "Error: " + err;
+      }
+
+      // 3. Fetch audio devices
+      try {
+        const devices = await invoke('get_audio_devices');
+        audioSelect.innerHTML = '';
+        if (devices.length === 0) {
+          audioSelect.innerHTML = '<option value="">No devices found</option>';
+        } else {
+          devices.forEach(dev => {
+            const opt = document.createElement('option');
+            opt.value = dev.id;
+            opt.textContent = dev.name;
+            audioSelect.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error("Failed to get audio devices:", err);
+        audioSelect.innerHTML = '<option value="">Error loading devices</option>';
+      }
+
+      // 4. Start stream
+      startBtn.addEventListener('click', async () => {
+        const deviceId = audioSelect.value;
+        if (!deviceId) return alert("Please select an audio device");
+        
+        try {
+          await invoke('set_target_device', { deviceId });
+          await invoke('start_stream');
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'block';
+        } catch (err) {
+          console.error("Failed to start stream:", err);
+          alert("Error: " + err);
+        }
+      });
+
+      // Stop stream
+      stopBtn.addEventListener('click', async () => {
+        try {
+          await invoke('stop_stream');
+          stopBtn.style.display = 'none';
+          startBtn.style.display = 'block';
+        } catch(err) {
+          console.error(err);
+        }
+      });
+
+      // 5. Listeners
+      listen('engine_status', (event) => {
+        const status = event.payload; // "streaming", "idle", "error"
+        statusText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        statusDot.className = `status-indicator status-${status}`;
+        if (status === 'idle' || status === 'error') {
+          stopBtn.style.display = 'none';
+          startBtn.style.display = 'block';
+        } else if (status === 'streaming') {
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'block';
+        }
+      });
+
+      listen('node_connected', (event) => {
+        const ip = event.payload;
+        const li = document.createElement('li');
+        li.textContent = ip;
+        nodeList.appendChild(li);
+      });
+    });
+  </script>
+</body>
 </html>
