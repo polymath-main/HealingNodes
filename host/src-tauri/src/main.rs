@@ -1,9 +1,3 @@
-#![cfg_attr(
-    all(not(debug_assertions), target_os = "windows"),
-    windows_subsystem = "windows"
-)]
-
-use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use local_ip_address::local_ip;
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
@@ -13,6 +7,7 @@ use futures_util::SinkExt;
 use tokio_tungstenite::tungstenite::protocol::Message;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::Manager;
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
 #[derive(Serialize, Deserialize)]
 struct NetworkInfo {
@@ -26,9 +21,14 @@ struct AudioDevice {
     name: String,
 }
 
+enum AudioCommand {
+    Start(Option<String>),
+    Stop,
+}
+
 struct AppState {
     tx: broadcast::Sender<Vec<u8>>,
-    stream: Mutex<Option<cpal::Stream>>,
+    audio_tx: Mutex<std::sync::mpsc::Sender<AudioCommand>>,
     target_device: Mutex<Option<String>>,
     network_port: Mutex<u16>,
     jitter_delay: Mutex<u32>,
@@ -94,8 +94,55 @@ fn engine_init(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>) 
 
 #[tauri::command]
 fn start_stream(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>) -> Result<(), String> {
-    let host = cpal::default_host();
     let target_device_name = state.target_device.lock().unwrap().clone();
+    let audio_tx = state.audio_tx.lock().unwrap();
+    
+    audio_tx.send(AudioCommand::Start(target_device_name)).map_err(|e| e.to_string())?;
+    app_handle.emit_all("engine_status", "streaming").unwrap_or_default();
+    
+    Ok(())
+}
+
+#[tauri::command]
+fn stop_stream(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>) -> Result<(), String> {
+    let audio_tx = state.audio_tx.lock().unwrap();
+    audio_tx.send(AudioCommand::Stop).map_err(|e| e.to_string())?;
+    app_handle.emit_all("engine_status", "idle").unwrap_or_default();
+    Ok(())
+}
+
+async fn run_websocket_server(port: u16, tx: broadcast::Sender<Vec<u8>>, app_handle: tauri::AppHandle) {
+    if let Ok(listener) = TcpListener::bind(format!("0.0.0.0:{}", port)).await {
+        println!("WebSocket server listening on port {}", port);
+
+        while let Ok((stream, addr)) = listener.accept().await {
+            let tx_clone = tx.clone();
+            let app_handle_clone = app_handle.clone();
+            
+            tokio::spawn(async move {
+                if let Ok(mut ws_stream) = tokio_tungstenite::accept_async(stream).await {
+                    app_handle_clone.emit_all("node_connected", addr.ip().to_string()).unwrap_or_default();
+                    
+                    let mut rx = tx_clone.subscribe();
+                    loop {
+                        match rx.recv().await {
+                            Ok(msg) => {
+                                if ws_stream.send(Message::Binary(msg)).await.is_err() {
+                                    break;
+                                }
+                            }
+                            Err(broadcast::error::RecvError::Lagged(_)) => continue,
+                            Err(broadcast::error::RecvError::Closed) => break,
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
+
+fn build_audio_stream(target_device_name: Option<String>, tx: broadcast::Sender<Vec<u8>>) -> Result<cpal::Stream, String> {
+    let host = cpal::default_host();
     
     let device = if let Some(name) = target_device_name {
         host.input_devices()
@@ -112,25 +159,16 @@ fn start_stream(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>)
         .map_err(|e| e.to_string())?;
     
     let channels = config.channels();
-
-    let tx = state.tx.clone();
     
-    // Create Opus Encoder
     let mut encoder = opus::Encoder::new(
         48000, 
         if channels == 1 { opus::Channels::Mono } else { opus::Channels::Stereo }, 
         opus::Application::Audio
     ).map_err(|e| e.to_string())?;
 
-    let err_fn = {
-        let app_handle = app_handle.clone();
-        move |err| {
-            eprintln!("An error occurred on stream: {}", err);
-            app_handle.emit_all("engine_status", "error").unwrap_or_default();
-        }
+    let err_fn = move |err| {
+        eprintln!("An error occurred on stream: {}", err);
     };
-
-    app_handle.emit_all("engine_status", "streaming").unwrap_or_default();
 
     let stream = match config.sample_format() {
         cpal::SampleFormat::F32 => {
@@ -175,61 +213,35 @@ fn start_stream(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>)
     };
 
     stream.play().map_err(|e| e.to_string())?;
-    
-    let mut stream_guard = state.stream.lock().unwrap();
-    if let Some(old_stream) = stream_guard.take() {
-        // Drop old stream explicitly, preventing double playback or bugs
-        drop(old_stream);
-    }
-    *stream_guard = Some(stream);
-
-    Ok(())
-}
-
-#[tauri::command]
-fn stop_stream(app_handle: tauri::AppHandle, state: tauri::State<'_, AppState>) -> Result<(), String> {
-    *state.stream.lock().unwrap() = None;
-    app_handle.emit_all("engine_status", "idle").unwrap_or_default();
-    Ok(())
-}
-
-async fn run_websocket_server(port: u16, tx: broadcast::Sender<Vec<u8>>, app_handle: tauri::AppHandle) {
-    if let Ok(listener) = TcpListener::bind(format!("0.0.0.0:{}", port)).await {
-        println!("WebSocket server listening on port {}", port);
-
-        while let Ok((stream, addr)) = listener.accept().await {
-            let tx_clone = tx.clone();
-            let app_handle_clone = app_handle.clone();
-            
-            tokio::spawn(async move {
-                if let Ok(mut ws_stream) = tokio_tungstenite::accept_async(stream).await {
-                    app_handle_clone.emit_all("node_connected", addr.ip().to_string()).unwrap_or_default();
-                    
-                    let mut rx = tx_clone.subscribe();
-                    loop {
-                        match rx.recv().await {
-                            Ok(msg) => {
-                                if ws_stream.send(Message::Binary(msg)).await.is_err() {
-                                    break;
-                                }
-                            }
-                            Err(broadcast::error::RecvError::Lagged(_)) => continue,
-                            Err(broadcast::error::RecvError::Closed) => break,
-                        }
-                    }
-                }
-            });
-        }
-    }
+    Ok(stream)
 }
 
 fn main() {
     let (tx, _rx) = broadcast::channel(1024);
+    let (audio_tx, audio_rx) = std::sync::mpsc::channel::<AudioCommand>();
+    
+    let tx_clone = tx.clone();
+    std::thread::spawn(move || {
+        let mut current_stream: Option<cpal::Stream> = None;
+        for cmd in audio_rx {
+            match cmd {
+                AudioCommand::Start(device_name) => {
+                    match build_audio_stream(device_name, tx_clone.clone()) {
+                        Ok(stream) => current_stream = Some(stream),
+                        Err(e) => eprintln!("Failed to build stream: {}", e),
+                    }
+                }
+                AudioCommand::Stop => {
+                    current_stream = None;
+                }
+            }
+        }
+    });
 
     tauri::Builder::default()
         .manage(AppState {
             tx,
-            stream: Mutex::new(None),
+            audio_tx: Mutex::new(audio_tx),
             target_device: Mutex::new(None),
             network_port: Mutex::new(8080),
             jitter_delay: Mutex::new(500),
