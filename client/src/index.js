@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('connect-btn');
   const input = document.getElementById('ip-input');
   
+  if (window.location.hostname !== 'polymath-main.github.io') {
+    input.value = window.location.hostname;
+  }
+  
   btn.addEventListener('click', () => {
     // Resume audio context on first user interaction
     if (!audioContext) {

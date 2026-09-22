@@ -1,11 +1,38 @@
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
 class NtpWebSocketServer extends EventEmitter {
   constructor(port) {
     super();
     this.port = port;
-    this.wss = new WebSocket.Server({ port });
+    
+    const server = http.createServer((req, res) => {
+      let filePath = req.url === '/' ? '/index.html' : req.url;
+      let extname = path.extname(filePath);
+      let contentType = 'text/html';
+      
+      switch (extname) {
+        case '.js': contentType = 'text/javascript'; break;
+        case '.css': contentType = 'text/css'; break;
+      }
+      
+      const fullPath = path.join(__dirname, '../../client', filePath);
+      
+      fs.readFile(fullPath, (err, content) => {
+        if (err) {
+          res.writeHead(404);
+          res.end(`File not found: ${filePath}`);
+        } else {
+          res.writeHead(200, { 'Content-Type': contentType });
+          res.end(content, 'utf8');
+        }
+      });
+    });
+
+    this.wss = new WebSocket.Server({ server });
     
     this.wss.on('connection', (ws) => {
       console.log('[NtpWebSocketServer] Client connected');
@@ -30,7 +57,9 @@ class NtpWebSocketServer extends EventEmitter {
       ws.on('close', () => console.log('[NtpWebSocketServer] Client disconnected'));
     });
     
-    console.log(`[NtpWebSocketServer] Running on ws://localhost:${this.port}`);
+    server.listen(this.port, () => {
+      console.log(`[Host] Serving Web App & WebSocket on http://localhost:${this.port}`);
+    });
   }
 
   broadcast(chunkData) {
