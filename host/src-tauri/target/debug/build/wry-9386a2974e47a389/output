@@ -1,0 +1,3 @@
+cargo:rerun-if-env-changed=WRY_ANDROID_PACKAGE
+cargo:rerun-if-env-changed=WRY_ANDROID_LIBRARY
+cargo:rerun-if-env-changed=WRY_ANDROID_KOTLIN_FILES_OUT_DIR

@@ -17,7 +17,9 @@
       "active": true,
       "targets": "all",
       "identifier": "com.healingnodes.host",
-      "icon": []
+      "icon": [
+        "icons/icon.png"
+      ]
     },
     "security": {
       "csp": null

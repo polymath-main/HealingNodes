@@ -1,0 +1,8 @@
+/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/serde_with_macros-591562a26cd43d05.d: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/apply.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lazy_bool.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/utils.rs
+
+/data/data/com.termux/files/home/Projects/HealingNodes/host/src-tauri/target/debug/deps/libserde_with_macros-591562a26cd43d05.so: /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lib.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/apply.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lazy_bool.rs /data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/utils.rs
+
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lib.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/apply.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/lazy_bool.rs:
+/data/data/com.termux/files/home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.23.0/src/utils.rs:
