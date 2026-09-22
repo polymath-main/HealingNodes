@@ -23,7 +23,11 @@
 </head>
 <body>
     <h1>HealingNodes Media Receiver</h1>
-    <p>Click anywhere to enable audio playback.</p>
+    <p>Enter the IP address shown on your Desktop App (e.g., 192.168.1.100)</p>
+    <input type="text" id="ip-input" placeholder="192.168.1.100" style="padding: 10px; font-size: 1.2rem; margin-bottom: 15px;" />
+    <br/>
+    <button id="connect-btn" style="padding: 10px 20px; font-size: 1.2rem; cursor: pointer; background: #4CAF50; border: none; color: white; border-radius: 5px;">Connect</button>
+    <p id="status-text" style="color: #888; font-size: 1rem;">Waiting to connect...</p>
     <script type="module" src="src/index.js"></script>
 </body>
 </html>

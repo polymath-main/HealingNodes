@@ -2,45 +2,62 @@ import { NtpClient } from './ntpClient.js';
 import { DecoderPipeline } from './decoderPipeline.js';
 import { JitterBuffer } from './jitterBuffer.js';
 
-async function initClient() {
-  const wsUrl = `ws://${window.location.hostname}:8080`;
+let audioContext;
+
+function initClient(ipAddress) {
+  const wsUrl = `ws://${ipAddress}:8080`;
   const ws = new WebSocket(wsUrl);
-  const ntpClient = new NtpClient(ws);
-  ntpClient.startSync();
-
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const statusText = document.getElementById('status-text');
   
-  document.body.addEventListener('click', () => {
-    if (audioContext.state === 'suspended') {
-      audioContext.resume();
-      console.log('AudioContext resumed.');
-    }
-  });
+  statusText.innerText = `Connecting to ${wsUrl}...`;
 
-  const decoderPipeline = new DecoderPipeline(audioContext);
-  const jitterBuffer = new JitterBuffer(audioContext, ntpClient);
+  ws.onopen = () => {
+    statusText.innerText = "Connected! Receiving audio stream...";
+    statusText.style.color = "#4CAF50";
+    const ntpClient = new NtpClient(ws);
+    ntpClient.startSync();
 
-  decoderPipeline.onDecodedAudio = (audioData) => {
-    jitterBuffer.schedulePlayback(audioData);
+    const decoderPipeline = new DecoderPipeline(audioContext);
+    const jitterBuffer = new JitterBuffer(audioContext, ntpClient);
+
+    decoderPipeline.onDecodedAudio = (audioData) => {
+      jitterBuffer.schedulePlayback(audioData);
+    };
+
+    ws.addEventListener('message', (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'audio_chunk') {
+          decoderPipeline.decodeChunk(data.payload);
+        }
+      } catch (e) {
+        // Ignore non-JSON
+      }
+    });
   };
 
-  ws.addEventListener('message', (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.type === 'audio_chunk') {
-        decoderPipeline.decodeChunk(data.payload);
-      }
-    } catch (e) {
-      // Ignore non-JSON
-    }
-  });
-
-  console.log('[Client] Initialized Phase 7 Receiver, waiting for audio chunks...');
+  ws.onerror = () => {
+    statusText.innerText = "Connection Failed. Check IP address.";
+    statusText.style.color = "#f44336";
+  };
 }
 
 // Start when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initClient);
-} else {
-  initClient();
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('connect-btn');
+  const input = document.getElementById('ip-input');
+  
+  btn.addEventListener('click', () => {
+    // Resume audio context on first user interaction
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
+    if (input.value.trim() !== "") {
+      initClient(input.value.trim());
+    }
+  });
+});
