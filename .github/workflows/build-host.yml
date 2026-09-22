@@ -24,6 +24,11 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.29.x'
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
