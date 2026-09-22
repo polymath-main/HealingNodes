@@ -63,6 +63,12 @@ class NtpWebSocketServer extends EventEmitter {
   }
 
   broadcast(chunkData) {
+    // If we received a binary buffer over IPC, we must format it as an array
+    // so JSON.stringify serializes it correctly as [1,2,3...] for the client.
+    if (chunkData.buffer && (chunkData.buffer instanceof Uint8Array || Buffer.isBuffer(chunkData.buffer))) {
+      chunkData.buffer = Array.from(chunkData.buffer);
+    }
+    
     const payload = JSON.stringify({
       type: 'audio_chunk',
       payload: chunkData

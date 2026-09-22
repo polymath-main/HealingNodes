@@ -1,10 +1,10 @@
 const { app, BrowserWindow, ipcMain, desktopCapturer, session } = require('electron');
 const path = require('path');
-const { NtpWebSocketServer } = require('./ntpWebSocketServer');
+const { fork } = require('child_process');
 
-const PORT = 8080;
-let server;
 let mainWindow;
+let coreProcess;
+let isQuitting = false;
 
 app.whenReady().then(() => {
   session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
@@ -16,7 +16,23 @@ app.whenReady().then(() => {
     });
   });
 
-  server = new NtpWebSocketServer(PORT);
+  function spawnCore() {
+    // Fork the standalone Node.js core process with advanced serialization for binary buffers
+    coreProcess = fork(path.join(__dirname, 'core.js'), { serialization: 'advanced' });
+
+    coreProcess.on('error', (err) => {
+      console.error('[Host] Core process error:', err);
+    });
+
+    coreProcess.on('exit', (code, signal) => {
+      if (!isQuitting) {
+        console.warn(`[Host] Core process exited (code: ${code}, signal: ${signal}). Restarting...`);
+        spawnCore();
+      }
+    });
+  }
+
+  spawnCore();
 
   mainWindow = new BrowserWindow({
     width: 600,
@@ -31,11 +47,20 @@ app.whenReady().then(() => {
   mainWindow.loadFile(path.join(__dirname, 'renderer.html'));
 
   ipcMain.on('audio-chunk', (event, chunkData) => {
-    // Forward the encoded Opus chunk from the Renderer (Chromium) to the WebSocket server
-    server.broadcast(chunkData);
+    // Forward the encoded Opus chunk from the Renderer (Chromium) to the standalone Core process
+    if (coreProcess && coreProcess.connected) {
+      coreProcess.send({ type: 'audio_chunk', payload: chunkData });
+    }
   });
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('quit', () => {
+  isQuitting = true;
+  if (coreProcess) {
+    coreProcess.kill();
+  }
 });

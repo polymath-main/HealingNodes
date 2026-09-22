@@ -34,7 +34,7 @@ document.getElementById('start-btn').addEventListener('click', async () => {
         const captureTimeUs = chunk.timestamp;
         
         window.electronAPI.sendAudioChunk({
-          buffer: Array.from(buffer),
+          buffer: buffer,
           captureTime: captureTimeUs,
           type: chunk.type
         });
